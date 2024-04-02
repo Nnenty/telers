@@ -19,6 +19,14 @@ pub enum Telegram {
     EditedMessage,
     #[strum(serialize = "edited_channel_post")]
     EditedChannelPost,
+    #[strum(serialize = "business_connection")]
+    BusinessConnection,
+    #[strum(serialize = "business_message")]
+    BusinessMessage,
+    #[strum(serialize = "edited_business_message")]
+    EditedBusinessMessage,
+    #[strum(serialize = "deleted_business_messages")]
+    DeletedBusinessMessages,
     #[strum(serialize = "message_reaction")]
     MessageReaction,
     #[strum(serialize = "message_reaction_count")]
@@ -47,7 +55,7 @@ pub enum Telegram {
 
 impl Telegram {
     #[must_use]
-    pub const fn all() -> [Telegram; 19] {
+    pub const fn all() -> [Telegram; 23] {
         [
             Telegram::Message,
             Telegram::InlineQuery,
@@ -56,6 +64,10 @@ impl Telegram {
             Telegram::ChannelPost,
             Telegram::EditedMessage,
             Telegram::EditedChannelPost,
+            Telegram::BusinessConnection,
+            Telegram::BusinessMessage,
+            Telegram::EditedBusinessMessage,
+            Telegram::DeletedBusinessMessages,
             Telegram::MessageReaction,
             Telegram::MessageReactionCount,
             Telegram::ShippingQuery,
@@ -82,6 +94,10 @@ impl From<Telegram> for Option<UpdateType> {
             Telegram::ChannelPost => Some(UpdateType::ChannelPost),
             Telegram::EditedMessage => Some(UpdateType::EditedMessage),
             Telegram::EditedChannelPost => Some(UpdateType::EditedChannelPost),
+            Telegram::BusinessConnection => Some(UpdateType::BusinessConnection),
+            Telegram::BusinessMessage => Some(UpdateType::BusinessMessage),
+            Telegram::EditedBusinessMessage => Some(UpdateType::EditedBusinessMessage),
+            Telegram::DeletedBusinessMessages => Some(UpdateType::DeletedBusinessMessages),
             Telegram::MessageReaction => Some(UpdateType::MessageReaction),
             Telegram::MessageReactionCount => Some(UpdateType::MessageReactionCount),
             Telegram::ShippingQuery => Some(UpdateType::ShippingQuery),
@@ -108,6 +124,10 @@ impl PartialEq<UpdateType> for Telegram {
             Telegram::ChannelPost => *other == UpdateType::ChannelPost,
             Telegram::EditedMessage => *other == UpdateType::EditedMessage,
             Telegram::EditedChannelPost => *other == UpdateType::EditedChannelPost,
+            Telegram::BusinessConnection => *other == UpdateType::BusinessConnection,
+            Telegram::BusinessMessage => *other == UpdateType::BusinessMessage,
+            Telegram::EditedBusinessMessage => *other == UpdateType::EditedBusinessMessage,
+            Telegram::DeletedBusinessMessages => *other == UpdateType::DeletedBusinessMessages,
             Telegram::MessageReaction => *other == UpdateType::MessageReaction,
             Telegram::MessageReactionCount => *other == UpdateType::MessageReactionCount,
             Telegram::ShippingQuery => *other == UpdateType::ShippingQuery,

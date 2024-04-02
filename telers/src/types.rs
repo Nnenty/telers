@@ -51,6 +51,8 @@ pub mod bot_command_scope_default;
 pub mod bot_description;
 pub mod bot_name;
 pub mod bot_short_description;
+pub mod business_connection;
+pub mod business_messages_deleted;
 pub mod callback_game;
 pub mod callback_query;
 pub mod chat;
@@ -238,6 +240,8 @@ pub use bot_command_scope_default::BotCommandScopeDefault;
 pub use bot_description::BotDescription;
 pub use bot_name::BotName;
 pub use bot_short_description::BotShortDescription;
+pub use business_connection::BusinessConnection;
+pub use business_messages_deleted::BusinessMessagesDeleted;
 pub use callback_game::CallbackGame;
 pub use callback_query::CallbackQuery;
 pub use chat::{
