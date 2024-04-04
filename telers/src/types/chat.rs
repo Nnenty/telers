@@ -1,4 +1,7 @@
-use super::{ChatLocation, ChatPermissions, ChatPhoto, Message};
+use super::{
+    BusinessIntro, BusinessLocation, BusinessOpeningHours, ChatLocation, ChatPermissions,
+    ChatPhoto, Message,
+};
 
 use crate::extractors::FromContext;
 
@@ -35,6 +38,12 @@ pub struct Private {
     pub photo: Option<ChatPhoto>,
     /// If non-empty, the list of all [active chat usernames](https://telegram.org/blog/topics-in-groups-collectible-usernames/ru?ln=a#collectible-usernames). Returned only in [`GetChat`](crate::methods::GetChat).
     pub active_usernames: Option<Box<[Box<str>]>>,
+    /// The intro of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_intro: Option<BusinessIntro>,
+    /// The location of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_location: Option<BusinessLocation>,
+    /// The opening hours of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_opening_hours: Option<BusinessOpeningHours>,
     /// Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See [accent colors](https://core.telegram.org/bots/api#accent-colors) for more details. Returned only in [`GetChat`](crate::methods::GetChat). Always returned in [`GetChat`](crate::methods::GetChat).
     pub accent_color_id: Option<i64>,
     /// Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in [`GetChat`](crate::methods::GetChat).
@@ -255,6 +264,39 @@ impl Chat {
             },
             Self::Channel(chat) => match chat.active_usernames {
                 Some(ref active_usernames) => Some(active_usernames),
+                None => None,
+            },
+        }
+    }
+
+    #[must_use]
+    pub const fn business_intro(&self) -> Option<&BusinessIntro> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => match chat.business_intro {
+                Some(ref business_intro) => Some(business_intro),
+                None => None,
+            },
+        }
+    }
+
+    #[must_use]
+    pub const fn business_location(&self) -> Option<&BusinessLocation> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => match chat.business_location {
+                Some(ref business_location) => Some(business_location),
+                None => None,
+            },
+        }
+    }
+
+    #[must_use]
+    pub const fn business_opening_hours(&self) -> Option<&BusinessOpeningHours> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => match chat.business_opening_hours {
+                Some(ref business_opening_hours) => Some(business_opening_hours),
                 None => None,
             },
         }

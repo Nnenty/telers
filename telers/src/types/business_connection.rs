@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[event(try_from = Update)]
 pub struct BusinessConnection {
     /// Unique identifier of the business connection
-    pub id: String,
+    pub id: Box<str>,
     /// Business account user that created the business connection
     pub user: User,
     /// Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
