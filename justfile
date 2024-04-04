@@ -6,7 +6,7 @@ help:
 
 # Run the tests with cargo
 test:
-    cargo test --lib --tests --all --all-features --verbose -- --nocapture
+    cargo test --lib --tests --all --all-features -- --nocapture
 
 # Run the clippy linter
 clippy:
