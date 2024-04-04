@@ -10,25 +10,25 @@ use serde::Deserialize;
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum ExternalReplyInfo {
-    Animation(Animation),
-    Audio(Audio),
-    Document(Document),
-    Photo(Photo),
-    Sticker(Sticker),
-    Story(Story),
-    Video(Video),
-    VideoNote(VideoNote),
-    Voice(Voice),
-    Contact(Contact),
-    Dice(Dice),
-    Game(Game),
-    Giveaway(Giveaway),
-    GiveawayWinners(GiveawayWinners),
-    Invoice(Invoice),
-    Venue(Venue),
-    Location(Location),
-    Poll(Poll),
-    Text(Text),
+    Animation(Box<Animation>),
+    Audio(Box<Audio>),
+    Document(Box<Document>),
+    Photo(Box<Photo>),
+    Sticker(Box<Sticker>),
+    Story(Box<Story>),
+    Video(Box<Video>),
+    VideoNote(Box<VideoNote>),
+    Voice(Box<Voice>),
+    Contact(Box<Contact>),
+    Dice(Box<Dice>),
+    Game(Box<Game>),
+    Giveaway(Box<Giveaway>),
+    GiveawayWinners(Box<GiveawayWinners>),
+    Invoice(Box<Invoice>),
+    Venue(Box<Venue>),
+    Location(Box<Location>),
+    Poll(Box<Poll>),
+    Text(Box<Text>),
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -284,7 +284,7 @@ mod tests {
         })];
 
         for json in jsons {
-            let external_reply_info_kind: Text = serde_json::from_value(json.clone()).unwrap();
+            let external_reply_info_kind = serde_json::from_value(json.clone()).unwrap();
             let external_reply_info: ExternalReplyInfo = serde_json::from_value(json).unwrap();
 
             match external_reply_info {
