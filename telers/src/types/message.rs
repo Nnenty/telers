@@ -118,6 +118,8 @@ pub struct Animation {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the animation
@@ -176,6 +178,8 @@ pub struct Audio {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// The unique identifier of a media message group this message belongs to
     pub media_group_id: Option<Box<str>>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
@@ -230,6 +234,8 @@ pub struct Contact {
     pub via_bot: Option<User>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the contact
@@ -275,6 +281,8 @@ pub struct Dice {
     pub external_reply: Option<ExternalReplyInfo>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Message is a dice with random value
@@ -326,6 +334,8 @@ pub struct Document {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// The unique identifier of a media message group this message belongs to
     pub media_group_id: Option<Box<str>>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
@@ -380,6 +390,8 @@ pub struct Game {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the game. [`More about games`](https://core.telegram.org/bots/api#games)
@@ -427,6 +439,8 @@ pub struct Poll {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the poll
@@ -476,6 +490,8 @@ pub struct Venue {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the venue
@@ -525,6 +541,8 @@ pub struct Location {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the location
@@ -576,6 +594,8 @@ pub struct Photo {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// The unique identifier of a media message group this message belongs to
     pub media_group_id: Option<Box<str>>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
@@ -693,6 +713,8 @@ pub struct Sticker {
     pub via_bot: Option<User>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the sticker
@@ -742,6 +764,8 @@ pub struct Text {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// The actual UTF-8 text of the message
@@ -797,6 +821,8 @@ pub struct Video {
     pub edit_date: Option<i64>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// The unique identifier of a media message group this message belongs to
     pub media_group_id: Option<Box<str>>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
@@ -851,6 +877,8 @@ pub struct VideoNote {
     pub external_reply: Option<ExternalReplyInfo>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the video message
@@ -900,6 +928,8 @@ pub struct Voice {
     pub via_bot: Option<User>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Information about the file
@@ -1186,6 +1216,8 @@ pub struct Invoice {
     pub via_bot: Option<User>,
     /// `true`, if the message can't be forwarded
     pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
     /// Message is an invoice for a [`payment`](https://core.telegram.org/bots/api#payments), information about the invoice. [`More about payments`](https://core.telegram.org/bots/api#payments)

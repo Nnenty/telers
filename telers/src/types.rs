@@ -39,6 +39,7 @@
 
 pub mod animation;
 pub mod audio;
+pub mod birthdate;
 pub mod bot_command;
 pub mod bot_command_scope;
 pub mod bot_command_scope_all_chat_administrators;
@@ -233,6 +234,7 @@ pub mod write_access_allowed;
 
 pub use animation::Animation;
 pub use audio::Audio;
+pub use birthdate::Birthdate;
 pub use bot_command::BotCommand;
 pub use bot_command_scope::BotCommandScope;
 pub use bot_command_scope_all_chat_administrators::BotCommandScopeAllChatAdministrators;

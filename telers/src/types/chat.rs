@@ -1,6 +1,6 @@
 use super::{
-    BusinessIntro, BusinessLocation, BusinessOpeningHours, ChatLocation, ChatPermissions,
-    ChatPhoto, Message,
+    Birthdate, BusinessIntro, BusinessLocation, BusinessOpeningHours, ChatLocation,
+    ChatPermissions, ChatPhoto, Message,
 };
 
 use crate::extractors::FromContext;
@@ -38,12 +38,16 @@ pub struct Private {
     pub photo: Option<ChatPhoto>,
     /// If non-empty, the list of all [active chat usernames](https://telegram.org/blog/topics-in-groups-collectible-usernames/ru?ln=a#collectible-usernames). Returned only in [`GetChat`](crate::methods::GetChat).
     pub active_usernames: Option<Box<[Box<str>]>>,
+    /// The date of birth of the user. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub birthdate: Option<Birthdate>,
     /// The intro of the business. Returned only in [`GetChat`](crate::methods::GetChat).
     pub business_intro: Option<BusinessIntro>,
     /// The location of the business. Returned only in [`GetChat`](crate::methods::GetChat).
     pub business_location: Option<BusinessLocation>,
     /// The opening hours of the business. Returned only in [`GetChat`](crate::methods::GetChat).
     pub business_opening_hours: Option<BusinessOpeningHours>,
+    /// The personal channel of the user. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub personal_chat: Option<Chat>,
     /// Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See [accent colors](https://core.telegram.org/bots/api#accent-colors) for more details. Returned only in [`GetChat`](crate::methods::GetChat). Always returned in [`GetChat`](crate::methods::GetChat).
     pub accent_color_id: Option<i64>,
     /// Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in [`GetChat`](crate::methods::GetChat).
@@ -272,6 +276,14 @@ impl Chat {
     }
 
     #[must_use]
+    pub const fn birthdate(&self) -> Option<&Birthdate> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.birthdate.as_ref(),
+        }
+    }
+
+    #[must_use]
     pub const fn business_intro(&self) -> Option<&BusinessIntro> {
         match self {
             Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
@@ -296,6 +308,14 @@ impl Chat {
         match self {
             Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
             Self::Private(chat) => chat.business_opening_hours.as_ref(),
+        }
+    }
+
+    #[must_use]
+    pub const fn personal_chat(&self) -> Option<&Chat> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.personal_chat.as_ref(),
         }
     }
 

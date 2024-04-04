@@ -37,6 +37,8 @@ pub struct User {
     pub can_read_all_group_messages: Option<bool>,
     /// `true`, if the bot supports inline queries. Returned only in [`GetMe`](crate::methods::GetMe).
     pub supports_inline_queries: Option<bool>,
+    /// `true`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in [`GetMe`](crate::methods::GetMe).
+    pub can_connect_to_business: Option<bool>,
 }
 
 impl User {
@@ -64,6 +66,7 @@ impl User {
             can_join_groups: None,
             can_read_all_group_messages: None,
             supports_inline_queries: None,
+            can_connect_to_business: None,
         }
     }
 
@@ -151,6 +154,14 @@ impl User {
             ..self
         }
     }
+
+    #[must_use]
+    pub fn can_connect_to_business(self, val: bool) -> Self {
+        Self {
+            can_connect_to_business: Some(val),
+            ..self
+        }
+    }
 }
 
 impl User {
@@ -214,6 +225,14 @@ impl User {
     pub fn supports_inline_queries_option(self, val: Option<bool>) -> Self {
         Self {
             supports_inline_queries: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn can_connect_to_business_option(self, val: Option<bool>) -> Self {
+        Self {
+            can_connect_to_business: val,
             ..self
         }
     }
