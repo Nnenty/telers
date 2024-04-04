@@ -164,11 +164,8 @@ async fn main() {
         .with(EnvFilter::from_env("RUST_LOG"))
         .init();
 
-    let Ok(bot_token) = std::env::var("BOT_TOKEN") else {
-        panic!("BOT_TOKEN env variable is not set!");
-    };
-
-    let bot = Bot::new(bot_token);
+    let token = std::env::var("BOT_TOKEN").expect("BOT_TOKEN env variable is not set!");
+    let bot = Bot::new(token);
 
     // You can use any storage, which implements `Storage` trait
     let storage = MemoryStorage::new();
