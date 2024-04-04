@@ -67,8 +67,8 @@ pub enum ContentType {
     Invoice,
     #[strum(serialize = "successful_payment")]
     SuccessfulPayment,
-    #[strum(serialize = "user_shared")]
-    UserShared,
+    #[strum(serialize = "users_shared")]
+    UsersShared,
     #[strum(serialize = "chat_shared")]
     ChatShared,
     #[strum(serialize = "connected_website")]
@@ -147,7 +147,7 @@ impl ContentType {
             ContentType::PinnedMessage,
             ContentType::Invoice,
             ContentType::SuccessfulPayment,
-            ContentType::UserShared,
+            ContentType::UsersShared,
             ContentType::ChatShared,
             ContentType::ConnectedWebsite,
             ContentType::WriteAccessAllowed,
@@ -224,7 +224,7 @@ impl From<&Message> for ContentType {
             Message::Pinned(_) => ContentType::PinnedMessage,
             Message::Invoice(_) => ContentType::Invoice,
             Message::SuccessfulPayment(_) => ContentType::SuccessfulPayment,
-            Message::UsersShared(_) => ContentType::UserShared,
+            Message::UsersShared(_) => ContentType::UsersShared,
             Message::ChatShared(_) => ContentType::ChatShared,
             Message::ConnectedWebsite(_) => ContentType::ConnectedWebsite,
             Message::WriteAccessAllowed(_) => ContentType::WriteAccessAllowed,
