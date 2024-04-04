@@ -1861,79 +1861,80 @@ impl Message {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn business_connection_id(&self) -> Option<&str> {
         match self {
             Message::Text(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Animation(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Audio(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Document(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Photo(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Sticker(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Story(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Video(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::VideoNote(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Voice(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Contact(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Dice(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Game(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Poll(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Venue(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Location(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Pinned(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             Message::Invoice(message) => match message.business_connection_id {
-                Some(ref connection_id) => Some(&connection_id),
+                Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
             _ => None,

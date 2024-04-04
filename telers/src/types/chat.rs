@@ -211,6 +211,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn username(&self) -> Option<&str> {
         match self {
@@ -250,6 +251,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn active_usernames(&self) -> Option<&[Box<str>]> {
         match self {
@@ -273,13 +275,11 @@ impl Chat {
     pub const fn business_intro(&self) -> Option<&BusinessIntro> {
         match self {
             Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
-            Self::Private(chat) => match chat.business_intro {
-                Some(ref business_intro) => Some(business_intro),
-                None => None,
-            },
+            Self::Private(chat) => chat.business_intro.as_ref(),
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn business_location(&self) -> Option<&BusinessLocation> {
         match self {
@@ -295,13 +295,11 @@ impl Chat {
     pub const fn business_opening_hours(&self) -> Option<&BusinessOpeningHours> {
         match self {
             Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
-            Self::Private(chat) => match chat.business_opening_hours {
-                Some(ref business_opening_hours) => Some(business_opening_hours),
-                None => None,
-            },
+            Self::Private(chat) => chat.business_opening_hours.as_ref(),
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn available_reactions(&self) -> Option<&[Box<str>]> {
         match self {
@@ -326,6 +324,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn background_custom_emoji_id(&self) -> Option<&str> {
         match self {
@@ -350,6 +349,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn profile_background_custom_emoji_id(&self) -> Option<&str> {
         match self {
@@ -378,6 +378,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn description(&self) -> Option<&str> {
         match self {
@@ -397,6 +398,7 @@ impl Chat {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn invite_link(&self) -> Option<&str> {
         match self {
