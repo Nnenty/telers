@@ -4131,7 +4131,9 @@ mod tests {
             },
             "users_shared": {
                 "request_id": 1,
-                "user_ids": [1, 2, 3],
+                "users": [{
+                    "user_id": 1,
+                }],
             },
         })];
 

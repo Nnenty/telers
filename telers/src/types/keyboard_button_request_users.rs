@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
-/// This object defines the criteria used to request suitable users. The identifiers of the selected users will be shared with the bot when the corresponding button is pressed. [`More about requesting users`](https://core.telegram.org/bots/features#chat-and-user-selection)
+/// This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. [`More about requesting users`](https://core.telegram.org/bots/features#chat-and-user-selection)
 /// # Documentation
 /// <https://core.telegram.org/bots/api#keyboardbuttonrequestusers>
 #[skip_serializing_none]
@@ -15,6 +15,12 @@ pub struct KeyboardButtonRequestUsers {
     pub user_is_premium: Option<bool>,
     /// The maximum number of users to be selected; 1-10. Defaults to 1.
     pub max_quantity: Option<i64>,
+    /// Pass `true` to request the users' first and last name
+    pub request_name: Option<bool>,
+    /// Pass `true` to request the users' username
+    pub request_username: Option<bool>,
+    /// Pass `true` to request the users' photo
+    pub request_photo: Option<bool>,
 }
 
 impl KeyboardButtonRequestUsers {
@@ -25,6 +31,9 @@ impl KeyboardButtonRequestUsers {
             user_is_bot: None,
             user_is_premium: None,
             max_quantity: None,
+            request_name: None,
+            request_username: None,
+            request_photo: None,
         }
     }
 
@@ -59,6 +68,30 @@ impl KeyboardButtonRequestUsers {
             ..self
         }
     }
+
+    #[must_use]
+    pub fn request_name(self, val: bool) -> Self {
+        Self {
+            request_name: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_username(self, val: bool) -> Self {
+        Self {
+            request_username: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_photo(self, val: bool) -> Self {
+        Self {
+            request_photo: Some(val),
+            ..self
+        }
+    }
 }
 
 impl KeyboardButtonRequestUsers {
@@ -82,6 +115,30 @@ impl KeyboardButtonRequestUsers {
     pub fn max_quantity_option(self, val: Option<i64>) -> Self {
         Self {
             max_quantity: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_name_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_name: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_username_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_username: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_photo_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_photo: val,
             ..self
         }
     }

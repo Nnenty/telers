@@ -3,7 +3,7 @@ use super::ChatAdministratorRights;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
-/// This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed. [`More about requesting chats`](https://core.telegram.org/bots/features#chat-and-user-selection)
+/// This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate [`More about requesting chats`](https://core.telegram.org/bots/features#chat-and-user-selection)
 /// # Documentation
 /// <https://core.telegram.org/bots/api#keyboardbuttonrequestchat>
 #[skip_serializing_none]
@@ -25,6 +25,12 @@ pub struct KeyboardButtonRequestChat {
     pub bot_administrator_rights: Option<ChatAdministratorRights>,
     /// Pass `true` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
     pub bot_is_member: Option<bool>,
+    /// Pass `true` to request the chat's title
+    pub request_title: Option<bool>,
+    /// Pass `true` to request the chat's username
+    pub request_username: Option<bool>,
+    /// Pass `true` to request the chat's photo
+    pub request_photo: Option<bool>,
 }
 
 impl KeyboardButtonRequestChat {
@@ -39,6 +45,9 @@ impl KeyboardButtonRequestChat {
             user_administrator_rights: None,
             bot_administrator_rights: None,
             bot_is_member: None,
+            request_title: None,
+            request_username: None,
+            request_photo: None,
         }
     }
 
@@ -105,6 +114,30 @@ impl KeyboardButtonRequestChat {
             ..self
         }
     }
+
+    #[must_use]
+    pub fn request_title(self, val: bool) -> Self {
+        Self {
+            request_title: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_username(self, val: bool) -> Self {
+        Self {
+            request_username: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_photo(self, val: bool) -> Self {
+        Self {
+            request_photo: Some(val),
+            ..self
+        }
+    }
 }
 
 impl KeyboardButtonRequestChat {
@@ -158,6 +191,30 @@ impl KeyboardButtonRequestChat {
     pub fn bot_is_member_option(self, val: Option<bool>) -> Self {
         Self {
             bot_is_member: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_title_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_title: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_username_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_username: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn request_photo_option(self, val: Option<bool>) -> Self {
+        Self {
+            request_photo: val,
             ..self
         }
     }
