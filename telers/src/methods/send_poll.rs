@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct SendPoll {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: ChatIdKind,
     /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -63,6 +65,7 @@ impl SendPoll {
         I: IntoIterator<Item = T>,
     {
         Self {
+            business_connection_id: None,
             chat_id: chat_id.into(),
             message_thread_id: None,
             question: question.into(),
@@ -81,6 +84,14 @@ impl SendPoll {
             protect_content: None,
             reply_parameters: None,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -266,6 +277,14 @@ impl SendPoll {
 }
 
 impl SendPoll {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
         Self {

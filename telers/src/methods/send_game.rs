@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct SendGame {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat
     pub chat_id: i64,
     /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -36,6 +38,7 @@ impl SendGame {
     #[must_use]
     pub fn new(chat_id: i64, game_short_name: impl Into<String>) -> Self {
         Self {
+            business_connection_id: None,
             chat_id,
             message_thread_id: None,
             game_short_name: game_short_name.into(),
@@ -43,6 +46,14 @@ impl SendGame {
             protect_content: None,
             reply_parameters: None,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -104,6 +115,14 @@ impl SendGame {
 }
 
 impl SendGame {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
         Self {
