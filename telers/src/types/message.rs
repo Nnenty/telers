@@ -90,8 +90,12 @@ pub struct Animation {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -144,8 +148,12 @@ pub struct Audio {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -198,8 +206,12 @@ pub struct Contact {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -241,8 +253,12 @@ pub struct Dice {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -282,8 +298,12 @@ pub struct Document {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -336,8 +356,12 @@ pub struct Game {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -379,8 +403,12 @@ pub struct Poll {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -422,8 +450,12 @@ pub struct Venue {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -467,8 +499,12 @@ pub struct Location {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -512,8 +548,12 @@ pub struct Photo {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -596,6 +636,8 @@ pub struct Story {
     pub sender_boost_count: Option<i64>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -627,8 +669,12 @@ pub struct Sticker {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -668,8 +714,12 @@ pub struct Text {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -719,8 +769,12 @@ pub struct Video {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -775,8 +829,12 @@ pub struct VideoNote {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -816,8 +874,12 @@ pub struct Voice {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -1072,6 +1134,8 @@ pub struct Pinned {
     pub sender_chat: Option<Chat>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// `true`, if the message is sent to a forum topic
@@ -1100,8 +1164,12 @@ pub struct Invoice {
     pub sender_chat: Option<Chat>,
     /// If the sender of the message boosted the chat, the number of boosts added by the user
     pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
     /// Date the message was sent in Unix time
     pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Information about the original message for forwarded messages
@@ -1767,6 +1835,108 @@ impl Message {
             Message::Giveaway(message) => message.date,
             Message::GiveawayWinners(message) => message.date,
             Message::GiveawayCompleted(message) => message.date,
+        }
+    }
+
+    #[must_use]
+    pub const fn sender_business_bot(&self) -> Option<&User> {
+        match self {
+            Message::Text(message) => message.sender_business_bot.as_ref(),
+            Message::Animation(message) => message.sender_business_bot.as_ref(),
+            Message::Audio(message) => message.sender_business_bot.as_ref(),
+            Message::Document(message) => message.sender_business_bot.as_ref(),
+            Message::Photo(message) => message.sender_business_bot.as_ref(),
+            Message::Sticker(message) => message.sender_business_bot.as_ref(),
+            Message::Video(message) => message.sender_business_bot.as_ref(),
+            Message::VideoNote(message) => message.sender_business_bot.as_ref(),
+            Message::Voice(message) => message.sender_business_bot.as_ref(),
+            Message::Contact(message) => message.sender_business_bot.as_ref(),
+            Message::Dice(message) => message.sender_business_bot.as_ref(),
+            Message::Game(message) => message.sender_business_bot.as_ref(),
+            Message::Poll(message) => message.sender_business_bot.as_ref(),
+            Message::Venue(message) => message.sender_business_bot.as_ref(),
+            Message::Location(message) => message.sender_business_bot.as_ref(),
+            Message::Invoice(message) => message.sender_business_bot.as_ref(),
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn business_connection_id(&self) -> Option<&str> {
+        match self {
+            Message::Text(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Animation(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Audio(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Document(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Photo(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Sticker(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Story(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Video(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::VideoNote(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Voice(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Contact(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Dice(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Game(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Poll(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Venue(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Location(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Pinned(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            Message::Invoice(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(&connection_id),
+                None => None,
+            },
+            _ => None,
         }
     }
 
@@ -2848,7 +3018,9 @@ impl TryFrom<Update> for Message {
             UpdateKind::Message(val)
             | UpdateKind::EditedMessage(val)
             | UpdateKind::ChannelPost(val)
-            | UpdateKind::EditedChannelPost(val) => Ok(val),
+            | UpdateKind::EditedChannelPost(val)
+            | UpdateKind::BusinessMessage(val)
+            | UpdateKind::EditedBusinessMessage(val) => Ok(val),
             _ => Err(ConvertToTypeError::new("Update", "Message")),
         }
     }
