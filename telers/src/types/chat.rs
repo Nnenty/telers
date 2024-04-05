@@ -1,4 +1,7 @@
-use super::{ChatLocation, ChatPermissions, ChatPhoto, Message};
+use super::{
+    Birthdate, BusinessIntro, BusinessLocation, BusinessOpeningHours, ChatLocation,
+    ChatPermissions, ChatPhoto, Message,
+};
 
 use crate::extractors::FromContext;
 
@@ -15,10 +18,10 @@ use serde::Deserialize;
 )]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Chat {
-    Private(Private),
-    Group(Group),
-    Supergroup(Supergroup),
-    Channel(Channel),
+    Private(Box<Private>),
+    Group(Box<Group>),
+    Supergroup(Box<Supergroup>),
+    Channel(Box<Channel>),
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Deserialize)]
@@ -35,6 +38,16 @@ pub struct Private {
     pub photo: Option<ChatPhoto>,
     /// If non-empty, the list of all [active chat usernames](https://telegram.org/blog/topics-in-groups-collectible-usernames/ru?ln=a#collectible-usernames). Returned only in [`GetChat`](crate::methods::GetChat).
     pub active_usernames: Option<Box<[Box<str>]>>,
+    /// The date of birth of the user. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub birthdate: Option<Birthdate>,
+    /// The intro of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_intro: Option<BusinessIntro>,
+    /// The location of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_location: Option<BusinessLocation>,
+    /// The opening hours of the business. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub business_opening_hours: Option<BusinessOpeningHours>,
+    /// The personal channel of the user. Returned only in [`GetChat`](crate::methods::GetChat).
+    pub personal_chat: Option<Chat>,
     /// Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See [accent colors](https://core.telegram.org/bots/api#accent-colors) for more details. Returned only in [`GetChat`](crate::methods::GetChat). Always returned in [`GetChat`](crate::methods::GetChat).
     pub accent_color_id: Option<i64>,
     /// Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in [`GetChat`](crate::methods::GetChat).
@@ -195,21 +208,28 @@ impl Chat {
     #[must_use]
     pub const fn id(&self) -> i64 {
         match self {
-            Self::Private(Private { id, .. })
-            | Self::Group(Group { id, .. })
-            | Self::Supergroup(Supergroup { id, .. })
-            | Self::Channel(Channel { id, .. }) => *id,
+            Self::Private(chat) => chat.id,
+            Self::Group(chat) => chat.id,
+            Self::Supergroup(chat) => chat.id,
+            Self::Channel(chat) => chat.id,
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn username(&self) -> Option<&str> {
         match self {
             Self::Group(_) => None,
-            Self::Private(Private { username, .. })
-            | Self::Supergroup(Supergroup { username, .. })
-            | Self::Channel(Channel { username, .. }) => match username {
-                Some(username) => Some(username),
+            Self::Private(chat) => match chat.username {
+                Some(ref username) => Some(username),
+                None => None,
+            },
+            Self::Supergroup(chat) => match chat.username {
+                Some(ref username) => Some(username),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.username {
+                Some(ref username) => Some(username),
                 None => None,
             },
         }
@@ -218,10 +238,10 @@ impl Chat {
     #[must_use]
     pub const fn photo(&self) -> Option<&ChatPhoto> {
         match self {
-            Self::Private(Private { photo, .. })
-            | Self::Group(Group { photo, .. })
-            | Self::Supergroup(Supergroup { photo, .. })
-            | Self::Channel(Channel { photo, .. }) => photo.as_ref(),
+            Self::Private(chat) => chat.photo.as_ref(),
+            Self::Group(chat) => chat.photo.as_ref(),
+            Self::Supergroup(chat) => chat.photo.as_ref(),
+            Self::Channel(chat) => chat.photo.as_ref(),
         }
     }
 
@@ -229,44 +249,87 @@ impl Chat {
     pub const fn title(&self) -> Option<&str> {
         match self {
             Self::Private(_) => None,
-            Self::Group(Group { title, .. })
-            | Self::Supergroup(Supergroup { title, .. })
-            | Self::Channel(Channel { title, .. }) => Some(title),
+            Self::Group(chat) => Some(&chat.title),
+            Self::Supergroup(chat) => Some(&chat.title),
+            Self::Channel(chat) => Some(&chat.title),
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn active_usernames(&self) -> Option<&[Box<str>]> {
         match self {
             Self::Group(_) => None,
-            Self::Private(Private {
-                active_usernames, ..
-            })
-            | Self::Supergroup(Supergroup {
-                active_usernames, ..
-            })
-            | Self::Channel(Channel {
-                active_usernames, ..
-            }) => match active_usernames {
-                Some(active_usernames) => Some(active_usernames),
+            Self::Private(chat) => match chat.active_usernames {
+                Some(ref active_usernames) => Some(active_usernames),
+                None => None,
+            },
+            Self::Supergroup(chat) => match chat.active_usernames {
+                Some(ref active_usernames) => Some(active_usernames),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.active_usernames {
+                Some(ref active_usernames) => Some(active_usernames),
                 None => None,
             },
         }
     }
 
     #[must_use]
+    pub const fn birthdate(&self) -> Option<&Birthdate> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.birthdate.as_ref(),
+        }
+    }
+
+    #[must_use]
+    pub const fn business_intro(&self) -> Option<&BusinessIntro> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.business_intro.as_ref(),
+        }
+    }
+
+    #[allow(clippy::match_as_ref)]
+    #[must_use]
+    pub const fn business_location(&self) -> Option<&BusinessLocation> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => match chat.business_location {
+                Some(ref business_location) => Some(business_location),
+                None => None,
+            },
+        }
+    }
+
+    #[must_use]
+    pub const fn business_opening_hours(&self) -> Option<&BusinessOpeningHours> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.business_opening_hours.as_ref(),
+        }
+    }
+
+    #[must_use]
+    pub const fn personal_chat(&self) -> Option<&Chat> {
+        match self {
+            Self::Group(_) | Self::Supergroup(_) | Self::Channel(_) => None,
+            Self::Private(chat) => chat.personal_chat.as_ref(),
+        }
+    }
+
+    #[allow(clippy::match_as_ref)]
+    #[must_use]
     pub const fn available_reactions(&self) -> Option<&[Box<str>]> {
         match self {
             Self::Group(_) | Self::Private(_) => None,
-            Self::Supergroup(Supergroup {
-                available_reactions,
-                ..
-            })
-            | Self::Channel(Channel {
-                available_reactions,
-                ..
-            }) => match available_reactions {
-                Some(available_reactions) => Some(available_reactions),
+            Self::Supergroup(chat) => match chat.available_reactions {
+                Some(ref available_reactions) => Some(available_reactions),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.available_reactions {
+                Some(ref available_reactions) => Some(available_reactions),
                 None => None,
             },
         }
@@ -276,28 +339,22 @@ impl Chat {
     pub const fn accent_color_id(&self) -> Option<i64> {
         match self {
             Self::Group(_) | Self::Private(_) => None,
-            Self::Supergroup(Supergroup {
-                accent_color_id, ..
-            })
-            | Self::Channel(Channel {
-                accent_color_id, ..
-            }) => *accent_color_id,
+            Self::Supergroup(chat) => chat.accent_color_id,
+            Self::Channel(chat) => chat.accent_color_id,
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn background_custom_emoji_id(&self) -> Option<&str> {
         match self {
             Self::Group(_) | Self::Private(_) => None,
-            Self::Supergroup(Supergroup {
-                background_custom_emoji_id,
-                ..
-            })
-            | Self::Channel(Channel {
-                background_custom_emoji_id,
-                ..
-            }) => match background_custom_emoji_id {
-                Some(background_custom_emoji_id) => Some(background_custom_emoji_id),
+            Self::Supergroup(chat) => match chat.background_custom_emoji_id {
+                Some(ref background_custom_emoji_id) => Some(background_custom_emoji_id),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.background_custom_emoji_id {
+                Some(ref background_custom_emoji_id) => Some(background_custom_emoji_id),
                 None => None,
             },
         }
@@ -307,30 +364,24 @@ impl Chat {
     pub const fn profile_accent_color_id(&self) -> Option<i64> {
         match self {
             Self::Group(_) | Self::Private(_) => None,
-            Self::Supergroup(Supergroup {
-                profile_accent_color_id,
-                ..
-            })
-            | Self::Channel(Channel {
-                profile_accent_color_id,
-                ..
-            }) => *profile_accent_color_id,
+            Self::Supergroup(chat) => chat.profile_accent_color_id,
+            Self::Channel(chat) => chat.profile_accent_color_id,
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn profile_background_custom_emoji_id(&self) -> Option<&str> {
         match self {
             Self::Group(_) | Self::Private(_) => None,
-            Self::Supergroup(Supergroup {
-                profile_background_custom_emoji_id,
-                ..
-            })
-            | Self::Channel(Channel {
-                profile_background_custom_emoji_id,
-                ..
-            }) => match profile_background_custom_emoji_id {
-                Some(profile_background_custom_emoji_id) => {
+            Self::Supergroup(chat) => match chat.profile_background_custom_emoji_id {
+                Some(ref profile_background_custom_emoji_id) => {
+                    Some(profile_background_custom_emoji_id)
+                }
+                None => None,
+            },
+            Self::Channel(chat) => match chat.profile_background_custom_emoji_id {
+                Some(ref profile_background_custom_emoji_id) => {
                     Some(profile_background_custom_emoji_id)
                 }
                 None => None,
@@ -342,38 +393,46 @@ impl Chat {
     pub const fn has_visible_history(&self) -> Option<bool> {
         match self {
             Self::Private(_) | Self::Channel(_) => None,
-            Self::Group(Group {
-                has_visible_history,
-                ..
-            })
-            | Self::Supergroup(Supergroup {
-                has_visible_history,
-                ..
-            }) => *has_visible_history,
+            Self::Group(chat) => chat.has_visible_history,
+            Self::Supergroup(chat) => chat.has_visible_history,
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn description(&self) -> Option<&str> {
         match self {
             Self::Private(_) => None,
-            Self::Group(Group { description, .. })
-            | Self::Supergroup(Supergroup { description, .. })
-            | Self::Channel(Channel { description, .. }) => match description {
-                Some(description) => Some(description),
+            Self::Group(chat) => match chat.description {
+                Some(ref description) => Some(description),
+                None => None,
+            },
+            Self::Supergroup(chat) => match chat.description {
+                Some(ref description) => Some(description),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.description {
+                Some(ref description) => Some(description),
                 None => None,
             },
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn invite_link(&self) -> Option<&str> {
         match self {
             Self::Private(_) => None,
-            Self::Group(Group { invite_link, .. })
-            | Self::Supergroup(Supergroup { invite_link, .. })
-            | Self::Channel(Channel { invite_link, .. }) => match invite_link {
-                Some(invite_link) => Some(invite_link),
+            Self::Group(chat) => match chat.invite_link {
+                Some(ref invite_link) => Some(invite_link),
+                None => None,
+            },
+            Self::Supergroup(chat) => match chat.invite_link {
+                Some(ref invite_link) => Some(invite_link),
+                None => None,
+            },
+            Self::Channel(chat) => match chat.invite_link {
+                Some(ref invite_link) => Some(invite_link),
                 None => None,
             },
         }
@@ -383,18 +442,9 @@ impl Chat {
     pub const fn has_protected_content(&self) -> Option<bool> {
         match self {
             Self::Private(_) => None,
-            Self::Group(Group {
-                has_protected_content,
-                ..
-            })
-            | Self::Supergroup(Supergroup {
-                has_protected_content,
-                ..
-            })
-            | Self::Channel(Channel {
-                has_protected_content,
-                ..
-            }) => *has_protected_content,
+            Self::Group(chat) => chat.has_protected_content,
+            Self::Supergroup(chat) => chat.has_protected_content,
+            Self::Channel(chat) => chat.has_protected_content,
         }
     }
 
@@ -402,8 +452,8 @@ impl Chat {
     pub const fn linked_chat_id(&self) -> Option<i64> {
         match self {
             Self::Private(_) | Self::Group(_) => None,
-            Self::Supergroup(Supergroup { linked_chat_id, .. })
-            | Self::Channel(Channel { linked_chat_id, .. }) => *linked_chat_id,
+            Self::Supergroup(chat) => chat.linked_chat_id,
+            Self::Channel(chat) => chat.linked_chat_id,
         }
     }
 }
@@ -411,6 +461,6 @@ impl Chat {
 impl Default for Chat {
     #[must_use]
     fn default() -> Self {
-        Self::Private(Private::default())
+        Self::Private(Box::default())
     }
 }

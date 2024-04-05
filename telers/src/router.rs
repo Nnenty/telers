@@ -368,6 +368,10 @@ pub struct Router<Client> {
     pub edited_message: TelegramObserver<Client>,
     pub channel_post: TelegramObserver<Client>,
     pub edited_channel_post: TelegramObserver<Client>,
+    pub business_connection: TelegramObserver<Client>,
+    pub business_message: TelegramObserver<Client>,
+    pub edited_business_message: TelegramObserver<Client>,
+    pub deleted_business_messages: TelegramObserver<Client>,
     pub message_reaction: TelegramObserver<Client>,
     pub message_reaction_count: TelegramObserver<Client>,
     pub inline_query: TelegramObserver<Client>,
@@ -408,6 +412,10 @@ where
             edited_message: TelegramObserver::new(TelegramObserverName::EditedMessage),
             channel_post: TelegramObserver::new(TelegramObserverName::ChannelPost),
             edited_channel_post: TelegramObserver::new(TelegramObserverName::EditedChannelPost),
+            business_connection: TelegramObserver::new(TelegramObserverName::BusinessConnection),
+            business_message: TelegramObserver::new(TelegramObserverName::BusinessMessage),
+            edited_business_message: TelegramObserver::new(TelegramObserverName::EditedBusinessMessage),
+            deleted_business_messages: TelegramObserver::new(TelegramObserverName::DeletedBusinessMessages),
             message_reaction: TelegramObserver::new(TelegramObserverName::MessageReaction),
             message_reaction_count: TelegramObserver::new(TelegramObserverName::MessageReactionCount),
             inline_query: TelegramObserver::new(TelegramObserverName::InlineQuery),
@@ -453,12 +461,16 @@ where
 impl<Client> Router<Client> {
     /// Get all telegram event observers
     #[must_use]
-    pub const fn telegram_observers(&self) -> [&TelegramObserver<Client>; 19] {
+    pub const fn telegram_observers(&self) -> [&TelegramObserver<Client>; 23] {
         [
             &self.message,
             &self.edited_message,
             &self.channel_post,
             &self.edited_channel_post,
+            &self.business_connection,
+            &self.business_message,
+            &self.edited_business_message,
+            &self.deleted_business_messages,
             &self.message_reaction,
             &self.message_reaction_count,
             &self.inline_query,
@@ -482,13 +494,17 @@ impl<Client> Router<Client> {
     /// This method is useful for registering middlewares to the many observers without code duplication and macros
     #[must_use]
     pub fn telegram_observers_mut(&mut self) -> Vec<&mut TelegramObserver<Client>> {
-        let mut observers = Vec::with_capacity(19);
+        let mut observers = Vec::with_capacity(23);
 
         observers.extend([
             &mut self.message,
             &mut self.edited_message,
             &mut self.channel_post,
             &mut self.edited_channel_post,
+            &mut self.business_connection,
+            &mut self.business_message,
+            &mut self.edited_business_message,
+            &mut self.deleted_business_messages,
             &mut self.message_reaction,
             &mut self.message_reaction_count,
             &mut self.inline_query,
@@ -623,6 +639,10 @@ where
             edited_message,
             channel_post,
             edited_channel_post,
+            business_connection,
+            business_message,
+            edited_business_message,
+            deleted_business_messages,
             message_reaction,
             message_reaction_count,
             inline_query,
@@ -665,6 +685,10 @@ where
             edited_message,
             channel_post,
             edited_channel_post,
+            business_connection,
+            business_message,
+            edited_business_message,
+            deleted_business_messages,
             message_reaction,
             message_reaction_count,
             inline_query,
@@ -696,6 +720,12 @@ where
             edited_message: self.edited_message.to_service_provider_default()?,
             channel_post: self.channel_post.to_service_provider_default()?,
             edited_channel_post: self.edited_channel_post.to_service_provider_default()?,
+            business_connection: self.business_connection.to_service_provider_default()?,
+            business_message: self.business_message.to_service_provider_default()?,
+            edited_business_message: self.edited_business_message.to_service_provider_default()?,
+            deleted_business_messages: self
+                .deleted_business_messages
+                .to_service_provider_default()?,
             message_reaction: self.message_reaction.to_service_provider_default()?,
             message_reaction_count: self.message_reaction_count.to_service_provider_default()?,
             inline_query: self.inline_query.to_service_provider_default()?,
@@ -725,6 +755,10 @@ pub struct Service<Client> {
     edited_message: TelegramObserverService<Client>,
     channel_post: TelegramObserverService<Client>,
     edited_channel_post: TelegramObserverService<Client>,
+    business_connection: TelegramObserverService<Client>,
+    business_message: TelegramObserverService<Client>,
+    edited_business_message: TelegramObserverService<Client>,
+    deleted_business_messages: TelegramObserverService<Client>,
     message_reaction: TelegramObserverService<Client>,
     message_reaction_count: TelegramObserverService<Client>,
     inline_query: TelegramObserverService<Client>,
@@ -978,12 +1012,16 @@ impl<Client> PropagateEvent<Client> for Service<Client> {
 
 impl<Client> Service<Client> {
     #[must_use]
-    pub const fn telegram_observers(&self) -> [&TelegramObserverService<Client>; 19] {
+    pub const fn telegram_observers(&self) -> [&TelegramObserverService<Client>; 23] {
         [
             &self.message,
             &self.edited_message,
             &self.channel_post,
             &self.edited_channel_post,
+            &self.business_connection,
+            &self.business_message,
+            &self.edited_business_message,
+            &self.deleted_business_messages,
             &self.message_reaction,
             &self.message_reaction_count,
             &self.inline_query,
@@ -1017,6 +1055,10 @@ impl<Client> Service<Client> {
             UpdateType::EditedMessage => &self.edited_message,
             UpdateType::ChannelPost => &self.channel_post,
             UpdateType::EditedChannelPost => &self.edited_channel_post,
+            UpdateType::BusinessConnection => &self.business_connection,
+            UpdateType::BusinessMessage => &self.business_message,
+            UpdateType::EditedBusinessMessage => &self.edited_business_message,
+            UpdateType::DeletedBusinessMessages => &self.deleted_business_messages,
             UpdateType::MessageReaction => &self.message_reaction,
             UpdateType::MessageReactionCount => &self.message_reaction_count,
             UpdateType::InlineQuery => &self.inline_query,
@@ -1089,6 +1131,10 @@ pub struct OuterMiddlewaresConfig<Client> {
     pub edited_message: Box<[Arc<dyn OuterMiddleware<Client>>]>,
     pub channel_post: Box<[Arc<dyn OuterMiddleware<Client>>]>,
     pub edited_channel_post: Box<[Arc<dyn OuterMiddleware<Client>>]>,
+    pub business_connection: Box<[Arc<dyn OuterMiddleware<Client>>]>,
+    pub business_message: Box<[Arc<dyn OuterMiddleware<Client>>]>,
+    pub edited_business_message: Box<[Arc<dyn OuterMiddleware<Client>>]>,
+    pub deleted_business_messages: Box<[Arc<dyn OuterMiddleware<Client>>]>,
     pub message_reaction: Box<[Arc<dyn OuterMiddleware<Client>>]>,
     pub message_reaction_count: Box<[Arc<dyn OuterMiddleware<Client>>]>,
     pub inline_query: Box<[Arc<dyn OuterMiddleware<Client>>]>,
@@ -1135,6 +1181,10 @@ impl<Client> Clone for OuterMiddlewaresConfig<Client> {
             edited_message: self.edited_message.clone(),
             channel_post: self.channel_post.clone(),
             edited_channel_post: self.edited_channel_post.clone(),
+            business_connection: self.business_connection.clone(),
+            business_message: self.business_message.clone(),
+            edited_business_message: self.edited_business_message.clone(),
+            deleted_business_messages: self.deleted_business_messages.clone(),
             message_reaction: self.message_reaction.clone(),
             message_reaction_count: self.message_reaction_count.clone(),
             inline_query: self.inline_query.clone(),
@@ -1159,6 +1209,10 @@ pub struct OuterMiddlewaresConfigBuilder<Client> {
     pub edited_message: Vec<Arc<dyn OuterMiddleware<Client>>>,
     pub channel_post: Vec<Arc<dyn OuterMiddleware<Client>>>,
     pub edited_channel_post: Vec<Arc<dyn OuterMiddleware<Client>>>,
+    pub business_connection: Vec<Arc<dyn OuterMiddleware<Client>>>,
+    pub business_message: Vec<Arc<dyn OuterMiddleware<Client>>>,
+    pub edited_business_message: Vec<Arc<dyn OuterMiddleware<Client>>>,
+    pub deleted_business_messages: Vec<Arc<dyn OuterMiddleware<Client>>>,
     pub message_reaction: Vec<Arc<dyn OuterMiddleware<Client>>>,
     pub message_reaction_count: Vec<Arc<dyn OuterMiddleware<Client>>>,
     pub inline_query: Vec<Arc<dyn OuterMiddleware<Client>>>,
@@ -1198,6 +1252,33 @@ impl<Client> OuterMiddlewaresConfigBuilder<Client> {
     #[must_use]
     pub fn edited_channel_post(mut self, val: impl OuterMiddleware<Client> + 'static) -> Self {
         self.edited_channel_post.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn business_connection(mut self, val: impl OuterMiddleware<Client> + 'static) -> Self {
+        self.business_connection.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn business_message(mut self, val: impl OuterMiddleware<Client> + 'static) -> Self {
+        self.business_message.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn edited_business_message(mut self, val: impl OuterMiddleware<Client> + 'static) -> Self {
+        self.edited_business_message.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn deleted_business_messages(
+        mut self,
+        val: impl OuterMiddleware<Client> + 'static,
+    ) -> Self {
+        self.deleted_business_messages.push(Arc::new(val));
         self
     }
 
@@ -1298,6 +1379,10 @@ impl<Client> OuterMiddlewaresConfigBuilder<Client> {
             edited_message: self.edited_message.into(),
             channel_post: self.channel_post.into(),
             edited_channel_post: self.edited_channel_post.into(),
+            business_connection: self.business_connection.into(),
+            business_message: self.business_message.into(),
+            edited_business_message: self.edited_business_message.into(),
+            deleted_business_messages: self.deleted_business_messages.into(),
             message_reaction: self.message_reaction.into(),
             message_reaction_count: self.message_reaction_count.into(),
             inline_query: self.inline_query.into(),
@@ -1325,6 +1410,10 @@ impl<Client> Default for OuterMiddlewaresConfigBuilder<Client> {
             edited_message: vec![],
             channel_post: vec![],
             edited_channel_post: vec![],
+            business_connection: vec![],
+            business_message: vec![],
+            edited_business_message: vec![],
+            deleted_business_messages: vec![],
             message_reaction: vec![],
             message_reaction_count: vec![],
             inline_query: vec![],
@@ -1349,6 +1438,10 @@ pub struct InnerMiddlewaresConfig<Client> {
     pub edited_message: Box<[Arc<dyn InnerMiddleware<Client>>]>,
     pub channel_post: Box<[Arc<dyn InnerMiddleware<Client>>]>,
     pub edited_channel_post: Box<[Arc<dyn InnerMiddleware<Client>>]>,
+    pub business_connection: Box<[Arc<dyn InnerMiddleware<Client>>]>,
+    pub business_message: Box<[Arc<dyn InnerMiddleware<Client>>]>,
+    pub edited_business_message: Box<[Arc<dyn InnerMiddleware<Client>>]>,
+    pub deleted_business_messages: Box<[Arc<dyn InnerMiddleware<Client>>]>,
     pub message_reaction: Box<[Arc<dyn InnerMiddleware<Client>>]>,
     pub message_reaction_count: Box<[Arc<dyn InnerMiddleware<Client>>]>,
     pub inline_query: Box<[Arc<dyn InnerMiddleware<Client>>]>,
@@ -1391,6 +1484,10 @@ where
             .edited_message(logging_middleware.clone())
             .channel_post(logging_middleware.clone())
             .edited_channel_post(logging_middleware.clone())
+            .business_connection(logging_middleware.clone())
+            .business_message(logging_middleware.clone())
+            .edited_business_message(logging_middleware.clone())
+            .deleted_business_messages(logging_middleware.clone())
             .message_reaction(logging_middleware.clone())
             .message_reaction_count(logging_middleware.clone())
             .inline_query(logging_middleware.clone())
@@ -1417,6 +1514,10 @@ impl<Client> Clone for InnerMiddlewaresConfig<Client> {
             edited_message: self.edited_message.clone(),
             channel_post: self.channel_post.clone(),
             edited_channel_post: self.edited_channel_post.clone(),
+            business_connection: self.business_connection.clone(),
+            business_message: self.business_message.clone(),
+            edited_business_message: self.edited_business_message.clone(),
+            deleted_business_messages: self.deleted_business_messages.clone(),
             message_reaction: self.message_reaction.clone(),
             message_reaction_count: self.message_reaction_count.clone(),
             inline_query: self.inline_query.clone(),
@@ -1441,6 +1542,10 @@ pub struct InnerMiddlewaresConfigBuilder<Client> {
     pub edited_message: Vec<Arc<dyn InnerMiddleware<Client>>>,
     pub channel_post: Vec<Arc<dyn InnerMiddleware<Client>>>,
     pub edited_channel_post: Vec<Arc<dyn InnerMiddleware<Client>>>,
+    pub business_connection: Vec<Arc<dyn InnerMiddleware<Client>>>,
+    pub business_message: Vec<Arc<dyn InnerMiddleware<Client>>>,
+    pub edited_business_message: Vec<Arc<dyn InnerMiddleware<Client>>>,
+    pub deleted_business_messages: Vec<Arc<dyn InnerMiddleware<Client>>>,
     pub message_reaction: Vec<Arc<dyn InnerMiddleware<Client>>>,
     pub message_reaction_count: Vec<Arc<dyn InnerMiddleware<Client>>>,
     pub inline_query: Vec<Arc<dyn InnerMiddleware<Client>>>,
@@ -1480,6 +1585,33 @@ impl<Client> InnerMiddlewaresConfigBuilder<Client> {
     #[must_use]
     pub fn edited_channel_post(mut self, val: impl InnerMiddleware<Client> + 'static) -> Self {
         self.edited_channel_post.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn business_connection(mut self, val: impl InnerMiddleware<Client> + 'static) -> Self {
+        self.business_connection.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn business_message(mut self, val: impl InnerMiddleware<Client> + 'static) -> Self {
+        self.business_message.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn edited_business_message(mut self, val: impl InnerMiddleware<Client> + 'static) -> Self {
+        self.edited_business_message.push(Arc::new(val));
+        self
+    }
+
+    #[must_use]
+    pub fn deleted_business_messages(
+        mut self,
+        val: impl InnerMiddleware<Client> + 'static,
+    ) -> Self {
+        self.deleted_business_messages.push(Arc::new(val));
         self
     }
 
@@ -1580,6 +1712,10 @@ impl<Client> InnerMiddlewaresConfigBuilder<Client> {
             edited_message: self.edited_message.into(),
             channel_post: self.channel_post.into(),
             edited_channel_post: self.edited_channel_post.into(),
+            business_connection: self.business_connection.into(),
+            business_message: self.business_message.into(),
+            edited_business_message: self.edited_business_message.into(),
+            deleted_business_messages: self.deleted_business_messages.into(),
             message_reaction: self.message_reaction.into(),
             message_reaction_count: self.message_reaction_count.into(),
             inline_query: self.inline_query.into(),
@@ -1607,6 +1743,10 @@ impl<Client> Default for InnerMiddlewaresConfigBuilder<Client> {
             edited_message: vec![],
             channel_post: vec![],
             edited_channel_post: vec![],
+            business_connection: vec![],
+            business_message: vec![],
+            edited_business_message: vec![],
+            deleted_business_messages: vec![],
             message_reaction: vec![],
             message_reaction_count: vec![],
             inline_query: vec![],
@@ -1740,6 +1880,10 @@ mod tests {
         router.edited_message.register(telegram_handler);
         router.channel_post.register(telegram_handler);
         router.edited_channel_post.register(telegram_handler);
+        router.business_connection.register(telegram_handler);
+        router.business_message.register(telegram_handler);
+        router.edited_business_message.register(telegram_handler);
+        router.deleted_business_messages.register(telegram_handler);
         router.message_reaction.register(telegram_handler);
         router.message_reaction_count.register(telegram_handler);
         router.inline_query.register(telegram_handler);

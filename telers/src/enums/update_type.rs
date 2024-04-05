@@ -21,6 +21,14 @@ pub enum UpdateType {
     EditedMessage,
     #[strum(serialize = "edited_channel_post")]
     EditedChannelPost,
+    #[strum(serialize = "business_connection")]
+    BusinessConnection,
+    #[strum(serialize = "business_message")]
+    BusinessMessage,
+    #[strum(serialize = "edited_business_message")]
+    EditedBusinessMessage,
+    #[strum(serialize = "deleted_business_messages")]
+    DeletedBusinessMessages,
     #[strum(serialize = "message_reaction")]
     MessageReaction,
     #[strum(serialize = "message_reaction_count")]
@@ -47,7 +55,7 @@ pub enum UpdateType {
 
 impl UpdateType {
     #[must_use]
-    pub const fn all() -> [Self; 18] {
+    pub const fn all() -> [Self; 22] {
         [
             UpdateType::Message,
             UpdateType::InlineQuery,
@@ -56,6 +64,10 @@ impl UpdateType {
             UpdateType::ChannelPost,
             UpdateType::EditedMessage,
             UpdateType::EditedChannelPost,
+            UpdateType::BusinessConnection,
+            UpdateType::BusinessMessage,
+            UpdateType::EditedBusinessMessage,
+            UpdateType::DeletedBusinessMessages,
             UpdateType::MessageReaction,
             UpdateType::MessageReactionCount,
             UpdateType::ShippingQuery,
@@ -78,6 +90,10 @@ impl<'a> From<&'a UpdateKind> for UpdateType {
             UpdateKind::EditedMessage(_) => UpdateType::EditedMessage,
             UpdateKind::ChannelPost(_) => UpdateType::ChannelPost,
             UpdateKind::EditedChannelPost(_) => UpdateType::EditedChannelPost,
+            UpdateKind::BusinessConnection(_) => UpdateType::BusinessConnection,
+            UpdateKind::BusinessMessage(_) => UpdateType::BusinessMessage,
+            UpdateKind::EditedBusinessMessage(_) => UpdateType::EditedBusinessMessage,
+            UpdateKind::DeletedBusinessMessages(_) => UpdateType::DeletedBusinessMessages,
             UpdateKind::MessageReaction(_) => UpdateType::MessageReaction,
             UpdateKind::MessageReactionCount(_) => UpdateType::MessageReactionCount,
             UpdateKind::InlineQuery(_) => UpdateType::InlineQuery,

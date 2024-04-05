@@ -21,8 +21,6 @@ pub struct CreateNewStickerSet<'a> {
     pub title: String,
     /// A JSON-serialized list of 1-50 initial stickers to be added to the sticker set
     pub stickers: Vec<InputSticker<'a>>,
-    /// Format of stickers in the set, must be one of `static`, `animated`, `video`
-    pub sticker_format: String,
     /// Type of stickers in the set, pass `regular`, `mask` or `custom_emoji`. By default, a regular sticker set is created.
     pub sticker_type: Option<String>,
     /// Pass `true` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only
@@ -36,14 +34,12 @@ impl<'a> CreateNewStickerSet<'a> {
         name: impl Into<String>,
         title: impl Into<String>,
         stickers: impl IntoIterator<Item = InputSticker<'a>>,
-        sticker_format: impl Into<String>,
     ) -> Self {
         Self {
             user_id,
             name: name.into(),
             title: title.into(),
             stickers: stickers.into_iter().collect(),
-            sticker_format: sticker_format.into(),
             sticker_type: None,
             needs_repainting: None,
         }
@@ -85,14 +81,6 @@ impl<'a> CreateNewStickerSet<'a> {
     pub fn stickers(self, val: impl IntoIterator<Item = InputSticker<'a>>) -> Self {
         Self {
             stickers: self.stickers.into_iter().chain(val).collect(),
-            ..self
-        }
-    }
-
-    #[must_use]
-    pub fn sticker_format(self, val: impl Into<String>) -> Self {
-        Self {
-            sticker_format: val.into(),
             ..self
         }
     }

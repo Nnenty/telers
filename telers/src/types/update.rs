@@ -1,8 +1,9 @@
 use super::{
-    CallbackQuery, Chat, ChatBoostRemoved, ChatBoostSource, ChatBoostSourcePremium,
-    ChatBoostUpdated, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult, InaccessibleMessage,
-    InlineQuery, MaybeInaccessibleMessage, Message, MessageReactionCountUpdated,
-    MessageReactionUpdated, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery, User,
+    BusinessConnection, BusinessMessagesDeleted, CallbackQuery, Chat, ChatBoostRemoved,
+    ChatBoostSource, ChatBoostSourcePremium, ChatBoostUpdated, ChatJoinRequest, ChatMemberUpdated,
+    ChosenInlineResult, InaccessibleMessage, InlineQuery, MaybeInaccessibleMessage, Message,
+    MessageReactionCountUpdated, MessageReactionUpdated, Poll, PollAnswer, PreCheckoutQuery,
+    ShippingQuery, User,
 };
 
 use crate::{enums::UpdateType, extractors::FromEvent};
@@ -37,6 +38,14 @@ pub enum Kind {
     ChannelPost(Message),
     /// New version of a channel post that is known to the bot and was edited
     EditedChannelPost(Message),
+    /// The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot
+    BusinessConnection(BusinessConnection),
+    /// New non-service message from a connected business account
+    BusinessMessage(Message),
+    /// New version of a message from a connected business account
+    EditedBusinessMessage(Message),
+    /// Messages were deleted from a connected business account
+    DeletedBusinessMessages(BusinessMessagesDeleted),
     /// A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify `message_reaction` in the list of `allowed_updates`` to receive these updates. The update isn't received for reactions set by bots.
     MessageReaction(MessageReactionUpdated),
     /// Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify `message_reaction_count` in the list of `allowed_updates`` to receive these updates.
@@ -73,6 +82,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => message.text(),
             Kind::InlineQuery(InlineQuery { query, .. })
@@ -95,7 +106,9 @@ impl Kind {
             | Kind::MessageReaction(_)
             | Kind::MessageReactionCount(_)
             | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_) => None,
+            | Kind::RemovedChatBoost(_)
+            | Kind::BusinessConnection(_)
+            | Kind::DeletedBusinessMessages(_) => None,
         }
     }
 
@@ -104,6 +117,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => message.caption(),
             Kind::CallbackQuery(CallbackQuery { message, .. }) => {
@@ -128,7 +143,9 @@ impl Kind {
             | Kind::MessageReaction(_)
             | Kind::MessageReactionCount(_)
             | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_) => None,
+            | Kind::RemovedChatBoost(_)
+            | Kind::BusinessConnection(_)
+            | Kind::DeletedBusinessMessages(_) => None,
         }
     }
 
@@ -145,6 +162,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => message.from(),
             Kind::InlineQuery(InlineQuery { from, .. })
@@ -155,13 +174,17 @@ impl Kind {
             | Kind::MyChatMember(ChatMemberUpdated { from, .. })
             | Kind::ChatMember(ChatMemberUpdated { from, .. })
             | Kind::ChatJoinRequest(ChatJoinRequest { from, .. }) => Some(from),
+            Kind::BusinessConnection(BusinessConnection { user, .. }) => Some(user),
             Kind::PollAnswer(PollAnswer { user, .. })
             | Kind::MessageReaction(MessageReactionUpdated { user, .. }) => user.as_ref(),
             Kind::ChatBoost(ChatBoostUpdated { boost, .. }) => match boost {
                 ChatBoostSource::Premium(ChatBoostSourcePremium { user }) => Some(user),
                 ChatBoostSource::GiftCode(_) | ChatBoostSource::Giveaway(_) => None,
             },
-            Kind::Poll(_) | Kind::MessageReactionCount(_) | Kind::RemovedChatBoost(_) => None,
+            Kind::Poll(_)
+            | Kind::MessageReactionCount(_)
+            | Kind::RemovedChatBoost(_)
+            | Kind::DeletedBusinessMessages(_) => None,
         }
     }
 
@@ -178,6 +201,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => Some(message.chat()),
             Kind::CallbackQuery(CallbackQuery { message, .. }) => {
@@ -198,19 +223,25 @@ impl Kind {
             | Kind::ChatJoinRequest(ChatJoinRequest { chat, .. })
             | Kind::MessageReactionCount(MessageReactionCountUpdated { chat, .. })
             | Kind::ChatBoost(ChatBoostUpdated { chat, .. })
-            | Kind::RemovedChatBoost(ChatBoostRemoved { chat, .. }) => Some(chat),
+            | Kind::RemovedChatBoost(ChatBoostRemoved { chat, .. })
+            | Kind::DeletedBusinessMessages(BusinessMessagesDeleted { chat, .. }) => Some(chat),
             Kind::MessageReaction(MessageReactionUpdated { actor_chat, .. }) => actor_chat.as_ref(),
             Kind::InlineQuery(_)
             | Kind::ChosenInlineResult(_)
             | Kind::ShippingQuery(_)
             | Kind::PreCheckoutQuery(_)
             | Kind::PollAnswer(_)
-            | Kind::Poll(_) => None,
+            | Kind::Poll(_)
+            | Kind::BusinessConnection(_) => None,
         }
     }
 
     #[must_use]
     pub const fn chat_id(&self) -> Option<i64> {
+        if let Kind::BusinessConnection(BusinessConnection { user_chat_id, .. }) = self {
+            return Some(*user_chat_id);
+        }
+
         if let Some(chat) = self.chat() {
             Some(chat.id())
         } else {
@@ -223,6 +254,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => message.sender_chat(),
             Kind::CallbackQuery(CallbackQuery { message, .. }) => {
@@ -247,7 +280,9 @@ impl Kind {
             | Kind::MessageReaction(_)
             | Kind::MessageReactionCount(_)
             | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_) => None,
+            | Kind::RemovedChatBoost(_)
+            | Kind::BusinessConnection(_)
+            | Kind::DeletedBusinessMessages(_) => None,
         }
     }
 
@@ -265,6 +300,8 @@ impl Kind {
         match self {
             Kind::Message(message)
             | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => message.thread_id(),
             Kind::CallbackQuery(CallbackQuery { message, .. }) => {
@@ -289,7 +326,9 @@ impl Kind {
             | Kind::MessageReaction(_)
             | Kind::MessageReactionCount(_)
             | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_) => None,
+            | Kind::RemovedChatBoost(_)
+            | Kind::BusinessConnection(_)
+            | Kind::DeletedBusinessMessages(_) => None,
         }
     }
 }
@@ -309,6 +348,7 @@ impl From<Update> for Kind {
 }
 
 impl<'de> Deserialize<'de> for Kind {
+    #[allow(clippy::too_many_lines)]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -371,6 +411,18 @@ impl<'de> Deserialize<'de> for Kind {
                     UpdateType::EditedChannelPost => {
                         map.next_value::<Message>().map(Kind::EditedChannelPost)
                     }
+                    UpdateType::BusinessConnection => map
+                        .next_value::<BusinessConnection>()
+                        .map(Kind::BusinessConnection),
+                    UpdateType::BusinessMessage => {
+                        map.next_value::<Message>().map(Kind::BusinessMessage)
+                    }
+                    UpdateType::EditedBusinessMessage => {
+                        map.next_value::<Message>().map(Kind::EditedBusinessMessage)
+                    }
+                    UpdateType::DeletedBusinessMessages => map
+                        .next_value::<BusinessMessagesDeleted>()
+                        .map(Kind::DeletedBusinessMessages),
                     UpdateType::ShippingQuery => {
                         map.next_value::<ShippingQuery>().map(Kind::ShippingQuery)
                     }

@@ -16,11 +16,13 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Serialize)]
 pub struct SendSticker<'a> {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: ChatIdKind,
     /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
     pub message_thread_id: Option<i64>,
-    /// Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files)
+    /// Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. [More info on Sending Files »](https://core.telegram.org/bots/api#sending-files). Video and animated stickers can't be sent via an HTTP URL.
     pub sticker: InputFile<'a>,
     /// Emoji associated with the sticker; only for just uploaded stickers
     pub emoji: Option<String>,
@@ -38,6 +40,7 @@ impl<'a> SendSticker<'a> {
     #[must_use]
     pub fn new(chat_id: impl Into<ChatIdKind>, sticker: impl Into<InputFile<'a>>) -> Self {
         Self {
+            business_connection_id: None,
             chat_id: chat_id.into(),
             message_thread_id: None,
             sticker: sticker.into(),
@@ -46,6 +49,14 @@ impl<'a> SendSticker<'a> {
             protect_content: None,
             reply_parameters: None,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -115,6 +126,14 @@ impl<'a> SendSticker<'a> {
 }
 
 impl<'a> SendSticker<'a> {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
         Self {

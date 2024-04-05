@@ -92,11 +92,8 @@ async fn main() {
         .with(EnvFilter::from_env("RUST_LOG"))
         .init();
 
-    let Ok(bot_token) = std::env::var("BOT_TOKEN") else {
-        panic!("BOT_TOKEN env variable is not set!");
-    };
-
-    let bot = Bot::with_client(bot_token, CustomClient::default());
+    let token = std::env::var("BOT_TOKEN").expect("BOT_TOKEN env variable is not set!");
+    let bot = Bot::with_client(token, CustomClient::default());
 
     let mut router = Router::new("main");
     router.message.register(echo_handler);

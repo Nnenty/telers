@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Serialize)]
 pub struct SendMediaGroup<'a> {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: ChatIdKind,
     /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -38,12 +40,21 @@ impl<'a> SendMediaGroup<'a> {
         I: IntoIterator<Item = T>,
     {
         Self {
+            business_connection_id: None,
             chat_id: chat_id.into(),
             message_thread_id: None,
             media: media.into_iter().map(Into::into).collect(),
             disable_notification: None,
             protect_content: None,
             reply_parameters: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -113,6 +124,14 @@ impl<'a> SendMediaGroup<'a> {
 }
 
 impl<'a> SendMediaGroup<'a> {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<String>) -> Self {
+        Self {
+            business_connection_id: val,
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
         Self {
