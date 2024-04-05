@@ -55,7 +55,7 @@ pub enum UpdateType {
 
 impl UpdateType {
     #[must_use]
-    pub const fn all() -> [Self; 21] {
+    pub const fn all() -> [Self; 22] {
         [
             UpdateType::Message,
             UpdateType::InlineQuery,
@@ -67,6 +67,7 @@ impl UpdateType {
             UpdateType::BusinessConnection,
             UpdateType::BusinessMessage,
             UpdateType::EditedBusinessMessage,
+            UpdateType::DeletedBusinessMessages,
             UpdateType::MessageReaction,
             UpdateType::MessageReactionCount,
             UpdateType::ShippingQuery,
