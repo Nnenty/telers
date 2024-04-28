@@ -133,6 +133,10 @@ impl KeyBuilder for KeyBuilderImpl {
         if let Some(message_thread_id) = &message_thread_id {
             parts.push(message_thread_id);
         }
+        if let Some(ref business_connection_id) = key.business_connection_id {
+            parts.push(business_connection_id);
+        }
+
         parts.push(&user_id);
         parts.push(part.as_str());
 

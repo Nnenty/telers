@@ -378,8 +378,8 @@ mod tests {
     async fn test_state() {
         let storage = Memory::default();
 
-        let key1 = StorageKey::new(0, 1, 2, None);
-        let key2 = StorageKey::new(2, 1, 0, None);
+        let key1 = StorageKey::new(0, 1, 2, None, None);
+        let key2 = StorageKey::new(2, 1, 0, None, None);
 
         assert_eq!(storage.get_state(&key1).await.unwrap(), None);
         assert_eq!(storage.get_state(&key2).await.unwrap(), None);
@@ -427,8 +427,8 @@ mod tests {
     async fn test_data() {
         let storage = Memory::default();
 
-        let key1 = StorageKey::new(0, 1, 2, None);
-        let key2 = StorageKey::new(2, 1, 0, None);
+        let key1 = StorageKey::new(0, 1, 2, None, None);
+        let key2 = StorageKey::new(2, 1, 0, None, None);
 
         assert_eq!(
             storage.get_data::<Box<str>>(&key1).await.unwrap(),

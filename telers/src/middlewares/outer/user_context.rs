@@ -42,6 +42,13 @@ where
             context.insert("event_message_thread_id", Box::new(message_thread_id));
         }
 
+        if let Some(business_connection_id) = update.business_connection_id() {
+            context.insert(
+                "event_business_connection_id",
+                Box::new(business_connection_id.to_owned()),
+            );
+        }
+
         Ok((request, EventReturn::default()))
     }
 }

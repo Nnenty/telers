@@ -83,13 +83,22 @@ where
         let user = context.get("event_user");
         let chat = context.get("event_chat");
         let message_thread_id = context.get("event_message_thread_id");
+        let business_connection_id = context.get("event_business_connection_id");
 
         let user_id = user.and_then(|user| user.downcast_ref().map(|user: &User| user.id));
         let chat_id = chat.and_then(|chat| chat.downcast_ref().map(|chat: &Chat| chat.id()));
         let message_thread_id = message_thread_id
             .and_then(|message_thread_id| message_thread_id.downcast_ref().copied());
+        let business_connection_id = business_connection_id
+            .and_then(|business_connection_id| business_connection_id.downcast_ref().cloned());
 
-        self.resolve_context(bot_id, chat_id, user_id, message_thread_id)
+        self.resolve_context(
+            bot_id,
+            chat_id,
+            user_id,
+            message_thread_id,
+            business_connection_id,
+        )
     }
 
     #[must_use]
@@ -99,17 +108,22 @@ where
         chat_id: Option<i64>,
         user_id: Option<i64>,
         message_thread_id: Option<i64>,
+        business_connection_id: Option<String>,
     ) -> Option<Context<S>> {
         user_id.map(|user_id| {
-            let id_pair =
-                self.strategy
-                    .apply(chat_id.unwrap_or(user_id), user_id, message_thread_id);
+            let id_pair = self.strategy.apply(
+                chat_id.unwrap_or(user_id),
+                user_id,
+                message_thread_id,
+                business_connection_id,
+            );
 
             self.get_context(
                 bot_id,
                 id_pair.chat_id,
                 id_pair.user_id,
                 id_pair.message_thread_id,
+                id_pair.business_connection_id,
             )
         })
     }
@@ -121,6 +135,7 @@ where
         chat_id: i64,
         user_id: i64,
         message_thread_id: Option<i64>,
+        business_connection_id: Option<String>,
     ) -> Context<S> {
         Context::new(
             self.storage.clone(),
@@ -129,6 +144,7 @@ where
                 chat_id,
                 user_id,
                 message_thread_id,
+                business_connection_id,
                 destiny: self.destiny,
             },
         )
