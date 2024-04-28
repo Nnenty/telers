@@ -92,23 +92,7 @@ impl Kind {
                 Some(data) => Some(data),
                 None => None,
             },
-            Kind::ShippingQuery(ShippingQuery {
-                invoice_payload, ..
-            })
-            | Kind::PreCheckoutQuery(PreCheckoutQuery {
-                invoice_payload, ..
-            }) => Some(invoice_payload),
-            Kind::PollAnswer(_)
-            | Kind::MyChatMember(_)
-            | Kind::ChatMember(_)
-            | Kind::ChatJoinRequest(_)
-            | Kind::Poll(_)
-            | Kind::MessageReaction(_)
-            | Kind::MessageReactionCount(_)
-            | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_)
-            | Kind::BusinessConnection(_)
-            | Kind::DeletedBusinessMessages(_) => None,
+            _ => None,
         }
     }
 
@@ -131,21 +115,7 @@ impl Kind {
                     MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
                 }
             }
-            Kind::InlineQuery(_)
-            | Kind::ChosenInlineResult(_)
-            | Kind::ShippingQuery(_)
-            | Kind::PreCheckoutQuery(_)
-            | Kind::PollAnswer(_)
-            | Kind::MyChatMember(_)
-            | Kind::ChatMember(_)
-            | Kind::ChatJoinRequest(_)
-            | Kind::Poll(_)
-            | Kind::MessageReaction(_)
-            | Kind::MessageReactionCount(_)
-            | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_)
-            | Kind::BusinessConnection(_)
-            | Kind::DeletedBusinessMessages(_) => None,
+            _ => None,
         }
     }
 
@@ -329,6 +299,45 @@ impl Kind {
             | Kind::RemovedChatBoost(_)
             | Kind::BusinessConnection(_)
             | Kind::DeletedBusinessMessages(_) => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn business_connection_id(&self) -> Option<&str> {
+        match self {
+            Kind::DeletedBusinessMessages(BusinessMessagesDeleted {
+                business_connection_id,
+                ..
+            })
+            | Kind::BusinessConnection(BusinessConnection {
+                id: business_connection_id,
+                ..
+            }) => Some(business_connection_id),
+            Kind::BusinessMessage(message) => message.business_connection_id(),
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn message(&self) -> Option<&Message> {
+        match self {
+            Kind::Message(message)
+            | Kind::EditedMessage(message)
+            | Kind::BusinessMessage(message)
+            | Kind::EditedBusinessMessage(message)
+            | Kind::ChannelPost(message)
+            | Kind::EditedChannelPost(message) => Some(message),
+            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
+                let Some(message) = message else {
+                    return None;
+                };
+
+                match message {
+                    MaybeInaccessibleMessage::Message(message) => Some(message),
+                    MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
+                }
+            }
+            _ => None,
         }
     }
 }
@@ -521,5 +530,15 @@ impl Update {
     #[must_use]
     pub const fn message_thread_id(&self) -> Option<i64> {
         self.kind().message_thread_id()
+    }
+
+    #[must_use]
+    pub const fn business_connection_id(&self) -> Option<&str> {
+        self.kind().business_connection_id()
+    }
+
+    #[must_use]
+    pub const fn message(&self) -> Option<&Message> {
+        self.kind().message()
     }
 }

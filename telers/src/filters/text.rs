@@ -386,7 +386,9 @@ impl<'a> Text<'a> {
 #[async_trait]
 impl<Client> Filter<Client> for Text<'_> {
     async fn check(&self, _bot: &Bot<Client>, update: &Update, _context: &Context) -> bool {
-        update.text().map_or(false, |text| self.validate_text(text))
+        update
+            .text_or_caption()
+            .map_or(false, |text| self.validate_text(text))
     }
 }
 

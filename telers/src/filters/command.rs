@@ -6,7 +6,7 @@ use crate::{
     errors::SessionErrorKind,
     extractors::FromContext,
     methods::GetMe,
-    types::{BotCommand, Update, UpdateKind},
+    types::{BotCommand, Update},
 };
 
 use async_trait::async_trait;
@@ -428,7 +428,7 @@ where
 {
     #[instrument]
     async fn check(&self, bot: &Bot<Client>, update: &Update, context: &Context) -> bool {
-        let UpdateKind::Message(message) = update.kind() else {
+        let Some(message) = update.message() else {
             return false;
         };
         let Some(text) = message.text_or_caption() else {
