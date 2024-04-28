@@ -20,7 +20,7 @@ pub mod memory;
 pub mod redis;
 
 #[cfg(feature = "redis-storage")]
-pub use self::redis::{DefaultKeyBuilder, Redis};
+pub use self::redis::{KeyBuilderImpl, Redis};
 #[allow(clippy::module_name_repetitions)]
 pub use base::{Error, Storage, StorageKey};
 #[cfg(feature = "memory-storage")]

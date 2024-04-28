@@ -1,15 +1,14 @@
 use super::{Error, Storage, StorageKey};
 
 use async_trait::async_trait;
-use redis::{aio::Connection, Client, RedisError};
+use deadpool_redis::{Config, ConfigError, Connection, CreatePoolError, Pool, PoolError, Runtime};
+use redis::{IntoConnectionInfo, RedisError};
 use serde::{de::DeserializeOwned, Serialize};
 use std::{
     borrow::Cow,
     collections::HashMap,
     fmt::{self, Debug, Display, Formatter},
-    sync::Arc,
 };
-use tokio::sync::Mutex;
 use tracing::{event, field, instrument, Level, Span};
 
 const DEFAULT_PREFIX: &str = "fsm";
@@ -48,24 +47,20 @@ pub trait KeyBuilder: Send + Sync {
     fn build(&self, key: &StorageKey, part: Part) -> Box<str>;
 }
 
-impl<T: ?Sized> KeyBuilder for Arc<T>
-where
-    T: KeyBuilder,
-{
-    fn build(&self, key: &StorageKey, part: Part) -> Box<str> {
-        T::build(self, key, part)
-    }
-}
-
-#[derive(Debug)]
-pub struct DefaultKeyBuilder {
+/// This is a default key builder implementation
+/// # Notes
+/// By default, this key builder will use `fsm` as prefix and `:` as separator,
+/// if you want to set custom prefix and separator,
+/// then you can use methods like [`KeyBuilderImpl::with_prefix`] and [`KeyBuilderImpl::with_separator`].
+#[derive(Debug, Clone)]
+pub struct KeyBuilderImpl {
     prefix: &'static str,
     separator: &'static str,
     with_bot_id: bool,
     with_destiny: bool,
 }
 
-impl DefaultKeyBuilder {
+impl KeyBuilderImpl {
     #[must_use]
     pub fn new(
         prefix: &'static str,
@@ -80,16 +75,42 @@ impl DefaultKeyBuilder {
             with_destiny,
         }
     }
+
+    #[must_use]
+    pub fn with_prefix(self, prefix: &'static str) -> Self {
+        Self { prefix, ..self }
+    }
+
+    #[must_use]
+    pub fn with_separator(self, separator: &'static str) -> Self {
+        Self { separator, ..self }
+    }
+
+    #[must_use]
+    pub fn with_bot_id(self, with_bot_id: bool) -> Self {
+        Self {
+            with_bot_id,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn with_destiny(self, with_destiny: bool) -> Self {
+        Self {
+            with_destiny,
+            ..self
+        }
+    }
 }
 
-impl Default for DefaultKeyBuilder {
+impl Default for KeyBuilderImpl {
     #[must_use]
     fn default() -> Self {
         Self::new(DEFAULT_PREFIX, DEFAULT_SEPARATOR, true, true)
     }
 }
 
-impl KeyBuilder for DefaultKeyBuilder {
+impl KeyBuilder for KeyBuilderImpl {
     fn build(&self, key: &StorageKey, part: Part) -> Box<str> {
         let bot_id = key.bot_id.to_string();
         let chat_id = key.chat_id.to_string();
@@ -121,41 +142,74 @@ impl KeyBuilder for DefaultKeyBuilder {
 
 /// This is a thread-safe storage implementation for redis
 #[derive(Clone)]
-pub struct Redis {
-    client: Arc<Mutex<Client>>,
-    /// Key builder for redis keys, used to build redis keys for specified key and part
-    key_builder: Arc<dyn KeyBuilder>,
+pub struct Redis<K = KeyBuilderImpl> {
+    pool: Pool,
+    key_builder: K,
 }
 
-impl Redis {
-    #[must_use]
-    pub fn new(client: Client) -> Self {
-        Self {
-            client: Arc::new(Mutex::new(client)),
-            key_builder: Arc::<DefaultKeyBuilder>::default(),
-        }
+impl<K: KeyBuilder> Redis<K> {
+    /// # Notes
+    /// This method will use custom key builder,
+    /// if you want to use default key builder, then you can use [`Redis::new`] method instead
+    /// # Errors
+    /// This method will return error if config is invalid
+    pub fn new_with_key_builder<T>(connection_info: T, key_builder: K) -> Result<Self, RedisError>
+    where
+        T: IntoConnectionInfo,
+    {
+        let config = Config::from_connection_info(connection_info.into_connection_info()?);
+        let pool = match config.create_pool(Some(Runtime::Tokio1)) {
+            Ok(pool) => pool,
+            Err(err) => match err {
+                CreatePoolError::Config(err) => match err {
+                    ConfigError::UrlAndConnectionSpecified => unreachable!(
+                        "This error should not be occurred because we use `IntoConnectionInfo` where it will use only one of them.\
+                        If you see this error, then report it to the library maintainer."
+                    ),
+                    ConfigError::Redis(err) => return Err(err),
+                },
+                CreatePoolError::Build(_) => unreachable!(
+                    "This error should not be occurred because we specify runtime in `create_pool` method.\
+                    If you see this error, then report it to the library maintainer."
+                ),
+            },
+        };
+
+        Ok(Self { pool, key_builder })
     }
 
     #[must_use]
-    pub fn key_builder<T>(self, key_builder: T) -> Self
-    where
-        T: KeyBuilder + 'static,
-    {
+    pub fn key_builder(self, key_builder: K) -> Self {
         Self {
-            key_builder: Arc::new(key_builder),
+            key_builder,
             ..self
         }
     }
 }
 
 impl Redis {
-    async fn get_connection(&self) -> Result<Connection, RedisError> {
-        self.client.lock().await.get_async_connection().await
+    /// # Notes
+    /// By default, this method will use [`KeyBuilderImpl`] as key builder,
+    /// if you want to use custom key builder, then you can use [`Redis::new_with_key_builder`] method instead
+    /// or you can use [`Redis::key_builder`] method to set custom key builder
+    /// # Errors
+    /// This method will return error if config is invalid
+    pub fn new<T>(connection_info: T) -> Result<Self, RedisError>
+    where
+        T: IntoConnectionInfo,
+    {
+        Self::new_with_key_builder(connection_info, KeyBuilderImpl::default())
+    }
+}
+
+impl<K> Redis<K> {
+    async fn get_connection(&self) -> Result<Connection, PoolError> {
+        self.pool.get().await
     }
 }
 
 #[async_trait]
-impl Storage for Redis {
+impl<K: KeyBuilder + Clone> Storage for Redis<K> {
     type Error = Error;
 
     /// Set state for specified key
