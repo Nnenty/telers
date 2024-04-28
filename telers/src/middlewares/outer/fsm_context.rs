@@ -10,7 +10,7 @@ use crate::{
         Context, Storage,
     },
     router::Request,
-    types::User,
+    types::{Chat, User},
 };
 
 use async_trait::async_trait;
@@ -85,7 +85,7 @@ where
         let message_thread_id = context.get("event_message_thread_id");
 
         let user_id = user.and_then(|user| user.downcast_ref().map(|user: &User| user.id));
-        let chat_id = chat.and_then(|user| user.downcast_ref().map(|chat: &User| chat.id));
+        let chat_id = chat.and_then(|chat| chat.downcast_ref().map(|chat: &Chat| chat.id()));
         let message_thread_id = message_thread_id
             .and_then(|message_thread_id| message_thread_id.downcast_ref().copied());
 
