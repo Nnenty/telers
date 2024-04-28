@@ -106,7 +106,7 @@ async fn name_handler<S: Storage>(
     // because we want to be sure that we will receive message from user in the same state
     // (user can send message to bot before we set state and data to FSM storage, but it's rare case)
 
-    bot.send(&SendMessage::new(
+    bot.send(SendMessage::new(
         message.chat.id(),
         format!("Nice to meet you, {name}! What's your native language?"),
     ))
@@ -133,7 +133,7 @@ async fn language_handler<S: Storage>(
     // Check if user's language is acceptable
     match language.to_lowercase().as_str() {
         "english" | "en" => {
-            bot.send(&SendMessage::new(
+            bot.send(SendMessage::new(
                 message.chat.id(),
                 format!("{name}, let's talk!"),
             ))
@@ -143,7 +143,7 @@ async fn language_handler<S: Storage>(
             fsm.finish().await.map_err(Into::into)?;
         }
         _ => {
-            bot.send(&SendMessage::new(
+            bot.send(SendMessage::new(
                 message.chat.id(),
                 format!("{name}, I don't speak your language. Please, choose another :(",),
             ))

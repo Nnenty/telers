@@ -57,7 +57,7 @@ async fn lowercase_handler(bot: Bot, message: Message) -> HandlerResult {
 }
 
 async fn any_case_handler(bot: Bot, message: Message) -> HandlerResult {
-    bot.send(&SendMessage::new(message.chat().id(), "Any case message!"))
+    bot.send(SendMessage::new(message.chat().id(), "Any case message!"))
         .await?;
 
     Ok(EventReturn::Finish)
