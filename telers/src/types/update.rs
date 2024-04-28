@@ -163,9 +163,7 @@ impl Kind {
             Kind::Message(message)
             | Kind::EditedMessage(message)
             | Kind::BusinessMessage(message)
-            | Kind::EditedBusinessMessage(message)
-            | Kind::ChannelPost(message)
-            | Kind::EditedChannelPost(message) => message.from(),
+            | Kind::EditedBusinessMessage(message) => message.from(),
             Kind::InlineQuery(InlineQuery { from, .. })
             | Kind::ChosenInlineResult(ChosenInlineResult { from, .. })
             | Kind::CallbackQuery(CallbackQuery { from, .. })
@@ -184,7 +182,9 @@ impl Kind {
             Kind::Poll(_)
             | Kind::MessageReactionCount(_)
             | Kind::RemovedChatBoost(_)
-            | Kind::DeletedBusinessMessages(_) => None,
+            | Kind::DeletedBusinessMessages(_)
+            | Kind::ChannelPost(_)
+            | Kind::EditedChannelPost(_) => None,
         }
     }
 
@@ -225,12 +225,12 @@ impl Kind {
             | Kind::ChatBoost(ChatBoostUpdated { chat, .. })
             | Kind::RemovedChatBoost(ChatBoostRemoved { chat, .. })
             | Kind::DeletedBusinessMessages(BusinessMessagesDeleted { chat, .. }) => Some(chat),
+            Kind::PollAnswer(PollAnswer { voter_chat, .. }) => voter_chat.as_ref(),
             Kind::MessageReaction(MessageReactionUpdated { actor_chat, .. }) => actor_chat.as_ref(),
             Kind::InlineQuery(_)
             | Kind::ChosenInlineResult(_)
             | Kind::ShippingQuery(_)
             | Kind::PreCheckoutQuery(_)
-            | Kind::PollAnswer(_)
             | Kind::Poll(_)
             | Kind::BusinessConnection(_) => None,
         }
