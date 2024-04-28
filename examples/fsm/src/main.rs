@@ -14,7 +14,7 @@
 //!
 //! You can run this example by setting `BOT_TOKEN` and optional `RUST_LOG` environment variable and running:
 //! ```bash
-//! RUST_LOG={log_level} BOT_TOKEN={your_bot_token} cargo run --package finite_state_machine
+//! RUST_LOG={log_level} BOT_TOKEN={your_bot_token} cargo run --package fsm
 //! ```
 
 use std::borrow::Cow;

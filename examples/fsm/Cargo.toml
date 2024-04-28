@@ -1,5 +1,5 @@
 [package]
-name = "finite_state_machine"
+name = "fsm"
 version = "0.1.0"
 edition = "2021"
 publish = false

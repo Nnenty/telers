@@ -38,7 +38,7 @@ Before you start, make sure that you have a basic understanding of the [Telegram
  - [Stats updates middleware][examples/stats_incoming_updates_middleware]. This example shows how to create a middleware that count incoming updates.
  - [Context][examples/from_event_and_context]. This example shows how to extract data from event and context and use it in handlers.
  - [Input file][examples/input_file]. This example shows how to send files by the bot.
- - [Finite state machine][examples/finite_state_machine]. This example shows how to use a finite state machine (conversation).
+ - [Finite state machine][examples/fsm]. This example shows how to use a finite state machine (conversation).
  - [Router tree][examples/router_tree]. This example shows how to create a router tree.
  - [Bot http client][examples/bot_http_client]. This example shows how to set a custom bot HTTP client.
  - [Axum and echo bot][examples/axum_and_echo_bot]. This example shows how to create an echo bot and run it concurrently with polling `axum` server.
