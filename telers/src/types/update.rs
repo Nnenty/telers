@@ -88,10 +88,9 @@ impl Kind {
             | Kind::EditedChannelPost(message) => message.text(),
             Kind::InlineQuery(InlineQuery { query, .. })
             | Kind::ChosenInlineResult(ChosenInlineResult { query, .. }) => Some(query),
-            Kind::CallbackQuery(CallbackQuery { data, .. }) => match data {
-                Some(data) => Some(data),
-                None => None,
-            },
+            Kind::CallbackQuery(CallbackQuery {
+                data: Some(data), ..
+            }) => Some(data),
             _ => None,
         }
     }
@@ -104,17 +103,11 @@ impl Kind {
             | Kind::BusinessMessage(message)
             | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
-            | Kind::EditedChannelPost(message) => message.caption(),
-            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
-                let Some(message) = message else {
-                    return None;
-                };
-
-                match message {
-                    MaybeInaccessibleMessage::Message(message) => message.caption(),
-                    MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
-                }
-            }
+            | Kind::EditedChannelPost(message)
+            | Kind::CallbackQuery(CallbackQuery {
+                message: Some(MaybeInaccessibleMessage::Message(message)),
+                ..
+            }) => message.caption(),
             _ => None,
         }
     }
@@ -142,19 +135,14 @@ impl Kind {
             | Kind::MyChatMember(ChatMemberUpdated { from, .. })
             | Kind::ChatMember(ChatMemberUpdated { from, .. })
             | Kind::ChatJoinRequest(ChatJoinRequest { from, .. }) => Some(from),
-            Kind::BusinessConnection(BusinessConnection { user, .. }) => Some(user),
+            Kind::BusinessConnection(BusinessConnection { user, .. })
+            | Kind::ChatBoost(ChatBoostUpdated {
+                boost: ChatBoostSource::Premium(ChatBoostSourcePremium { user }),
+                ..
+            }) => Some(user),
             Kind::PollAnswer(PollAnswer { user, .. })
             | Kind::MessageReaction(MessageReactionUpdated { user, .. }) => user.as_ref(),
-            Kind::ChatBoost(ChatBoostUpdated { boost, .. }) => match boost {
-                ChatBoostSource::Premium(ChatBoostSourcePremium { user }) => Some(user),
-                ChatBoostSource::GiftCode(_) | ChatBoostSource::Giveaway(_) => None,
-            },
-            Kind::Poll(_)
-            | Kind::MessageReactionCount(_)
-            | Kind::RemovedChatBoost(_)
-            | Kind::DeletedBusinessMessages(_)
-            | Kind::ChannelPost(_)
-            | Kind::EditedChannelPost(_) => None,
+            _ => None,
         }
     }
 
@@ -175,19 +163,15 @@ impl Kind {
             | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
             | Kind::EditedChannelPost(message) => Some(message.chat()),
-            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
-                let Some(message) = message else {
-                    return None;
-                };
-
-                match message {
-                    MaybeInaccessibleMessage::Message(message) => Some(message.chat()),
-                    MaybeInaccessibleMessage::InaccessibleMessage(InaccessibleMessage {
-                        chat,
-                        ..
-                    }) => Some(chat),
-                }
-            }
+            Kind::CallbackQuery(CallbackQuery {
+                message: Some(message),
+                ..
+            }) => match message {
+                MaybeInaccessibleMessage::Message(message) => Some(message.chat()),
+                MaybeInaccessibleMessage::InaccessibleMessage(InaccessibleMessage {
+                    chat, ..
+                }) => Some(chat),
+            },
             Kind::MyChatMember(ChatMemberUpdated { chat, .. })
             | Kind::ChatMember(ChatMemberUpdated { chat, .. })
             | Kind::ChatJoinRequest(ChatJoinRequest { chat, .. })
@@ -197,12 +181,7 @@ impl Kind {
             | Kind::DeletedBusinessMessages(BusinessMessagesDeleted { chat, .. }) => Some(chat),
             Kind::PollAnswer(PollAnswer { voter_chat, .. }) => voter_chat.as_ref(),
             Kind::MessageReaction(MessageReactionUpdated { actor_chat, .. }) => actor_chat.as_ref(),
-            Kind::InlineQuery(_)
-            | Kind::ChosenInlineResult(_)
-            | Kind::ShippingQuery(_)
-            | Kind::PreCheckoutQuery(_)
-            | Kind::Poll(_)
-            | Kind::BusinessConnection(_) => None,
+            _ => None,
         }
     }
 
@@ -227,32 +206,12 @@ impl Kind {
             | Kind::BusinessMessage(message)
             | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
-            | Kind::EditedChannelPost(message) => message.sender_chat(),
-            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
-                let Some(message) = message else {
-                    return None;
-                };
-
-                match message {
-                    MaybeInaccessibleMessage::Message(message) => message.sender_chat(),
-                    MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
-                }
-            }
-            Kind::InlineQuery(_)
-            | Kind::ChosenInlineResult(_)
-            | Kind::ShippingQuery(_)
-            | Kind::PreCheckoutQuery(_)
-            | Kind::PollAnswer(_)
-            | Kind::MyChatMember(_)
-            | Kind::ChatMember(_)
-            | Kind::ChatJoinRequest(_)
-            | Kind::Poll(_)
-            | Kind::MessageReaction(_)
-            | Kind::MessageReactionCount(_)
-            | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_)
-            | Kind::BusinessConnection(_)
-            | Kind::DeletedBusinessMessages(_) => None,
+            | Kind::EditedChannelPost(message)
+            | Kind::CallbackQuery(CallbackQuery {
+                message: Some(MaybeInaccessibleMessage::Message(message)),
+                ..
+            }) => message.sender_chat(),
+            _ => None,
         }
     }
 
@@ -273,32 +232,12 @@ impl Kind {
             | Kind::BusinessMessage(message)
             | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
-            | Kind::EditedChannelPost(message) => message.thread_id(),
-            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
-                let Some(message) = message else {
-                    return None;
-                };
-
-                match message {
-                    MaybeInaccessibleMessage::Message(message) => message.thread_id(),
-                    MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
-                }
-            }
-            Kind::InlineQuery(_)
-            | Kind::ChosenInlineResult(_)
-            | Kind::ShippingQuery(_)
-            | Kind::PreCheckoutQuery(_)
-            | Kind::PollAnswer(_)
-            | Kind::MyChatMember(_)
-            | Kind::ChatMember(_)
-            | Kind::ChatJoinRequest(_)
-            | Kind::Poll(_)
-            | Kind::MessageReaction(_)
-            | Kind::MessageReactionCount(_)
-            | Kind::ChatBoost(_)
-            | Kind::RemovedChatBoost(_)
-            | Kind::BusinessConnection(_)
-            | Kind::DeletedBusinessMessages(_) => None,
+            | Kind::EditedChannelPost(message)
+            | Kind::CallbackQuery(CallbackQuery {
+                message: Some(MaybeInaccessibleMessage::Message(message)),
+                ..
+            }) => message.thread_id(),
+            _ => None,
         }
     }
 
@@ -326,17 +265,11 @@ impl Kind {
             | Kind::BusinessMessage(message)
             | Kind::EditedBusinessMessage(message)
             | Kind::ChannelPost(message)
-            | Kind::EditedChannelPost(message) => Some(message),
-            Kind::CallbackQuery(CallbackQuery { message, .. }) => {
-                let Some(message) = message else {
-                    return None;
-                };
-
-                match message {
-                    MaybeInaccessibleMessage::Message(message) => Some(message),
-                    MaybeInaccessibleMessage::InaccessibleMessage(_) => None,
-                }
-            }
+            | Kind::EditedChannelPost(message)
+            | Kind::CallbackQuery(CallbackQuery {
+                message: Some(MaybeInaccessibleMessage::Message(message)),
+                ..
+            }) => Some(message),
             _ => None,
         }
     }
