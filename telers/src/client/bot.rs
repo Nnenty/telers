@@ -47,7 +47,10 @@ use super::{session::base::Session, Reqwest};
 
 use crate::{errors::SessionErrorKind, methods::TelegramMethod, utils::token};
 
-use std::fmt::{self, Debug, Display, Formatter};
+use std::{
+    env,
+    fmt::{self, Debug, Display, Formatter},
+};
 use tracing::instrument;
 
 /// Represents a bot with its token and ID, also contains client for sending requests to Telegram API.
@@ -71,15 +74,6 @@ pub struct Bot<Client: ?Sized = Reqwest> {
     client: Client,
 }
 
-impl Bot<Reqwest> {
-    /// # Panics
-    /// Panics if the token is invalid
-    #[must_use]
-    pub fn new(token: impl Into<String>) -> Self {
-        Self::with_client(token, Reqwest::default())
-    }
-}
-
 impl<Client> Bot<Client> {
     /// # Panics
     /// Panics if the token is invalid
@@ -98,6 +92,37 @@ impl<Client> Bot<Client> {
             bot_id,
             client,
         }
+    }
+}
+
+impl Bot<Reqwest> {
+    /// # Panics
+    /// Panics if the token is invalid
+    #[must_use]
+    pub fn new(token: impl Into<String>) -> Self {
+        Self::with_client(token, Reqwest::default())
+    }
+
+    /// # Notes
+    /// This method uses custom environment variable to get the token.
+    /// If you want to use default environment variable, use [`Bot::from_env`] method instead.
+    /// If you want to pass the token directly, use [`Bot::new`] method instead.
+    /// # Panics
+    /// Panics if the token is invalid or unset in the environment variables
+    #[must_use]
+    pub fn from_env_by_key(name: impl AsRef<str>) -> Self {
+        Self::new(env::var(name.as_ref()).expect("This env variable is not set!"))
+    }
+
+    /// # Notes
+    /// This method uses `BOT_TOKEN` environment variable to get the token.
+    /// If you want to use custom environment variable, use [`Bot::from_env_by_key`] method instead.
+    /// If you want to pass the token directly, use [`Bot::new`] method instead.
+    /// # Panics
+    /// Panics if the token is invalid or unset in the environment variables
+    #[must_use]
+    pub fn from_env() -> Self {
+        Self::from_env_by_key("BOT_TOKEN")
     }
 }
 

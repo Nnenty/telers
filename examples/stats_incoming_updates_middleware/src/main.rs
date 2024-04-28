@@ -104,8 +104,7 @@ async fn main() {
         .with(EnvFilter::from_env("RUST_LOG"))
         .init();
 
-    let token = std::env::var("BOT_TOKEN").expect("BOT_TOKEN env variable is not set!");
-    let bot = Bot::new(token);
+    let bot = Bot::from_env_by_key("BOT_TOKEN");
 
     let mut router = Router::new("main");
     // Register outer middleware for update
