@@ -2,9 +2,21 @@ use std::fmt::{self, Display};
 
 /// Strategy for storing and retrieving data.
 ///
-/// If you use `UserInChat` strategy, you have possible to store different data and state for different chats.
-/// If you use `Chat` strategy, then all users in the chat will have the same data and state.
-/// If you use `GlobalUser` strategy, then the user will have the same data and state in all chats.
+/// # Variants
+/// * [`Strategy::UserInChat`] - `user_id` + `chat_id`.
+/// If you use `UserInChat` strategy, you have possible to store different state for user+chat pairs,
+/// so each user in each chat will have its own state.
+/// * [`Strategy::Chat`] - `chat_id` + `chat_id`.
+/// If you use `Chat` strategy, then all users in the chat will have the same state.
+/// * [`Strategy::GlobalUser`] - `user_id` + `user_id`.
+/// If you use `GlobalUser` strategy, then the user will have the same state in all chats,
+/// so each user will have its own state in all chats.
+/// * [`Strategy::UserInThread`] - `user_id` + `chat_id` + `message_thread_id`.
+/// If you use `UserInThread` strategy, you have possible to store different state for user+chat+thread pairs,
+/// so each user in each thread in each chat will have its own state.
+/// * [`Strategy::ChatInThread`] - `chat_id` + `chat_id` + `message_thread_id`.
+/// If you use `ChatInThread` strategy, you have possible to store different state for chat+thread pairs,
+/// so each thread in each chat will have its own state.
 ///
 /// In case of direct messages, `chat_id` and `user_id` will be equal, so all strategies will work the same way.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -17,6 +29,8 @@ pub enum Strategy {
     GlobalUser,
     /// `user_id` + `chat_id` + `message_thread_id`
     UserInThread,
+    /// `chat_id` + `chat_id` + `message_thread_id`
+    ChatInThread,
 }
 
 impl Display for Strategy {
@@ -40,6 +54,7 @@ impl Strategy {
             Strategy::Chat => "chat",
             Strategy::GlobalUser => "global_user",
             Strategy::UserInThread => "user_in_thread",
+            Strategy::ChatInThread => "chat_in_thread",
         }
     }
 }
@@ -73,6 +88,11 @@ impl Strategy {
             Strategy::UserInThread => IdPair {
                 chat_id,
                 user_id,
+                message_thread_id,
+            },
+            Strategy::ChatInThread => IdPair {
+                chat_id,
+                user_id: chat_id,
                 message_thread_id,
             },
         }
