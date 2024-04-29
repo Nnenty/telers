@@ -58,7 +58,7 @@ This project is licensed under either of the following licenses, at your option:
 [examples/axum_and_echo_bot]: https://github.com/Desiders/telers/tree/dev-1.x/examples/axum_and_echo_bot
 [examples/bot_http_client]: https://github.com/Desiders/telers/tree/dev-1.x/examples/bot_http_client
 [examples/router_tree]: https://github.com/Desiders/telers/tree/dev-1.x/examples/router_tree
-[examples/finite_state_machine]: https://github.com/Desiders/telers/tree/dev-1.x/examples/finite_state_machine
+[examples/fsm]: https://github.com/Desiders/telers/tree/dev-1.x/examples/fsm
 [examples/input_file]: https://github.com/Desiders/telers/tree/dev-1.x/examples/input_file
 [examples/from_event_and_context]: https://github.com/Desiders/telers/tree/dev-1.x/examples/from_event_and_context
 [examples/stats_incoming_updates_middleware]: https://github.com/Desiders/telers/tree/dev-1.x/examples/stats_incoming_updates_middleware
