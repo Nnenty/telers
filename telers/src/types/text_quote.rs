@@ -14,5 +14,5 @@ pub struct TextQuote {
     /// Approximate quote position in the original message in UTF-16 code units as specified by the sender
     pub position: u16,
     /// `true`, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
-    pub is_manual: bool,
+    pub is_manual: Option<bool>,
 }
