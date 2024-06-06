@@ -34,6 +34,7 @@ pub enum Kind {
     Strikethrough,
     Spoiler,
     Blockquote,
+    ExpandableBlockquote,
     Code,
     Pre(Pre),
     TextLink(TextLink),
@@ -170,13 +171,18 @@ impl MessageEntity {
     }
 
     #[must_use]
+    pub fn new_code(offset: u16, length: u16) -> Self {
+        Self::new(offset, length, Kind::Code)
+    }
+
+    #[must_use]
     pub fn new_blockquote(offset: u16, length: u16) -> Self {
         Self::new(offset, length, Kind::Blockquote)
     }
 
     #[must_use]
-    pub fn new_code(offset: u16, length: u16) -> Self {
-        Self::new(offset, length, Kind::Code)
+    pub fn new_expandable_blockquote(offset: u16, length: u16) -> Self {
+        Self::new(offset, length, Kind::ExpandableBlockquote)
     }
 
     #[must_use]

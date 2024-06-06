@@ -235,6 +235,7 @@ impl TextFormatter for Formatter {
             MessageEntityKind::Strikethrough => self.strikethrough(editable_text),
             MessageEntityKind::Spoiler => self.spoiler(editable_text),
             MessageEntityKind::Blockquote => self.blockquote(editable_text),
+            MessageEntityKind::ExpandableBlockquote => self.blockquote(editable_text),
             MessageEntityKind::Code => self.code(editable_text),
             MessageEntityKind::Pre(PreMessageEntity { language }) => match language {
                 Some(language) => self.pre_language(editable_text, language),
