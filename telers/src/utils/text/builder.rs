@@ -240,6 +240,31 @@ where
             .expect("Failed to add spoiler. Report this issue to the developers")
     }
 
+    /// # Warning
+    /// If the given text length is greater than [`u16::MAX`], then the text will be truncated.
+    #[must_use]
+    pub fn blockquote(self, text: impl AsRef<str>) -> Self {
+        let text = text.as_ref();
+        let entity = MessageEntity::new_blockquote(self.text.len() as u16, text.len() as u16);
+
+        self.text(text)
+            .entity(&entity)
+            .expect("Failed to add blockquote. Report this issue to the developers")
+    }
+
+    /// # Warning
+    /// If the given text length is greater than [`u16::MAX`], then the text will be truncated.
+    #[must_use]
+    pub fn expandable_blockquote(self, text: impl AsRef<str>) -> Self {
+        let text = text.as_ref();
+        let entity =
+            MessageEntity::new_expandable_blockquote(self.text.len() as u16, text.len() as u16);
+
+        self.text(text)
+            .entity(&entity)
+            .expect("Failed to add expandable blockquote. Report this issue to the developers")
+    }
+
     /// Add code as monowidth string.
     /// # Arguments
     /// * `code` - Code that will be added as monowidth string.
@@ -432,7 +457,11 @@ mod tests {
             .text(" ")
             .text_mention("text_mention", User::default())
             .text(" ")
-            .custom_emoji("custom_emoji", "emoji_id");
+            .custom_emoji("custom_emoji", "emoji_id")
+            .text(" ")
+            .blockquote("blockquote")
+            .text(" ")
+            .expandable_blockquote("expandable_blockquote");
 
         assert_eq!(
             builder.get_text(),
@@ -444,7 +473,9 @@ mod tests {
             <pre><code class=\"language-python\">pre_language</code></pre> \
             <a href=\"https://example.com\">text_link</a> \
             <a href=\"tg://user?id=0\">text_mention</a> \
-            <tg-emoji data-emoji-id=\"emoji_id\">custom_emoji</tg-emoji>\
+            <tg-emoji data-emoji-id=\"emoji_id\">custom_emoji</tg-emoji> \
+            <blockquote>blockquote</blockquote> \
+            <blockquote expandable>expandable_blockquote</blockquote>\
             "
         );
     }
