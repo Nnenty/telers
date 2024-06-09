@@ -4898,4 +4898,40 @@ mod tests {
             }
         }
     }
+
+    /// Test for issue #19
+    /// https://github.com/Desiders/telers/issues/19
+    #[test]
+    fn deserialize_message_issue_19() {
+        let jsons = [serde_json::json!({
+            "message_id": 1,
+            "date": 0,
+            "chat": {
+                "id": -1,
+                "title": "test",
+                "type": "channel",
+            },
+            "text": "test",
+            "entities": [
+                {
+                    "offset": 0,
+                    "length": 1,
+                    "type": "unknown",
+                },
+            ],
+        })];
+
+        for json in jsons {
+            let message_text: Text = serde_json::from_value(json.clone()).unwrap();
+            let message: Message = serde_json::from_value(json).unwrap();
+
+            match message {
+                Message::Text(message) => {
+                    assert_eq!(*message, message_text);
+                    println!("{:?}", message);
+                }
+                _ => panic!("Unexpected message type: {message:?}"),
+            }
+        }
+    }
 }

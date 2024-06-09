@@ -6,6 +6,7 @@ use crate::types::{
 };
 
 use once_cell::sync::Lazy;
+use tracing::{event, Level};
 
 const BOLD_TAG: &str = "b";
 const ITALIC_TAG: &str = "i";
@@ -259,6 +260,15 @@ impl TextFormatter for Formatter {
             }) => self.text_mention(editable_text, *user_id),
             MessageEntityKind::CustomEmoji(CustomEmojiMessageEntity { custom_emoji_id }) => {
                 self.custom_emoji(editable_text, custom_emoji_id)
+            }
+            MessageEntityKind::Unknown => {
+                event!(
+                    Level::WARN,
+                    "Unknown entity kind: {:?}. Using the original text.",
+                    entity.kind()
+                );
+
+                editable_text.to_owned()
             }
         };
 

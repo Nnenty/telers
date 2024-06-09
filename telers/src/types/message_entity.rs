@@ -40,6 +40,9 @@ pub enum Kind {
     TextLink(TextLink),
     TextMention(TextMention),
     CustomEmoji(CustomEmoji),
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[skip_serializing_none]
