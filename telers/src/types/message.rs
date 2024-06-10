@@ -58,6 +58,7 @@ pub enum Message {
     PassportData(Box<PassportData>),
     ProximityAlertTriggered(Box<ProximityAlertTriggered>),
     ChatBoostAdded(Box<ChatBoostAdded>),
+    ChatBackgroundSet(Box<ChatBackgroundSet>),
     ForumTopicCreated(Box<ForumTopicCreated>),
     ForumTopicEdited(Box<ForumTopicEdited>),
     ForumTopicClosed(Box<ForumTopicClosed>),
@@ -1369,6 +1370,28 @@ pub struct ChatBoostAdded {
 
 #[derive(Debug, Clone, PartialEq, Deserialize, FromEvent)]
 #[event(try_from = Update)]
+pub struct ChatBackgroundSet {
+    /// Unique message identifier inside this chat
+    #[serde(rename = "message_id")]
+    pub id: i64,
+    /// Unique identifier of a message thread to which the message belongs; for supergroups only
+    #[serde(rename = "message_thread_id")]
+    pub thread_id: Option<i64>,
+    /// Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub from: Option<User>,
+    /// Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub sender_chat: Option<Chat>,
+    /// Date the message was sent in Unix time
+    pub date: i64,
+    /// Conversation the message belongs to
+    pub chat: Chat,
+    /// Service message: forum topic created
+    #[serde(rename = "chat_background_set")]
+    pub background: types::ChatBackground,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize, FromEvent)]
+#[event(try_from = Update)]
 pub struct ForumTopicCreated {
     /// Unique message identifier inside this chat
     #[serde(rename = "message_id")]
@@ -1758,6 +1781,7 @@ impl Message {
             Message::PassportData(message) => message.id,
             Message::ProximityAlertTriggered(message) => message.id,
             Message::ChatBoostAdded(message) => message.id,
+            Message::ChatBackgroundSet(message) => message.id,
             Message::ForumTopicCreated(message) => message.id,
             Message::ForumTopicEdited(message) => message.id,
             Message::ForumTopicClosed(message) => message.id,
@@ -1852,6 +1876,7 @@ impl Message {
             Message::PassportData(message) => message.date,
             Message::ProximityAlertTriggered(message) => message.date,
             Message::ChatBoostAdded(message) => message.date,
+            Message::ChatBackgroundSet(message) => message.date,
             Message::ForumTopicCreated(message) => message.date,
             Message::ForumTopicEdited(message) => message.date,
             Message::ForumTopicClosed(message) => message.date,
@@ -2013,6 +2038,7 @@ impl Message {
             Message::PassportData(message) => &message.chat,
             Message::ProximityAlertTriggered(message) => &message.chat,
             Message::ChatBoostAdded(message) => &message.chat,
+            Message::ChatBackgroundSet(message) => &message.chat,
             Message::ForumTopicCreated(message) => &message.chat,
             Message::ForumTopicEdited(message) => &message.chat,
             Message::ForumTopicClosed(message) => &message.chat,
@@ -2134,6 +2160,7 @@ impl Message {
             Message::UsersShared(message) => message.from.as_ref(),
             Message::ChatShared(message) => message.from.as_ref(),
             Message::PassportData(message) => message.from.as_ref(),
+            Message::ChatBackgroundSet(message) => message.from.as_ref(),
             Message::ForumTopicCreated(message) => message.from.as_ref(),
             Message::ForumTopicEdited(message) => message.from.as_ref(),
             Message::ForumTopicClosed(message) => message.from.as_ref(),
@@ -2218,6 +2245,7 @@ impl Message {
             Message::Invoice(message) => message.sender_chat.as_ref(),
             Message::SuccessfulPayment(message) => message.sender_chat.as_ref(),
             Message::PassportData(message) => message.sender_chat.as_ref(),
+            Message::ChatBackgroundSet(message) => message.sender_chat.as_ref(),
             Message::ForumTopicCreated(message) => message.sender_chat.as_ref(),
             Message::ForumTopicEdited(message) => message.sender_chat.as_ref(),
             Message::ForumTopicClosed(message) => message.sender_chat.as_ref(),
@@ -2761,6 +2789,14 @@ impl Message {
     }
 
     #[must_use]
+    pub const fn chat_background(&self) -> Option<&types::ChatBackground> {
+        match self {
+            Message::ChatBackgroundSet(message) => Some(&message.background),
+            _ => None,
+        }
+    }
+
+    #[must_use]
     pub const fn forum_topic_closed(&self) -> Option<&types::ForumTopicClosed> {
         match self {
             Message::ForumTopicClosed(message) => Some(&message.closed),
@@ -3015,6 +3051,7 @@ impl_try_from_message!(ConnectedWebsite, ConnectedWebsite);
 impl_try_from_message!(PassportData, PassportData);
 impl_try_from_message!(ProximityAlertTriggered, ProximityAlertTriggered);
 impl_try_from_message!(ChatBoostAdded, ChatBoostAdded);
+impl_try_from_message!(ChatBackgroundSet, ChatBackgroundSet);
 impl_try_from_message!(ForumTopicCreated, ForumTopicCreated);
 impl_try_from_message!(ForumTopicEdited, ForumTopicEdited);
 impl_try_from_message!(ForumTopicClosed, ForumTopicClosed);
@@ -3096,6 +3133,7 @@ impl_try_from_update!(ConnectedWebsite);
 impl_try_from_update!(PassportData);
 impl_try_from_update!(ProximityAlertTriggered);
 impl_try_from_update!(ChatBoostAdded);
+impl_try_from_update!(ChatBackgroundSet);
 impl_try_from_update!(ForumTopicCreated);
 impl_try_from_update!(ForumTopicEdited);
 impl_try_from_update!(ForumTopicClosed);
@@ -4353,6 +4391,104 @@ mod tests {
 
             match message {
                 Message::ChatBoostAdded(message) => {
+                    assert_eq!(message, message_kind);
+                }
+                _ => panic!("Unexpected message type: {message:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn deserialize_chat_background_set() {
+        let jsons = [
+            serde_json::json!({
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": -1,
+                    "title": "test",
+                    "type": "channel",
+                },
+                "chat_background_set": {
+                    "type": {
+                        "type": "pattern",
+                        "document": {
+                            "file_id": "test",
+                            "file_unique_id": "test",
+                        },
+                        "fill": {
+                            "type": "gradient",
+                            "top_color": 123,
+                            "bottom_color": 123,
+                            "rotation_angle": 1,
+                        },
+                        "intensity": 1,
+                    },
+                },
+            }),
+            serde_json::json!({
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": -1,
+                    "title": "test",
+                    "type": "channel",
+                },
+                "chat_background_set": {
+                    "type": {
+                        "type": "fill",
+                        "fill": {
+                            "type": "gradient",
+                            "top_color": 123,
+                            "bottom_color": 123,
+                            "rotation_angle": 1,
+                        },
+                        "dark_theme_dimming": 1,
+                    },
+                },
+            }),
+            serde_json::json!({
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": -1,
+                    "title": "test",
+                    "type": "channel",
+                },
+                "chat_background_set": {
+                    "type": {
+                        "type": "wallpaper",
+                        "document": {
+                            "file_id": "test",
+                            "file_unique_id": "test",
+                        },
+                        "dark_theme_dimming": 1,
+                    },
+                },
+            }),
+            serde_json::json!({
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": -1,
+                    "title": "test",
+                    "type": "channel",
+                },
+                "chat_background_set": {
+                    "type": {
+                        "type": "chat_theme",
+                        "theme_name": "test",
+                    },
+                },
+            }),
+        ];
+
+        for json in jsons {
+            let message_kind = serde_json::from_value(json.clone()).unwrap();
+            let message: Message = serde_json::from_value(json).unwrap();
+
+            match message {
+                Message::ChatBackgroundSet(message) => {
                     assert_eq!(message, message_kind);
                 }
                 _ => panic!("Unexpected message type: {message:?}"),

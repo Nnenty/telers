@@ -22,6 +22,8 @@ pub struct ChatMemberUpdated {
     pub new_chat_member: ChatMember,
     /// Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
     pub invite_link: Option<ChatInviteLink>,
+    /// `true`, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+    pub via_join_request: Option<bool>,
     /// `true`, if the user joined the chat via a chat folder invite link
     pub via_chat_folder_invite_link: Option<bool>,
 }

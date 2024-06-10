@@ -22,6 +22,8 @@ pub struct Regular {
     pub id: Box<str>,
     /// Poll question, 1-300 characters
     pub question: Box<str>,
+    /// Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
+    pub question_entities: Option<Box<[MessageEntity]>>,
     /// List of poll options
     pub options: Box<[PollOption]>,
     /// Total number of users that voted in the poll
@@ -45,6 +47,8 @@ pub struct Quiz {
     pub id: Box<str>,
     /// Poll question, 1-300 characters
     pub question: Box<str>,
+    /// Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
+    pub question_entities: Option<Box<[MessageEntity]>>,
     /// List of poll options
     pub options: Box<[PollOption]>,
     /// Total number of users that voted in the poll

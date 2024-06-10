@@ -39,6 +39,15 @@
 
 pub mod animation;
 pub mod audio;
+pub mod background_fill;
+pub mod background_fill_freeform_gradient;
+pub mod background_fill_gradient;
+pub mod background_fill_solid;
+pub mod background_type;
+pub mod background_type_chat_theme;
+pub mod background_type_fill;
+pub mod background_type_pattern;
+pub mod background_type_wallpaper;
 pub mod birthdate;
 pub mod bot_command;
 pub mod bot_command_scope;
@@ -62,6 +71,7 @@ pub mod callback_game;
 pub mod callback_query;
 pub mod chat;
 pub mod chat_administrator_rights;
+pub mod chat_background;
 pub mod chat_boost;
 pub mod chat_boost_added;
 pub mod chat_boost_removed;
@@ -70,6 +80,7 @@ pub mod chat_boost_source_gift_code;
 pub mod chat_boost_source_giveaway;
 pub mod chat_boost_source_premium;
 pub mod chat_boost_updated;
+pub mod chat_full_info;
 pub mod chat_id_kind;
 pub mod chat_invite_link;
 pub mod chat_join_request;
@@ -144,6 +155,7 @@ pub mod input_media_document;
 pub mod input_media_photo;
 pub mod input_media_video;
 pub mod input_message_content;
+pub mod input_poll_option;
 pub mod input_sticker;
 pub mod input_text_message_content;
 pub mod input_venue_message_content;
@@ -234,6 +246,15 @@ pub mod write_access_allowed;
 
 pub use animation::Animation;
 pub use audio::Audio;
+pub use background_fill::BackgroundFill;
+pub use background_fill_freeform_gradient::BackgroundFillFreeformGradient;
+pub use background_fill_gradient::BackgroundFillGradient;
+pub use background_fill_solid::BackgroundFillSolid;
+pub use background_type::BackgroundType;
+pub use background_type_chat_theme::BackgroundTypeChatTheme;
+pub use background_type_fill::BackgroundTypeFill;
+pub use background_type_pattern::BackgroundTypePattern;
+pub use background_type_wallpaper::BackgroundTypeWallpaper;
 pub use birthdate::Birthdate;
 pub use bot_command::BotCommand;
 pub use bot_command_scope::BotCommandScope;
@@ -255,11 +276,9 @@ pub use business_opening_hours::BusinessOpeningHours;
 pub use business_opening_hours_interval::BusinessOpeningHoursInterval;
 pub use callback_game::CallbackGame;
 pub use callback_query::CallbackQuery;
-pub use chat::{
-    Channel as ChatChannel, Chat, Group as ChatGroup, Private as ChatPrivate,
-    Supergroup as ChatSupergroup,
-};
+pub use chat::Chat;
 pub use chat_administrator_rights::ChatAdministratorRights;
+pub use chat_background::ChatBackground;
 pub use chat_boost::ChatBoost;
 pub use chat_boost_added::ChatBoostAdded;
 pub use chat_boost_removed::ChatBoostRemoved;
@@ -268,6 +287,10 @@ pub use chat_boost_source_gift_code::ChatBoostSourceGiftCode;
 pub use chat_boost_source_giveaway::ChatBoostSourceGiveaway;
 pub use chat_boost_source_premium::ChatBoostSourcePremium;
 pub use chat_boost_updated::ChatBoostUpdated;
+pub use chat_full_info::{
+    Channel as ChatChannel, ChatFullInfo, Group as ChatGroup, Private as ChatPrivate,
+    Supergroup as ChatSupergroup,
+};
 pub use chat_id_kind::ChatIdKind;
 pub use chat_invite_link::ChatInviteLink;
 pub use chat_join_request::ChatJoinRequest;
@@ -368,6 +391,7 @@ pub use input_media_document::InputMediaDocument;
 pub use input_media_photo::InputMediaPhoto;
 pub use input_media_video::InputMediaVideo;
 pub use input_message_content::InputMessageContent;
+pub use input_poll_option::InputPollOption;
 pub use input_sticker::InputSticker;
 pub use input_text_message_content::InputTextMessageContent;
 pub use input_venue_message_content::InputVenueMessageContent;

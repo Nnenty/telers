@@ -8,7 +8,7 @@ use crate::{
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-/// Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as [Audio](crate::types::Audio) or [Document](crate::types::Document)). Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+/// Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as [Audio](crate::types::Audio) or [Document](crate::types::Document)). Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#sendvoice>
 /// # Returns
