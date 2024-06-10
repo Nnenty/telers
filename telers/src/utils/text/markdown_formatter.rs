@@ -5,37 +5,30 @@ use crate::types::{
     TextLinkMessageEntity, TextMentionMessageEntity, User,
 };
 
-use once_cell::sync::Lazy;
-use regex::Regex;
 use tracing::{event, Level};
 
-const QUOTE_PATTERN: &str = r"([_*\[\]()~`>#+\-=|{}.!\\])";
+const CHARS: [char; 18] = [
+    '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!',
+];
 
 /// This is a legacy mode, retained for backward compatibility. To use this mode, pass `Markdown` in the `parse_mode` field.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#markdown-style>
 #[derive(Debug, Clone)]
-pub struct Formatter {
-    regex: Regex,
-}
+pub struct Formatter;
 
 impl Formatter {
     /// Create a new instance of [`Formatter`]
-    /// # Notes
-    /// If you want to use the default regex, use [`Formatter::default()`]
     #[must_use]
-    pub const fn new(regex: Regex) -> Self {
-        Self { regex }
+    pub const fn new() -> Self {
+        Self {}
     }
 }
 
 impl Default for Formatter {
     #[must_use]
     fn default() -> Self {
-        Self::new(
-            Regex::new(QUOTE_PATTERN)
-                .expect("Invalid quote pattern. Please report this issue to the developers."),
-        )
+        Self::new()
     }
 }
 
@@ -152,7 +145,16 @@ impl TextFormatter for Formatter {
     where
         T: AsRef<str>,
     {
-        self.regex.replacen(text.as_ref(), 0, r"\$1").to_string()
+        let text = text.as_ref();
+
+        text.chars()
+            .fold(String::with_capacity(text.len()), |mut string, ch| {
+                if CHARS.contains(&ch) {
+                    string.push('\\');
+                }
+                string.push(ch);
+                string
+            })
     }
 
     fn apply_entity<T>(&self, text: T, entity: &MessageEntity) -> Result<String, FormatterErrorKind>
@@ -221,7 +223,7 @@ impl TextFormatter for Formatter {
     }
 }
 
-pub static FORMATTER: Lazy<Formatter> = Lazy::new(Formatter::default);
+pub const FORMATTER: Formatter = Formatter::new();
 
 pub fn bold(text: impl AsRef<str>) -> String {
     FORMATTER.bold(text)

@@ -5,7 +5,6 @@ use crate::types::{
     TextLinkMessageEntity, TextMentionMessageEntity, User,
 };
 
-use once_cell::sync::Lazy;
 use tracing::{event, Level};
 
 const BOLD_TAG: &str = "b";
@@ -29,11 +28,11 @@ pub struct Formatter {
 }
 
 impl Formatter {
-    /// Create a new instance of [`Formatter`]
+    /// Create a new instance of [`Formatter`] with custom tags
     /// # Notes
     /// If you want to use the default tags, use `Formatter::default` instead.
     #[must_use]
-    pub const fn new(
+    pub const fn new_with_tags(
         bold_tag: &'static str,
         italic_tag: &'static str,
         underline_tag: &'static str,
@@ -50,12 +49,11 @@ impl Formatter {
             emoji_tag,
         }
     }
-}
 
-impl Default for Formatter {
+    /// Create a new instance of [`Formatter`]
     #[must_use]
-    fn default() -> Self {
-        Self::new(
+    pub const fn new() -> Self {
+        Self::new_with_tags(
             BOLD_TAG,
             ITALIC_TAG,
             UNDERLINE_TAG,
@@ -63,6 +61,13 @@ impl Default for Formatter {
             SPOILER_TAG,
             EMOJI_TAG,
         )
+    }
+}
+
+impl Default for Formatter {
+    #[must_use]
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -204,10 +209,18 @@ impl TextFormatter for Formatter {
     where
         T: AsRef<str>,
     {
-        text.as_ref()
-            .replace('&', "&amp;")
-            .replace('<', "&lt;")
-            .replace('>', "&gt;")
+        let text = text.as_ref();
+
+        text.chars()
+            .fold(String::with_capacity(text.len()), |mut string, ch| {
+                match ch {
+                    '&' => string.push_str("&amp;"),
+                    '<' => string.push_str("&lt;"),
+                    '>' => string.push_str("&gt;"),
+                    _ => string.push(ch),
+                }
+                string
+            })
     }
 
     fn apply_entity<T>(&self, text: T, entity: &MessageEntity) -> Result<String, FormatterErrorKind>
@@ -276,7 +289,7 @@ impl TextFormatter for Formatter {
     }
 }
 
-pub static FORMATTER: Lazy<Formatter> = Lazy::new(Formatter::default);
+pub const FORMATTER: Formatter = Formatter::new();
 
 pub fn bold(text: impl AsRef<str>) -> String {
     FORMATTER.bold(text)
