@@ -81,6 +81,8 @@ pub enum ContentType {
     ProximityAlertTriggered,
     #[strum(serialize = "chat_boost_added")]
     ChatBoostAdded,
+    #[strum(serialize = "chat_background_set")]
+    ChatBackgroundSet,
     #[strum(serialize = "forum_topic_created")]
     ForumTopicCreated,
     #[strum(serialize = "forum_topic_edited")]
@@ -115,7 +117,7 @@ pub enum ContentType {
 
 impl ContentType {
     #[must_use]
-    pub const fn all() -> [ContentType; 52] {
+    pub const fn all() -> [ContentType; 53] {
         [
             ContentType::Text,
             ContentType::Animation,
@@ -154,6 +156,7 @@ impl ContentType {
             ContentType::PassportData,
             ContentType::ProximityAlertTriggered,
             ContentType::ChatBoostAdded,
+            ContentType::ChatBackgroundSet,
             ContentType::ForumTopicCreated,
             ContentType::ForumTopicEdited,
             ContentType::ForumTopicClosed,
@@ -231,6 +234,7 @@ impl From<&Message> for ContentType {
             Message::PassportData(_) => ContentType::PassportData,
             Message::ProximityAlertTriggered(_) => ContentType::ProximityAlertTriggered,
             Message::ChatBoostAdded(_) => ContentType::ChatBoostAdded,
+            Message::ChatBackgroundSet(_) => ContentType::ChatBackgroundSet,
             Message::ForumTopicCreated(_) => ContentType::ForumTopicCreated,
             Message::ForumTopicEdited(_) => ContentType::ForumTopicEdited,
             Message::ForumTopicClosed(_) => ContentType::ForumTopicClosed,

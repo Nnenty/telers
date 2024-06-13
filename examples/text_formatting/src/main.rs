@@ -3,7 +3,7 @@
 //!
 //! You can run this example by setting `BOT_TOKEN` and optional `RUST_LOG` environment variable and running:
 //! ```bash
-//! RUST_LOG={log_level} BOT_TOKEN={your_bot_token} cargo run --package echo_bot
+//! RUST_LOG={log_level} BOT_TOKEN={your_bot_token} cargo run --package text_formatting
 //! ```
 
 use telers::{
@@ -26,7 +26,7 @@ async fn handler(bot: Bot, message: Message) -> HandlerResult {
         .await?;
 
     // Second way to format text by using `TextBuilder`.
-    let text_builder = TextBuilder::new(HTMLFormatter::default())
+    let text_builder = TextBuilder::new(HTMLFormatter::new())
         .text("This is ")
         .bold("bold")
         .text(" text.\nThis is ")

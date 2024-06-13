@@ -5,7 +5,7 @@ use crate::types::{
     TextLinkMessageEntity, TextMentionMessageEntity, User,
 };
 
-use once_cell::sync::Lazy;
+use tracing::{event, Level};
 
 const BOLD_TAG: &str = "b";
 const ITALIC_TAG: &str = "i";
@@ -28,11 +28,11 @@ pub struct Formatter {
 }
 
 impl Formatter {
-    /// Create a new instance of [`Formatter`]
+    /// Create a new instance of [`Formatter`] with custom tags
     /// # Notes
     /// If you want to use the default tags, use `Formatter::default` instead.
     #[must_use]
-    pub const fn new(
+    pub const fn new_with_tags(
         bold_tag: &'static str,
         italic_tag: &'static str,
         underline_tag: &'static str,
@@ -49,12 +49,11 @@ impl Formatter {
             emoji_tag,
         }
     }
-}
 
-impl Default for Formatter {
+    /// Create a new instance of [`Formatter`]
     #[must_use]
-    fn default() -> Self {
-        Self::new(
+    pub const fn new() -> Self {
+        Self::new_with_tags(
             BOLD_TAG,
             ITALIC_TAG,
             UNDERLINE_TAG,
@@ -62,6 +61,13 @@ impl Default for Formatter {
             SPOILER_TAG,
             EMOJI_TAG,
         )
+    }
+}
+
+impl Default for Formatter {
+    #[must_use]
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -126,6 +132,16 @@ impl TextFormatter for Formatter {
         T: AsRef<str>,
     {
         format!("<blockquote>{text}</blockquote>", text = text.as_ref())
+    }
+
+    fn expandable_blockquote<T>(&self, text: T) -> String
+    where
+        T: AsRef<str>,
+    {
+        format!(
+            "<blockquote expandable>{text}</blockquote>",
+            text = text.as_ref()
+        )
     }
 
     fn text_link<T, U>(&self, text: T, url: U) -> String
@@ -193,10 +209,18 @@ impl TextFormatter for Formatter {
     where
         T: AsRef<str>,
     {
-        text.as_ref()
-            .replace('&', "&amp;")
-            .replace('<', "&lt;")
-            .replace('>', "&gt;")
+        let text = text.as_ref();
+
+        text.chars()
+            .fold(String::with_capacity(text.len()), |mut string, ch| {
+                match ch {
+                    '&' => string.push_str("&amp;"),
+                    '<' => string.push_str("&lt;"),
+                    '>' => string.push_str("&gt;"),
+                    _ => string.push(ch),
+                }
+                string
+            })
     }
 
     fn apply_entity<T>(&self, text: T, entity: &MessageEntity) -> Result<String, FormatterErrorKind>
@@ -235,6 +259,7 @@ impl TextFormatter for Formatter {
             MessageEntityKind::Strikethrough => self.strikethrough(editable_text),
             MessageEntityKind::Spoiler => self.spoiler(editable_text),
             MessageEntityKind::Blockquote => self.blockquote(editable_text),
+            MessageEntityKind::ExpandableBlockquote => self.expandable_blockquote(editable_text),
             MessageEntityKind::Code => self.code(editable_text),
             MessageEntityKind::Pre(PreMessageEntity { language }) => match language {
                 Some(language) => self.pre_language(editable_text, language),
@@ -249,13 +274,22 @@ impl TextFormatter for Formatter {
             MessageEntityKind::CustomEmoji(CustomEmojiMessageEntity { custom_emoji_id }) => {
                 self.custom_emoji(editable_text, custom_emoji_id)
             }
+            MessageEntityKind::Unknown => {
+                event!(
+                    Level::WARN,
+                    "Unknown entity kind: {:?}. Using the original text.",
+                    entity.kind()
+                );
+
+                editable_text.to_owned()
+            }
         };
 
         Ok(format!("{previous_text}{edited_text}{next_text}"))
     }
 }
 
-pub static FORMATTER: Lazy<Formatter> = Lazy::new(Formatter::default);
+pub const FORMATTER: Formatter = Formatter::new();
 
 pub fn bold(text: impl AsRef<str>) -> String {
     FORMATTER.bold(text)
@@ -279,6 +313,10 @@ pub fn spoiler(text: impl AsRef<str>) -> String {
 
 pub fn blockquote(text: impl AsRef<str>) -> String {
     FORMATTER.blockquote(text)
+}
+
+pub fn expandable_blockquote(text: impl AsRef<str>) -> String {
+    FORMATTER.expandable_blockquote(text)
 }
 
 pub fn text_link(text: impl AsRef<str>, url: impl AsRef<str>) -> String {
@@ -349,6 +387,15 @@ mod tests {
         assert_eq!(
             formatter.blockquote("text"),
             "<blockquote>text</blockquote>"
+        );
+    }
+
+    #[test]
+    fn test_expandable_blockquote() {
+        let formatter = Formatter::default();
+        assert_eq!(
+            formatter.expandable_blockquote("text"),
+            "<blockquote expandable>text</blockquote>"
         );
     }
 

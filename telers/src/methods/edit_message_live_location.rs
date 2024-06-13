@@ -27,6 +27,8 @@ pub struct EditMessageLiveLocation {
     pub longitude: f64,
     /// Latitude of new location
     pub latitude: f64,
+    /// New period in seconds during which the location can be updated, starting from the message send date. If `0x7FFFFFFF` is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current `live_period` by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then `live_period` remains unchanged
+    pub live_period: Option<i64>,
     /// The radius of uncertainty for the location, measured in meters; 0-1500
     pub horizontal_accuracy: Option<f64>,
     /// For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
@@ -46,6 +48,7 @@ impl EditMessageLiveLocation {
             inline_message_id: None,
             longitude,
             latitude,
+            live_period: None,
             horizontal_accuracy: None,
             heading: None,
             proximity_alert_radius: None,
@@ -89,6 +92,14 @@ impl EditMessageLiveLocation {
     pub fn latitude(self, val: f64) -> Self {
         Self {
             latitude: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn live_period(self, val: i64) -> Self {
+        Self {
+            live_period: Some(val),
             ..self
         }
     }
@@ -147,6 +158,14 @@ impl EditMessageLiveLocation {
     pub fn inline_message_id_option(self, val: Option<impl Into<String>>) -> Self {
         Self {
             inline_message_id: val.map(Into::into),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn live_period_option(self, val: Option<i64>) -> Self {
+        Self {
+            live_period: val,
             ..self
         }
     }

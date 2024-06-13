@@ -5,36 +5,30 @@ use crate::types::{
     TextLinkMessageEntity, TextMentionMessageEntity, User,
 };
 
-use once_cell::sync::Lazy;
-use regex::Regex;
+use tracing::{event, Level};
 
-const QUOTE_PATTERN: &str = r"([_*\[\]()~`>#+\-=|{}.!\\])";
+const CHARS: [char; 18] = [
+    '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!',
+];
 
 /// This is a legacy mode, retained for backward compatibility. To use this mode, pass `Markdown` in the `parse_mode` field.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#markdown-style>
 #[derive(Debug, Clone)]
-pub struct Formatter {
-    regex: Regex,
-}
+pub struct Formatter;
 
 impl Formatter {
     /// Create a new instance of [`Formatter`]
-    /// # Notes
-    /// If you want to use the default regex, use [`Formatter::default()`]
     #[must_use]
-    pub const fn new(regex: Regex) -> Self {
-        Self { regex }
+    pub const fn new() -> Self {
+        Self {}
     }
 }
 
 impl Default for Formatter {
     #[must_use]
     fn default() -> Self {
-        Self::new(
-            Regex::new(QUOTE_PATTERN)
-                .expect("Invalid quote pattern. Please report this issue to the developers."),
-        )
+        Self::new()
     }
 }
 
@@ -83,6 +77,16 @@ impl TextFormatter for Formatter {
             .map(|line| format!(">{line}"))
             .collect::<Vec<_>>()
             .join("\n")
+    }
+
+    fn expandable_blockquote<T>(&self, text: T) -> String
+    where
+        T: AsRef<str>,
+    {
+        let mut text = self.blockquote(text);
+        text.push_str("||");
+
+        text
     }
 
     fn text_link<T, U>(&self, text: T, url: U) -> String
@@ -141,7 +145,16 @@ impl TextFormatter for Formatter {
     where
         T: AsRef<str>,
     {
-        self.regex.replacen(text.as_ref(), 0, r"\$1").to_string()
+        let text = text.as_ref();
+
+        text.chars()
+            .fold(String::with_capacity(text.len()), |mut string, ch| {
+                if CHARS.contains(&ch) {
+                    string.push('\\');
+                }
+                string.push(ch);
+                string
+            })
     }
 
     fn apply_entity<T>(&self, text: T, entity: &MessageEntity) -> Result<String, FormatterErrorKind>
@@ -180,6 +193,7 @@ impl TextFormatter for Formatter {
             MessageEntityKind::Strikethrough => self.strikethrough(editable_text),
             MessageEntityKind::Spoiler => self.spoiler(editable_text),
             MessageEntityKind::Blockquote => self.blockquote(editable_text),
+            MessageEntityKind::ExpandableBlockquote => self.expandable_blockquote(editable_text),
             MessageEntityKind::Code => self.code(editable_text),
             MessageEntityKind::Pre(PreMessageEntity { language }) => match language {
                 Some(language) => self.pre_language(editable_text, language),
@@ -194,13 +208,22 @@ impl TextFormatter for Formatter {
             MessageEntityKind::CustomEmoji(CustomEmojiMessageEntity { custom_emoji_id }) => {
                 self.custom_emoji(editable_text, custom_emoji_id)
             }
+            MessageEntityKind::Unknown => {
+                event!(
+                    Level::WARN,
+                    "Unknown entity kind: {:?}. Using the original text.",
+                    entity.kind()
+                );
+
+                editable_text.to_owned()
+            }
         };
 
         Ok(format!("{previous_text}{edited_text}{next_text}"))
     }
 }
 
-pub static FORMATTER: Lazy<Formatter> = Lazy::new(Formatter::default);
+pub const FORMATTER: Formatter = Formatter::new();
 
 pub fn bold(text: impl AsRef<str>) -> String {
     FORMATTER.bold(text)
@@ -224,6 +247,10 @@ pub fn spoiler(text: impl AsRef<str>) -> String {
 
 pub fn blockquote(text: impl AsRef<str>) -> String {
     FORMATTER.blockquote(text)
+}
+
+pub fn expandable_blockquote(text: impl AsRef<str>) -> String {
+    FORMATTER.expandable_blockquote(text)
 }
 
 pub fn text_link(text: impl AsRef<str>, url: &str) -> String {
@@ -293,6 +320,16 @@ mod tests {
         let formatter = Formatter::default();
         assert_eq!(formatter.blockquote("text"), ">text");
         assert_eq!(formatter.blockquote("text\ntext"), ">text\n>text");
+    }
+
+    #[test]
+    fn expandable_blockquote() {
+        let formatter = Formatter::default();
+        assert_eq!(formatter.expandable_blockquote("text"), ">text||");
+        assert_eq!(
+            formatter.expandable_blockquote("text\ntext"),
+            ">text\n>text||"
+        );
     }
 
     #[test]

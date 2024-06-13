@@ -2,7 +2,7 @@ use super::base::{Request, TelegramMethod};
 
 use crate::{
     client::Bot,
-    types::{ChatIdKind, Message, MessageEntity, ReplyMarkup, ReplyParameters},
+    types::{ChatIdKind, InputPollOption, Message, MessageEntity, ReplyMarkup, ReplyParameters},
 };
 
 use serde::Serialize;
@@ -24,8 +24,12 @@ pub struct SendPoll {
     pub message_thread_id: Option<i64>,
     /// Poll question, 1-300 characters
     pub question: String,
-    /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
-    pub options: Vec<String>,
+    /// Mode for parsing entities in the question. See [formatting options](https://core.telegram.org/bots/api#formatting-options) for more details. Currently, only custom emoji entities are allowed
+    pub question_parse_mode: Option<String>,
+    /// A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of `question_parse_mode`
+    pub question_entities: Option<Vec<MessageEntity>>,
+    /// A JSON-serialized list of 2-10 answer options
+    pub options: Vec<InputPollOption>,
     /// `true`, if the poll needs to be anonymous, defaults to `true`
     pub is_anonymous: Option<bool>,
     /// Poll type, `quiz` or `regular`, defaults to `regular`
@@ -59,9 +63,13 @@ pub struct SendPoll {
 
 impl SendPoll {
     #[must_use]
-    pub fn new<T, I>(chat_id: impl Into<ChatIdKind>, question: T, options: I) -> Self
+    pub fn new<T, I>(
+        chat_id: impl Into<ChatIdKind>,
+        question: impl Into<String>,
+        options: I,
+    ) -> Self
     where
-        T: Into<String>,
+        T: Into<InputPollOption>,
         I: IntoIterator<Item = T>,
     {
         Self {
@@ -69,6 +77,8 @@ impl SendPoll {
             chat_id: chat_id.into(),
             message_thread_id: None,
             question: question.into(),
+            question_parse_mode: None,
+            question_entities: None,
             options: options.into_iter().map(Into::into).collect(),
             is_anonymous: None,
             poll_type: None,
@@ -120,7 +130,43 @@ impl SendPoll {
     }
 
     #[must_use]
-    pub fn option(self, val: impl Into<String>) -> Self {
+    pub fn question_parse_mode(self, val: impl Into<String>) -> Self {
+        Self {
+            question_parse_mode: Some(val.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn question_entity(self, val: MessageEntity) -> Self {
+        Self {
+            question_entities: Some(
+                self.question_entities
+                    .unwrap_or_default()
+                    .into_iter()
+                    .chain(Some(val))
+                    .collect(),
+            ),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn question_entities(self, val: impl IntoIterator<Item = MessageEntity>) -> Self {
+        Self {
+            question_entities: Some(
+                self.question_entities
+                    .unwrap_or_default()
+                    .into_iter()
+                    .chain(val)
+                    .collect(),
+            ),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn option(self, val: impl Into<InputPollOption>) -> Self {
         Self {
             options: self.options.into_iter().chain(Some(val.into())).collect(),
             ..self
@@ -130,7 +176,7 @@ impl SendPoll {
     #[must_use]
     pub fn options<T, I>(self, val: I) -> Self
     where
-        T: Into<String>,
+        T: Into<InputPollOption>,
         I: IntoIterator<Item = T>,
     {
         Self {
@@ -289,6 +335,22 @@ impl SendPoll {
     pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
         Self {
             message_thread_id: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn question_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            question: val.map(Into::into).unwrap_or_default(),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn question_parse_mode_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            question_parse_mode: val.map(Into::into),
             ..self
         }
     }

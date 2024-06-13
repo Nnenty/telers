@@ -36,7 +36,7 @@ use syn::parse::Parse;
 /// #[derive(Clone, FromContext)]
 /// #[context(key = "my_struct")]
 /// struct MyStruct {
-///   field: i32,
+///     field: i32,
 /// }
 ///
 /// async fn handler(my_struct: MyStruct) {
@@ -52,8 +52,8 @@ use syn::parse::Parse;
 /// #[derive(Clone, FromContext)]
 /// #[context(key = "my_enum")]
 /// enum MyEnum {
-///  Variant1,
-///  Variant2,
+///     Variant1,
+///     Variant2,
 /// }
 ///
 /// async fn handler(my_enum: MyEnum) {
@@ -73,15 +73,15 @@ use syn::parse::Parse;
 /// #[derive(Clone, FromContext)]
 /// #[context(key = "my_struct", into = MyStructWrapper)]
 /// struct MyStruct {
-///  field: i32,
+///     field: i32,
 /// }
 ///
 /// struct MyStructWrapper(MyStruct);
 ///
 /// impl From<MyStruct> for MyStructWrapper {
-///  fn from(my_struct: MyStruct) -> Self {
-///   Self(my_struct)
-///  }
+///     fn from(my_struct: MyStruct) -> Self {
+///         Self(my_struct)
+///     }
 /// }
 /// ```
 ///
@@ -92,7 +92,7 @@ use syn::parse::Parse;
 ///
 /// #[derive(Clone)]
 /// struct MyStruct {
-///  field: i32,
+///     field: i32,
 /// }
 ///
 /// #[derive(FromContext)]
@@ -100,9 +100,9 @@ use syn::parse::Parse;
 /// struct MyStructWrapper(MyStruct);
 ///
 /// impl From<MyStruct> for MyStructWrapper {
-///  fn from(my_struct: MyStruct) -> Self {
-///   Self(my_struct)
-///  }
+///     fn from(my_struct: MyStruct) -> Self {
+///         Self(my_struct)
+///     }
 /// }
 /// ```
 ///
@@ -118,16 +118,16 @@ use syn::parse::Parse;
 /// #[derive(Clone, FromContext)]
 /// #[context(key = "my_enum", into = MyEnumWrapper)]
 /// enum MyEnum {
-///  Variant1,
-///  Variant2,
+///     Variant1,
+///     Variant2,
 /// }
 ///
 /// struct MyEnumWrapper(MyEnum);
 ///
 /// impl From<MyEnum> for MyEnumWrapper {
-///  fn from(my_enum: MyEnum) -> Self {
-///   Self(my_enum)
-///  }
+///     fn from(my_enum: MyEnum) -> Self {
+///         Self(my_enum)
+///     }
 /// }
 /// ```
 ///
@@ -138,8 +138,8 @@ use syn::parse::Parse;
 ///
 /// #[derive(Clone)]
 /// enum MyEnum {
-///  Variant1,
-///  Variant2,
+///     Variant1,
+///     Variant2,
 /// }
 ///
 /// #[derive(FromContext)]
@@ -147,9 +147,9 @@ use syn::parse::Parse;
 /// struct MyEnumWrapper(MyEnum);
 ///
 /// impl From<MyEnum> for MyEnumWrapper {
-///  fn from(my_enum: MyEnum) -> Self {
-///   Self(my_enum)
-///  }
+///     fn from(my_enum: MyEnum) -> Self {
+///         Self(my_enum)
+///     }
 /// }
 /// ```
 #[proc_macro_derive(FromContext, attributes(context))]
@@ -188,9 +188,9 @@ pub fn derive_from_context(item: TokenStream) -> TokenStream {
 /// struct UpdateId(i64);
 ///
 /// impl From<Update> for UpdateId {
-///  fn from(update: Update) -> Self {
-///   Self(update.id)
-///  }
+///     fn from(update: Update) -> Self {
+///         Self(update.id)
+///     }
 /// }
 /// ```
 ///
@@ -206,11 +206,11 @@ pub fn derive_from_context(item: TokenStream) -> TokenStream {
 /// struct UpdateId(i64);
 ///
 /// impl TryFrom<Update> for UpdateId { // we use `TryFrom` here just for example, you need to use `From` if error is impossible
-///  type Error = Infallible;
+///     type Error = Infallible;
 ///
-///  fn try_from(update: Update) -> Result<Self, Self::Error> {
-///   Ok(Self(update.id))
-///  }
+///     fn try_from(update: Update) -> Result<Self, Self::Error> {
+///         Ok(Self(update.id))
+///     }
 /// }
 /// ```
 ///
@@ -226,14 +226,14 @@ pub fn derive_from_context(item: TokenStream) -> TokenStream {
 /// struct UpdateFromId(i64);
 ///
 /// impl TryFrom<Update> for UpdateFromId {
-///  type Error = ConvertToTypeError;
+///     type Error = ConvertToTypeError;
 ///
-///  fn try_from(update: Update) -> Result<Self, Self::Error> {
-///   match update.from_id() {
-///    Some(id) => Ok(Self(id)),
-///    None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
-///   }
-///  }
+///     fn try_from(update: Update) -> Result<Self, Self::Error> {
+///         match update.from_id() {
+///             Some(id) => Ok(Self(id)),
+///             None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
+///         }
+///     }
 /// }
 /// ```
 /// # Notes

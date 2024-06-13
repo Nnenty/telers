@@ -24,11 +24,11 @@
 //! struct UpdateId(i64);
 //!
 //! impl FromEventAndContext for UpdateId {
-//!  type Error = Infallible;
+//!     type Error = Infallible;
 //!
-//!  fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
-//!   Ok(UpdateId(update.id))
-//!  }
+//!     fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
+//!         Ok(UpdateId(update.id))
+//!     }
 //! }
 //! ```
 //!
@@ -37,7 +37,7 @@
 //!
 //! ```ignore
 //! async fn handler(update_id: UpdateId) {
-//!  println!("Update id: {}", id.0);
+//!     println!("Update id: {}", id.0);
 //! }
 //! ```
 //!
@@ -50,14 +50,14 @@
 //! struct UpdateFromId(i64);
 //!
 //! impl FromEventAndContext for UpdateFromId {
-//!  type Error = ConvertToTypeError; // you can use your own error type, this is just an example
+//!     type Error = ConvertToTypeError; // you can use your own error type, this is just an example
 //!
-//!  fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
-//!   match update.from_id() {
-//!    Some(from_id) => Ok(UpdateFromId(from_id)),
-//!    None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
-//!   }
-//!  }
+//!     fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
+//!         match update.from_id() {
+//!             Some(from_id) => Ok(UpdateFromId(from_id)),
+//!             None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
+//!         }
+//!     }
 //! }
 //! ```
 //!
@@ -72,14 +72,14 @@
 //! struct UpdateFromId(i64);
 //!
 //! impl FromEventAndContext for UpdateFromId {
-//!  type Error = ConvertToTypeError; // you can use your own error type, this is just an example
+//!     type Error = ConvertToTypeError; // you can use your own error type, this is just an example
 //!
-//!  fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
-//!   match update.from_id() {
-//!    Some(from_id) => Ok(UpdateFromId(from_id)),
-//!    None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
-//!   }
-//!  }
+//!     fn extract(bot: Arc<Bot>, update: Arc<Update>, context: Arc<Context>) -> Result<Self, Self::Error> {
+//!         match update.from_id() {
+//!             Some(from_id) => Ok(UpdateFromId(from_id)),
+//!             None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
+//!         }
+//!     }
 //! }
 //! ```
 //!
@@ -88,14 +88,14 @@
 //! ```ignore
 //! // Here `from_id` can't be `None` (for example we use filter which checks that `from_id` is not `None`)
 //! async fn handler_first(from_id: UpdateFromId) {
-//!  println!("Update from id: {}", from_id.0);
+//!     println!("Update from id: {}", from_id.0);
 //! }
 //!
 //! // Here `from_id` can be `None`
 //! async fn handler_second(from_id: Option<UpdateFromId>) {
-//!  if let Some(from_id) = from_id {
-//!   println!("Update from id: {}", from_id.0);
-//!  }
+//!     if let Some(from_id) = from_id {
+//!         println!("Update from id: {}", from_id.0);
+//!     }
 //! }
 //! ```
 //!
@@ -112,9 +112,9 @@
 //!
 //! // We need to implement `From<Update>` for `UpdateId` by ourselves (this is required by `FromEvent` macro)
 //! impl From<Update> for UpdateId {
-//!  fn from(update: Update) -> Self {
-//!   Self(update.id)
-//!  }
+//!     fn from(update: Update) -> Self {
+//!         Self(update.id)
+//!     }
 //! }
 //! ```
 //!
@@ -130,14 +130,14 @@
 //! struct UpdateFromId(i64);
 //!
 //! impl TryFrom<Update> for UpdateFromId {
-//!  type Error = ConvertToTypeError;
+//!     type Error = ConvertToTypeError;
 //!
-//!  fn try_from(update: Update) -> Result<Self, Self::Error> {
-//!   match update.from_id() {
-//!    Some(id) => Ok(Self(id)),
-//!    None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
-//!   }
-//!  }
+//!     fn try_from(update: Update) -> Result<Self, Self::Error> {
+//!         match update.from_id() {
+//!             Some(id) => Ok(Self(id)),
+//!             None => Err(ConvertToTypeError::new("Update", "UpdateFromId")),
+//!         }
+//!     }
 //! }
 //! ```
 //!
@@ -153,11 +153,11 @@
 //! struct UpdateId(i64);
 //!
 //! impl TryFrom<Update> for UpdateId { // we use `TryFrom` here just for example, you need to use `From` if error is impossible
-//!  type Error = Infallible;
+//!     type Error = Infallible;
 //!
-//!  fn try_from(update: Update) -> Result<Self, Self::Error> {
-//!   Ok(Self(update.id))
-//!  }
+//!     fn try_from(update: Update) -> Result<Self, Self::Error> {
+//!         Ok(Self(update.id))
+//!     }
 //! }
 //! ```
 //!
@@ -171,7 +171,7 @@
 //! #[derive(Clone, FromContext)]
 //! #[context(key = "my_struct")]
 //! struct MyStruct {
-//!  field: i32,
+//!     field: i32,
 //! }
 //! ```
 //!
@@ -189,7 +189,7 @@
 //!  description = "This struct is set in the `MyMiddleware` middleware. If it is not set, then the `MyMiddleware` middleware is not used.",
 //! )]
 //! struct MyStruct {
-//!  field: i32,
+//!     field: i32,
 //! }
 //! ```
 //!
@@ -202,15 +202,15 @@
 //! #[derive(Clone, FromContext)]
 //! #[context(key = "my_struct", into = MyStructWrapper)]
 //! struct MyStruct {
-//!  field: i32,
+//!     field: i32,
 //! }
 //!
 //! struct MyStructWrapper(MyStruct);
 //!
 //! impl From<MyStruct> for MyStructWrapper {
-//!  fn from(my_struct: MyStruct) -> Self {
-//!   Self(my_struct)
-//!  }
+//!     fn from(my_struct: MyStruct) -> Self {
+//!         Self(my_struct)
+//!     }
 //! }
 //! ```
 //!
@@ -226,7 +226,7 @@
 //!
 //! #[derive(Clone)]
 //! struct MyStruct {
-//!  field: i32,
+//!     field: i32,
 //! }
 //!
 //! #[derive(FromContext)]
@@ -234,9 +234,9 @@
 //! struct MyStructWrapper(MyStruct);
 //!
 //! impl From<MyStruct> for MyStructWrapper {
-//!  fn from(my_struct: MyStruct) -> Self {
-//!   Self(my_struct)
-//!  }
+//!     fn from(my_struct: MyStruct) -> Self {
+//!         Self(my_struct)
+//!     }
 //! }
 //! ```
 //!

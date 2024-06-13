@@ -2,16 +2,16 @@ use super::base::{Request, TelegramMethod};
 
 use crate::{
     client::Bot,
-    types::{Chat, ChatIdKind},
+    types::{ChatFullInfo, ChatIdKind},
 };
 
 use serde::Serialize;
 
-/// Use this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.).
+/// Use this method to get up-to-date information about the chat
 /// # Documentation
 /// <https://core.telegram.org/bots/api#getchat>
 /// # Returns
-/// Returns a [`Chat`] object on success
+/// Returns a [`ChatFullInfo`] object on success
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct GetChat {
     /// Unique identifier for the target chat or username of the target supergroup or channel (in the format `@channelusername`)
@@ -36,7 +36,7 @@ impl GetChat {
 
 impl TelegramMethod for GetChat {
     type Method = Self;
-    type Return = Chat;
+    type Return = ChatFullInfo;
 
     fn build_request<Client>(&self, _bot: &Bot<Client>) -> Request<Self::Method> {
         Request::new("getChat", self, None)

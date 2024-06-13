@@ -7,6 +7,8 @@ use serde::Deserialize;
 pub struct PollOption {
     /// Option text, 1-100 characters
     pub text: Box<str>,
+    /// Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts
+    pub entities: Option<Box<[crate::types::MessageEntity]>>,
     /// Number of users that voted for this option
     pub voter_count: i64,
 }
