@@ -67,51 +67,51 @@
 //! [`PropagateEvent::emit_startup`], [`PropagateEvent::emit_shutdown`] methods in [`Router`],
 //! but it's better to use [`Dispatcher`] that does it for you.
 //!
-//! Order of event propagation when propagate event is called for router:
-//! 1) Call outer middlewares of update observer in order of registration;
-//! 1.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 1 step;
-//! 1.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 1 step;
-//! 1.3) If middleware returns [`EventReturn::Cancel`], then cancel propagation of outer middlewares of update observer and go to the 2 step;
-//! 1.4) If all middlewares by step 1.1 are passed or skipped on 1.2 or propagation cancelled by step 1.3, then go to the 2 step;
-//! 2) Call filters of handlers of update observer in order of registration;
-//! 2.1) If one of the handler filters returns `false`, then skip the handler and go back to the 2 step;
-//! 2.2) If any handler filter returns `true`, then go to the 3 step;
-//! 2.3) If all handlers are skipped on 2.1, then go to the 4 step;
-//! 3) Call inner middlewares of update observer and the handler itself (handler is called in the middleware);
-//! 3.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 3 step;
+//! Order of event propagation when propagate event is called for router:\
+//! 1) Call outer middlewares of update observer in order of registration;\
+//! 1.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 1 step;\
+//! 1.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 1 step;\
+//! 1.3) If middleware returns [`EventReturn::Cancel`], then cancel propagation of outer middlewares of update observer and go to the 2 step;\
+//! 1.4) If all middlewares by step 1.1 are passed or skipped on 1.2 or propagation cancelled by step 1.3, then go to the 2 step;\
+//! 2) Call filters of handlers of update observer in order of registration;\
+//! 2.1) If one of the handler filters returns `false`, then skip the handler and go back to the 2 step;\
+//! 2.2) If any handler filter returns `true`, then go to the 3 step;\
+//! 2.3) If all handlers are skipped on 2.1, then go to the 4 step;\
+//! 3) Call inner middlewares of update observer and the handler itself (handler is called in the middleware);\
+//! 3.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 3 step;\
 //! 3.2) If the handler or middleware returns [`EventReturn::Cancel`], then we should stop propagation of innder middlewares of update observer
-//! and go to the 4 step;
-//! 3.3) If the handler or middleware returns [`EventReturn::Finish`], then we should stop propagation and return a response and go to the 4 step;
+//! and go to the 4 step;\
+//! 3.3) If the handler or middleware returns [`EventReturn::Finish`], then we should stop propagation and return a response and go to the 4 step;\
 //! 3.4) If the handler of middleware returns error, then we should stop propagation and return a response
-//! because the error is the correct result from the point of view of observer and go to the 4 step;
-//! 3.5) If all handlers or middlewares are skipped on 3.1, then go to the 4 step;
-//! 4) Stop propagation of update observer;
-//! 5) Check which observer respond to the current [`UpdateType`];
-//! 6) Call outer middlewares of the observer in order of registration;
-//! 6.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 6 step;
-//! 6.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 6 step;
-//! 6.3) If middleware returns [`EventReturn::Cancel`], then cancel event propagation and go to the 10 step;
-//! 6.4) If all middlewares by step 1.1 are passed or skipped on 1.2, then go to the 7 step;
-//! 7) Call filters of handlers of the observer in order of registration;
-//! 7.1) If one of the handler filters returns `false`, then skip the handler and go back to the 7 step;
-//! 7.2) If any handler filter returns `true`, then go to the 8 step;
-//! 7.3) If all handlers are skipped on 7.1, then cancel propagation of the observer and go to the 9 step;
-//! 8) Call inner middlewares of the observer and the handler itself (handler is called in the middleware);
-//! 8.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 8 step;
+//! because the error is the correct result from the point of view of observer and go to the 4 step;\
+//! 3.5) If all handlers or middlewares are skipped on 3.1, then go to the 4 step;\
+//! 4) Stop propagation of update observer;\
+//! 5) Check which observer respond to the current [`UpdateType`];\
+//! 6) Call outer middlewares of the observer in order of registration;\
+//! 6.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 6 step;\
+//! 6.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 6 step;\
+//! 6.3) If middleware returns [`EventReturn::Cancel`], then cancel event propagation and go to the 10 step;\
+//! 6.4) If all middlewares by step 1.1 are passed or skipped on 1.2, then go to the 7 step;\
+//! 7) Call filters of handlers of the observer in order of registration;\
+//! 7.1) If one of the handler filters returns `false`, then skip the handler and go back to the 7 step;\
+//! 7.2) If any handler filter returns `true`, then go to the 8 step;\
+//! 7.3) If all handlers are skipped on 7.1, then cancel propagation of the observer and go to the 9 step;\
+//! 8) Call inner middlewares of the observer and the handler itself (handler is called in the middleware);\
+//! 8.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 8 step;\
 //! 8.2) If the handler or middleware returns [`EventReturn::Cancel`], then we should stop propagation of the observer
-//! and go to the 10 step;
+//! and go to the 10 step;\
 //! 8.3) If the handler or middleware returns [`EventReturn::Finish`], then we should stop propagation and return a response
-//! and go to the 10 step;
+//! and go to the 10 step;\
 //! 8.4) If the handler of middleware returns error, then we should stop propagation and return a response
-//! because the error is the correct result from the point of view of observer and go to the 10 step;
-//! 8.5) If all handlers or middlewares are skipped on 8.1, then go to the 9 step;
-//! 9) Check to which router from current router's sub routers propagate event next;
-//! 9.1) If there is no sub routers, then go to the 10 step;
-//! 9.2) If there is sub routers, then go to the 1 step for the first sub router;
-//! 9.2.1) If the propagate event [`PropagateEventResult::Unhandled`] by the sub router's observer, then go to the 9 step;
-//! 9.2.2) If the propagate event [`PropagateEventResult::Handled`] by the sub router's observer, then go to the 10 step;
-//! 9.2.3) If the propagate event [`PropagateEventResult::Rejected`], then return an unhandled response and go to the 10 step;
-//! 10) Finish event propagation.
+//! because the error is the correct result from the point of view of observer and go to the 10 step;\
+//! 8.5) If all handlers or middlewares are skipped on 8.1, then go to the 9 step;\
+//! 9) Check to which router from current router's sub routers propagate event next;\
+//! 9.1) If there is no sub routers, then go to the 10 step;\
+//! 9.2) If there is sub routers, then go to the 1 step for the first sub router;\
+//! 9.2.1) If the propagate event [`PropagateEventResult::Unhandled`] by the sub router's observer, then go to the 9 step;\
+//! 9.2.2) If the propagate event [`PropagateEventResult::Handled`] by the sub router's observer, then go to the 10 step;\
+//! 9.2.3) If the propagate event [`PropagateEventResult::Rejected`], then return an unhandled response and go to the 10 step;\
+//! 10) Finish event propagation.\
 //!
 //! [`Simple observer`]: SimpleObserver
 //! [`Telegram observer`]: TelegramObserver
