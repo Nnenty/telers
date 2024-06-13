@@ -276,7 +276,7 @@ pub use business_opening_hours::BusinessOpeningHours;
 pub use business_opening_hours_interval::BusinessOpeningHoursInterval;
 pub use callback_game::CallbackGame;
 pub use callback_query::CallbackQuery;
-pub use chat::Chat;
+pub use chat::{Channel, Chat, Group, Private, Supergroup};
 pub use chat_administrator_rights::ChatAdministratorRights;
 pub use chat_background::ChatBackground;
 pub use chat_boost::ChatBoost;
@@ -288,8 +288,7 @@ pub use chat_boost_source_giveaway::ChatBoostSourceGiveaway;
 pub use chat_boost_source_premium::ChatBoostSourcePremium;
 pub use chat_boost_updated::ChatBoostUpdated;
 pub use chat_full_info::{
-    Channel as ChatChannel, ChatFullInfo, Group as ChatGroup, Private as ChatPrivate,
-    Supergroup as ChatSupergroup,
+    ChannelFullInfo, ChatFullInfo, GroupFullInfo, PrivateFullInfo, SupergroupFullInfo,
 };
 pub use chat_id_kind::ChatIdKind;
 pub use chat_invite_link::ChatInviteLink;

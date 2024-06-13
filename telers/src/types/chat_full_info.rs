@@ -11,14 +11,14 @@ use serde::Deserialize;
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ChatFullInfo {
-    Private(Box<Private>),
-    Group(Box<Group>),
-    Supergroup(Box<Supergroup>),
-    Channel(Box<Channel>),
+    Private(Box<PrivateFullInfo>),
+    Group(Box<GroupFullInfo>),
+    Supergroup(Box<SupergroupFullInfo>),
+    Channel(Box<ChannelFullInfo>),
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Deserialize)]
-pub struct Private {
+pub struct PrivateFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
     /// Username
@@ -68,7 +68,7 @@ pub struct Private {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct Group {
+pub struct GroupFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
     /// Title
@@ -94,7 +94,7 @@ pub struct Group {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct Supergroup {
+pub struct SupergroupFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
     /// Title
@@ -162,7 +162,7 @@ pub struct Supergroup {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct Channel {
+pub struct ChannelFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
     /// Title
