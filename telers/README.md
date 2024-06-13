@@ -48,6 +48,7 @@ You may consider checking out [this directory][examples] for more examples.
 ## Community
 ### Telegram
 - 🇺🇸 [@telers_en](https://t.me/telers_en)
+- 🇷🇺 [@telers_ru](https://t.me/telers_ru)
 
 ## License
 This project is licensed under either of the following licenses, at your option:
