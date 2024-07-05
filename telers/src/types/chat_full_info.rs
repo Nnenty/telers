@@ -3,12 +3,13 @@ use super::{
     ChatPermissions, ChatPhoto, Message, ReactionType,
 };
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains full information about a chat.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chat>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ChatFullInfo {
     Private(Box<PrivateFullInfo>),
@@ -17,7 +18,8 @@ pub enum ChatFullInfo {
     Channel(Box<ChannelFullInfo>),
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct PrivateFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -67,7 +69,8 @@ pub struct PrivateFullInfo {
     pub has_protected_content: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct GroupFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -93,7 +96,8 @@ pub struct GroupFullInfo {
     pub has_visible_history: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct SupergroupFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -161,7 +165,8 @@ pub struct SupergroupFullInfo {
     pub location: Option<ChatLocation>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct ChannelFullInfo {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in i64erpreting it. But it has at most 52 significant bits, so a signed 64-bit i64eger or double-precision float type are safe for storing this identifier.
     pub id: i64,

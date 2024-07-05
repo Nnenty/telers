@@ -1,6 +1,6 @@
 use super::{ChatBoostSourceGiftCode, ChatBoostSourceGiveaway, ChatBoostSourcePremium};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object describes the source of a chat boost. It can be one of
 /// - [`ChatBoostSourcePremium`]
@@ -8,7 +8,7 @@ use serde::Deserialize;
 /// - [`ChatBoostSourceGiveaway`]
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatboostsource>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(tag = "source", rename_all = "snake_case")]
 pub enum ChatBoostSource {
     Premium(ChatBoostSourcePremium),

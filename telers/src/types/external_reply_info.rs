@@ -2,12 +2,13 @@ use super::{Chat, LinkPreviewOptions, MessageOrigin};
 
 use crate::types;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains information about a message that is being replied to, which may come from another chat or forum topic
 /// # Documentation
 /// <https://core.telegram.org/bots/api#externalreplyinfo>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ExternalReplyInfo {
     Animation(Box<Animation>),
@@ -31,7 +32,8 @@ pub enum ExternalReplyInfo {
     Text(Box<Text>),
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Text {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -43,7 +45,8 @@ pub struct Text {
     pub link_preview_options: Option<LinkPreviewOptions>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Animation {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -57,7 +60,8 @@ pub struct Animation {
     pub has_media_spoiler: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Audio {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -69,7 +73,8 @@ pub struct Audio {
     pub audio: types::Audio,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Document {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -81,7 +86,8 @@ pub struct Document {
     pub document: types::Document,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Photo {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -95,7 +101,8 @@ pub struct Photo {
     pub has_media_spoiler: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Sticker {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -107,7 +114,8 @@ pub struct Sticker {
     pub sticker: types::Sticker,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Story {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -119,7 +127,8 @@ pub struct Story {
     pub story: types::Story,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Video {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -133,7 +142,8 @@ pub struct Video {
     pub has_media_spoiler: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct VideoNote {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -145,7 +155,8 @@ pub struct VideoNote {
     pub video_note: types::VideoNote,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Voice {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -157,7 +168,8 @@ pub struct Voice {
     pub voice: types::Voice,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Contact {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -169,7 +181,8 @@ pub struct Contact {
     pub contact: types::Contact,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Dice {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -181,7 +194,8 @@ pub struct Dice {
     pub dice: types::Dice,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Game {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -193,7 +207,8 @@ pub struct Game {
     pub game: types::Game,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Giveaway {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -205,7 +220,8 @@ pub struct Giveaway {
     pub giveaway: types::Giveaway,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct GiveawayWinners {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -217,7 +233,8 @@ pub struct GiveawayWinners {
     pub giveaway_winners: types::GiveawayWinners,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Invoice {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -229,7 +246,8 @@ pub struct Invoice {
     pub invoice: types::Invoice,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Location {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -241,7 +259,8 @@ pub struct Location {
     pub location: types::Location,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Poll {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,
@@ -253,7 +272,8 @@ pub struct Poll {
     pub poll: types::Poll,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Venue {
     /// Origin of the message replied to by the given message
     pub origin: MessageOrigin,

@@ -2,12 +2,12 @@ use super::{ShippingAddress, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object contains information about an incoming shipping query.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#shippingquery>
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct ShippingQuery {
     /// Unique query identifier

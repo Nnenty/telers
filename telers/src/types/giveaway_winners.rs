@@ -1,11 +1,13 @@
-use serde::Deserialize;
-
 use super::{Chat, User};
+
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a message about the completion of a giveaway with public winners.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#giveawaywinners>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct GiveawayWinners {
     /// The chat that created the giveaway
     pub chat: Chat,

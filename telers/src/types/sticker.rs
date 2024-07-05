@@ -1,11 +1,13 @@
 use super::{File, MaskPosition, PhotoSize};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a sticker.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#sticker>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Sticker {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: Box<str>,

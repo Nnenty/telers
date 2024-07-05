@@ -1,11 +1,13 @@
 use super::Document;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// The background is a wallpaper in the JPEG format
 /// # Documentation
 /// <https://core.telegram.org/bots/api#backgroundtypewallpaper>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct BackgroundTypeWallpaper {
     /// Document with the wallpaper
     pub document: Document,

@@ -1,11 +1,12 @@
 use crate::extractors::FromContext;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a chat.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chat>
-#[derive(Debug, Clone, PartialEq, Deserialize, FromContext)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromContext)]
 #[context(
     key = "event_chat",
     description = "This object represents a chat. \
@@ -19,7 +20,8 @@ pub enum Chat {
     Channel(Box<Channel>),
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Private {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -31,7 +33,7 @@ pub struct Private {
     pub last_name: Option<Box<str>>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Group {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -39,7 +41,8 @@ pub struct Group {
     pub title: Box<str>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Supergroup {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: i64,
@@ -51,7 +54,8 @@ pub struct Supergroup {
     pub is_forum: Option<bool>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Channel {
     /// Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
     pub id: i64,

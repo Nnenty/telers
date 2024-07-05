@@ -1,9 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// The message was originally sent by an unknown user.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messageoriginhiddenuser>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct MessageOriginHiddenUser {
     /// Date the message was sent originally in Unix time
     pub date: i64,

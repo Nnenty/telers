@@ -2,12 +2,14 @@ use super::{Chat, ReactionType, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, extractors::FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a change of a reaction on a message performed by a user.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messagereactionupdated>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct MessageReactionUpdated {
     /// The chat containing the message the user reacted to

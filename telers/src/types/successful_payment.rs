@@ -1,11 +1,13 @@
 use super::OrderInfo;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains basic information about a successful payment.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#successfulpayment>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct SuccessfulPayment {
     /// Three-letter ISO 4217 [`currency`](https://core.telegram.org/bots/payments#supported-currencies) code
     pub currency: Box<str>,

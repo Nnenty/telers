@@ -1,11 +1,13 @@
 use super::{BackgroundFill, Document};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// The background is a PNG or TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user
 /// # Documentation
 /// <https://core.telegram.org/bots/api#backgroundtypepattern>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct BackgroundTypePattern {
     /// Document with the wallpaper
     pub document: Document,

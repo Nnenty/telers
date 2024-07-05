@@ -2,12 +2,12 @@ use super::{Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Describes the connection of the bot with a business account.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#businessconnection>
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct BusinessConnection {
     /// Unique identifier of the business connection

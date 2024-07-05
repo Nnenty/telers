@@ -1,11 +1,13 @@
 use super::PhotoSize;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains information about a chat that was shared with the bot using a [`KeyboardButtonRequestChat`](crate::types::KeyboardButtonRequestChat) button.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatshared>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChatShared {
     /// Identifier of the request
     pub request_id: i64,

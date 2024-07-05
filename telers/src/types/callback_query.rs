@@ -2,13 +2,15 @@ use super::{InaccessibleMessage, MaybeInaccessibleMessage, Update, UpdateKind, U
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents an incoming callback query from a callback button in an [`inline keyboard`](https://core.telegram.org/bots/features#inline-keyboards). If the button that originated the query was attached to a message sent by the bot, the field `message` will be present. If the button was attached to a message sent via the bot (in [`inline mode`](https://core.telegram.org/bots/api#inline-mode)), the field `inline_message_id` will be present. Exactly one of the fields *data* or `game_short_name` will be present.
 /// **NOTE:** After the user presses a callback button, Telegram clients will display a progress bar until you call [`AnswerCallbackQuery`](crate::methods::AnswerCallbackQuery). It is, therefore, necessary to react by calling [`AnswerCallbackQuery`](crate::methods::AnswerCallbackQuery) even if no notification to the user is needed (e.g., without specifying any of the optional parameters).
 /// # Documentation
 /// <https://core.telegram.org/bots/api#callbackquery>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct CallbackQuery {
     /// Unique identifier for this query

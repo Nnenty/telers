@@ -1,11 +1,11 @@
 use super::Chat;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object represents a message about a forwarded story in the chat. Currently holds no information.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#story>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Story {
     /// Chat that posted the story
     pub chat: Chat,

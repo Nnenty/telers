@@ -1,10 +1,10 @@
 use super::BusinessOpeningHoursInterval;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// # Documentation
 /// <https://core.telegram.org/bots/api#businessopeninghours>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct BusinessOpeningHours {
     /// Unique name of the time zone for which the opening hours are defined
     pub time_zone_name: Box<str>,
