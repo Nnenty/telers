@@ -1,11 +1,12 @@
 use super::PassportFile;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// Describes documents or other Telegram Passport elements shared with the bot by the user.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#encryptedpassportelement>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum EncryptedPassportElement {
     PersonalDetails(PersonalDetails),
@@ -23,7 +24,7 @@ pub enum EncryptedPassportElement {
     Email(Email),
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PersonalDetails {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -31,7 +32,8 @@ pub struct PersonalDetails {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Passport {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -45,7 +47,8 @@ pub struct Passport {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct DriverLicense {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -61,7 +64,8 @@ pub struct DriverLicense {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct IdentityCard {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -77,7 +81,8 @@ pub struct IdentityCard {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct InternalPassport {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -91,7 +96,7 @@ pub struct InternalPassport {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Address {
     /// Base64-encoded encrypted Telegram Passport element data provided by the user. Can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub data: Box<str>,
@@ -99,7 +104,8 @@ pub struct Address {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct UtilityBill {
     /// Array of encrypted files with documents provided by the user. Files can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub files: Box<[PassportFile]>,
@@ -109,7 +115,8 @@ pub struct UtilityBill {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct BankStatement {
     /// Array of encrypted files with documents provided by the user. Files can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub files: Box<[PassportFile]>,
@@ -119,7 +126,8 @@ pub struct BankStatement {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct RentalAgreement {
     /// Array of encrypted files with documents provided by the user. Files can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub files: Box<[PassportFile]>,
@@ -129,7 +137,8 @@ pub struct RentalAgreement {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PassportRegistration {
     /// Array of encrypted files with documents provided by the user. Files can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub files: Box<[PassportFile]>,
@@ -139,7 +148,8 @@ pub struct PassportRegistration {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct TemporaryRegistration {
     /// Array of encrypted files with documents provided by the user. Files can be decrypted and verified using the accompanying [`EncryptedCredentials`](crate::types::EncryptedCredentials).
     pub files: Box<[PassportFile]>,
@@ -149,7 +159,7 @@ pub struct TemporaryRegistration {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PhoneNumber {
     /// User's verified phone number
     #[serde(rename = "phone_number")]
@@ -158,7 +168,7 @@ pub struct PhoneNumber {
     pub hash: Box<str>,
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Email {
     /// User's verified email address
     pub email: Box<str>,

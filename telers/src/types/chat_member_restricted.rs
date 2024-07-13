@@ -1,12 +1,12 @@
 use super::User;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Represents a [`ChatMember`](crate::types::ChatMember) that is under certain restrictions in the chat. Supergroups only.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatmemberrestricted>
 #[allow(clippy::struct_excessive_bools)]
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChatMemberRestricted {
     /// Information about the user
     pub user: User,

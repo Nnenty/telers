@@ -1,9 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object represents a unique message identifier.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messageid>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct MessageId {
     /// Unique message identifier
     #[serde(rename = "message_id")]

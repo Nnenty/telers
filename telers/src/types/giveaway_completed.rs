@@ -1,11 +1,13 @@
 use super::Message;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a service message about the completion of a giveaway without public winners.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#giveawaycompleted>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct GiveawayCompleted {
     /// Number of winners in the giveaway
     pub winner_count: i64,

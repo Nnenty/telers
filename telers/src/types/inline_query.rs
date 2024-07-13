@@ -2,12 +2,14 @@ use super::{Location, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#inlinequery>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct InlineQuery {
     /// Unique identifier for this query

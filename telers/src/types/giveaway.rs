@@ -1,11 +1,13 @@
-use serde::Deserialize;
-
 use super::Chat;
+
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents a message about a scheduled giveaway.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#giveaway>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Giveaway {
     /// The list of chats which the user must join to participate in the giveaway
     pub chats: Box<[Chat]>,

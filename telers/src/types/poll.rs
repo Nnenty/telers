@@ -2,12 +2,13 @@ use super::{MessageEntity, PollOption, Update, UpdateKind};
 
 use crate::{errors::ConvertToTypeError, extractors::FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains information about a poll.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#poll>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Poll {
@@ -15,7 +16,8 @@ pub enum Poll {
     Quiz(Quiz),
 }
 
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct Regular {
     /// Unique poll identifier
@@ -40,7 +42,8 @@ pub struct Regular {
     pub close_date: Option<i64>,
 }
 
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct Quiz {
     /// Unique poll identifier

@@ -1,11 +1,13 @@
 use super::Chat;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// The message was originally sent to a channel chat.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messageoriginchannel>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MessageOriginChannel {
     /// Date the message was sent originally in Unix time
     pub date: i64,

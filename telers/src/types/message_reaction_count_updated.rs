@@ -2,12 +2,12 @@ use super::{Chat, ReactionCount, Update, UpdateKind};
 
 use crate::{errors::ConvertToTypeError, extractors::FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object represents reaction changes on a message with anonymous reactions.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messagereactioncountupdated>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct MessageReactionCountUpdated {
     /// The chat containing the message

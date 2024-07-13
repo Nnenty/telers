@@ -2,14 +2,16 @@ use super::{Location, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// Represents a [`result`](https://core.telegram.org/bots/api#inlinequeryresult) of an inline query that was chosen by the user and sent to their chat partner.
 /// # Notes
 /// It is necessary to enable [`inline feedback`](https://core.telegram.org/bots/inline#collecting-feedback) via [`@BotFather`](https://t.me/botfather) in order to receive these objects in updates.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#choseninlineresult>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct ChosenInlineResult {
     /// The unique identifier for the result that was chosen

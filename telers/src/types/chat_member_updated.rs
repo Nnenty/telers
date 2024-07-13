@@ -2,12 +2,14 @@ use super::{Chat, ChatInviteLink, ChatMember, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents changes in the status of a chat member.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatmemberupdated>
-#[derive(Debug, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct ChatMemberUpdated {
     /// Chat the user belongs to

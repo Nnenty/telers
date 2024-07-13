@@ -8,7 +8,7 @@ use super::{
 
 use crate::{enums::UpdateType, extractors::FromEvent};
 
-use serde::{de::MapAccess, Deserialize, Deserializer};
+use serde::{de::MapAccess, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
     fmt::{self, Formatter},
     str::FromStr as _,
@@ -18,7 +18,7 @@ use std::{
 /// At most **one** of the optional parameters can be present in any given update.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#update>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Update {
     #[serde(rename = "update_id")]
     pub id: i64,
@@ -406,6 +406,80 @@ impl<'de> Deserialize<'de> for Kind {
         }
 
         deserializer.deserialize_any(Visitor)
+    }
+}
+
+impl Serialize for Kind {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let name = "UpdateKind";
+
+        match self {
+            Kind::Message(value) => serializer.serialize_newtype_variant(name, 0, "message", value),
+            Kind::EditedMessage(value) => {
+                serializer.serialize_newtype_variant(name, 1, "edited_message", value)
+            }
+            Kind::ChannelPost(value) => {
+                serializer.serialize_newtype_variant(name, 2, "channel_post", value)
+            }
+            Kind::EditedChannelPost(value) => {
+                serializer.serialize_newtype_variant(name, 3, "edited_channel_post", value)
+            }
+            Kind::BusinessConnection(value) => {
+                serializer.serialize_newtype_variant(name, 4, "business_connection", value)
+            }
+            Kind::BusinessMessage(value) => {
+                serializer.serialize_newtype_variant(name, 5, "business_message", value)
+            }
+            Kind::EditedBusinessMessage(value) => {
+                serializer.serialize_newtype_variant(name, 6, "edited_business_message", value)
+            }
+            Kind::DeletedBusinessMessages(value) => {
+                serializer.serialize_newtype_variant(name, 7, "deleted_business_messages", value)
+            }
+            Kind::MessageReaction(value) => {
+                serializer.serialize_newtype_variant(name, 8, "message_reaction", value)
+            }
+            Kind::MessageReactionCount(value) => {
+                serializer.serialize_newtype_variant(name, 9, "message_reaction_count", value)
+            }
+            Kind::InlineQuery(value) => {
+                serializer.serialize_newtype_variant(name, 10, "inline_query", value)
+            }
+            Kind::ChosenInlineResult(value) => {
+                serializer.serialize_newtype_variant(name, 11, "chosen_inline_result", value)
+            }
+            Kind::CallbackQuery(value) => {
+                serializer.serialize_newtype_variant(name, 12, "callback_query", value)
+            }
+            Kind::ShippingQuery(value) => {
+                serializer.serialize_newtype_variant(name, 13, "shipping_query", value)
+            }
+            Kind::PreCheckoutQuery(value) => {
+                serializer.serialize_newtype_variant(name, 14, "pre_checkout_query", value)
+            }
+            Kind::Poll(value) => serializer.serialize_newtype_variant(name, 15, "poll", value),
+            Kind::PollAnswer(value) => {
+                serializer.serialize_newtype_variant(name, 16, "poll_answer", value)
+            }
+            Kind::MyChatMember(value) => {
+                serializer.serialize_newtype_variant(name, 17, "my_chat_member", value)
+            }
+            Kind::ChatMember(value) => {
+                serializer.serialize_newtype_variant(name, 18, "chat_member", value)
+            }
+            Kind::ChatJoinRequest(value) => {
+                serializer.serialize_newtype_variant(name, 19, "chat_join_request", value)
+            }
+            Kind::ChatBoost(value) => {
+                serializer.serialize_newtype_variant(name, 20, "chat_boost", value)
+            }
+            Kind::RemovedChatBoost(value) => {
+                serializer.serialize_newtype_variant(name, 21, "removed_chat_boost", value)
+            }
+        }
     }
 }
 

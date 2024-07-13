@@ -2,12 +2,12 @@ use super::{Chat, Update, UpdateKind};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object is received when messages are deleted from a connected business account.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#businessmessagesdeleted>
-#[derive(Debug, Clone, PartialEq, Deserialize, FromEvent)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct BusinessMessagesDeleted {
     /// Unique identifier of the business connection

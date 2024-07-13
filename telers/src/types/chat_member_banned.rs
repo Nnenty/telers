@@ -1,11 +1,11 @@
 use super::User;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Represents a [`ChatMember`](crate::types::ChatMember) that was banned in the chat and can't return to the chat or view chat messages.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatmemberbanned>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChatMemberBanned {
     /// Information about the user
     pub user: User,

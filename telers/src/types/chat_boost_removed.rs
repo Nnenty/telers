@@ -2,12 +2,12 @@ use super::{Chat, ChatBoostSource, Update, UpdateKind};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object represents a boost removed from a chat.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatboostremoved>
-#[derive(Debug, Clone, PartialEq, Deserialize, FromEvent)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct ChatBoostRemoved {
     /// Chat which was boosted

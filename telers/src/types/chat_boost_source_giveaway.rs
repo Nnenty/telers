@@ -1,11 +1,13 @@
 use super::User;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatboostsourcegiveaway>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChatBoostSourceGiveaway {
     /// Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.
     pub giveaway_message_id: i64,

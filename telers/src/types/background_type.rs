@@ -2,7 +2,7 @@ use super::{
     BackgroundTypeChatTheme, BackgroundTypeFill, BackgroundTypePattern, BackgroundTypeWallpaper,
 };
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object describes the type of a background. Currently, it can be one of
 /// - [`BackgroundTypeFill`]
@@ -11,7 +11,7 @@ use serde::Deserialize;
 /// - [`BackgroundTypeChatTheme`]
 /// # Documentation
 /// <https://core.telegram.org/bots/api#backgroundtype>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum BackgroundType {
     Fill(BackgroundTypeFill),

@@ -1,11 +1,11 @@
 use super::Chat;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object describes a message that was deleted or is otherwise inaccessible to the bot.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#inaccessiblemessage>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct InaccessibleMessage {
     /// Chat the message belonged to
     pub chat: Chat,

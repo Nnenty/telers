@@ -3,7 +3,7 @@ use super::{
     ChatMemberRestricted,
 };
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use strum_macros::Display;
 
 /// This object contains information about one member of a chat. Currently, the following 6 types of chat members are supported:
@@ -15,7 +15,7 @@ use strum_macros::Display;
 /// - [`ChatMemberBanned`]
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatmember>
-#[derive(Debug, Display, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Display, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(tag = "status", rename_all = "snake_case")]
 pub enum ChatMember {
     #[serde(rename = "creator")]

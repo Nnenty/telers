@@ -2,12 +2,14 @@ use super::{OrderInfo, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains information about an incoming pre-checkout query.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#precheckoutquery>
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct PreCheckoutQuery {
     /// Unique query identifier

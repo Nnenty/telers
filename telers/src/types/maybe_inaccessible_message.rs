@@ -1,13 +1,13 @@
 use super::{InaccessibleMessage, Message};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object describes a message that can be inaccessible to the bot. It can be one of
 /// - [`Message`]
 /// - [`InaccessibleMessage`]
 /// # Documentation
 /// <https://core.telegram.org/bots/api#maybeinaccessiblemessage>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum MaybeInaccessibleMessage {
     Message(Message),

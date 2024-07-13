@@ -1,10 +1,12 @@
 use super::MessageEntity;
 
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 
 /// This object contains information about one answer option in a poll to send.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#inputpolloption>
+#[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct InputPollOption {
     /// Option text, 1-100 characters

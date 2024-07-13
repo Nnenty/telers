@@ -1,11 +1,11 @@
 use super::ChatBoostSource;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object contains information about a chat boost.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatboost>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChatBoost {
     /// Unique identifier of the boost
     #[serde(rename = "boost_id")]

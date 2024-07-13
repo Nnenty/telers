@@ -1,6 +1,6 @@
 use super::{MessageOriginChannel, MessageOriginChat, MessageOriginHiddenUser, MessageOriginUser};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// This object describes the origin of a message. It can be one of
 /// - [`MessageOriginUser`]
@@ -9,7 +9,7 @@ use serde::Deserialize;
 /// - [`MessageOriginChannel`]
 /// # Documentation
 /// <https://core.telegram.org/bots/api#messageorigin>
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum MessageOrigin {
     /// The message was originally sent by a known user.

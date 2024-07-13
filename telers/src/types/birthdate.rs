@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// # Documentation
 /// <https://core.telegram.org/bots/api#birthdate>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Birthdate {
     /// Day of the user's birth; 1-31
     pub day: i8,

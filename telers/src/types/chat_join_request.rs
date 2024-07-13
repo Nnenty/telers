@@ -2,12 +2,14 @@ use super::{Chat, ChatInviteLink, Update, UpdateKind, User};
 
 use crate::{errors::ConvertToTypeError, FromEvent};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// Represents a join request sent to a chat.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#chatjoinrequest>
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, FromEvent)]
+#[skip_serializing_none]
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
 pub struct ChatJoinRequest {
     /// Chat to which the request was sent

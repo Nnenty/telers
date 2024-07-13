@@ -1,9 +1,11 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object represents one size of a photo or a file ([document](crate::types::Document), [sticker](crate::types::Sticker)) thumbnail.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#photosize>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct PhotoSize {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: Box<str>,

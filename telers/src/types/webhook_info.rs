@@ -1,9 +1,11 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// Describes the current status of a webhook.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#webhookinfo>
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize)]
+#[skip_serializing_none]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct WebhookInfo {
     /// Webhook URL, may be empty if webhook is not set up
     pub url: Box<str>,
