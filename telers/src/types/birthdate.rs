@@ -9,5 +9,5 @@ pub struct Birthdate {
     /// Month of the user's birth; 1-12
     pub month: i8,
     /// Year of the user's birth
-    pub year: i16,
+    pub year: Option<i16>,
 }
