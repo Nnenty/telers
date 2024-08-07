@@ -25,7 +25,7 @@
 //! so we create [`StorageKey`] in the [`FSMContext middleware`] and pass it to the [`Context`]
 //! that wrap the [`StorageKey`] and [`Storage`] to provide more convenient API to work with the storage.
 //!
-//! You can check example of using FSM in the [`examples/finite_state_machine`].
+//! You can check example of using FSM in the [`examples/fsm`](https://github.com/Desiders/telers/tree/dev-1.x/examples/fsm).
 //!
 //! [`UserInChat`]: Strategy::UserInChat
 //! [`Chat`]: Strategy::Chat
