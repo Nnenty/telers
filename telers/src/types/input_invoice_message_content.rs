@@ -15,9 +15,9 @@ pub struct InputInvoiceMessageContent {
     pub description: String,
     /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
     pub payload: String,
-    /// Payments provider token, obtained via [`Botfather`](https://t.me/botfather)
+    /// Payments provider token, obtained via [`Botfather`](https://t.me/botfather). Pass an empty string for payments in [`Telegram Stars`](https://t.me/BotNews/90).
     pub provider_token: String,
-    /// Three-letter ISO 4217 currency code, see [`more on currencies`](https://core.telegram.org/bots/payments#supported-currencies)
+    /// Three-letter ISO 4217 currency code, see [`more on currencies`](https://core.telegram.org/bots/payments#supported-currencies). Pass `XTR` for payments in [`Telegram Stars`](https://t.me/BotNews/90).
     pub currency: String,
     /// Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
     pub prices: Vec<LabeledPrice>,
