@@ -412,6 +412,8 @@ pub struct Game {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the game. [`More about games`](https://core.telegram.org/bots/api#games)
     pub game: types::Game,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -462,6 +464,8 @@ pub struct Poll {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the poll
     pub poll: types::Poll,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -514,6 +518,8 @@ pub struct Venue {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the venue
     pub venue: types::Venue,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -566,6 +572,8 @@ pub struct Location {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the location
     pub location: types::Location,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -1272,6 +1280,8 @@ pub struct Invoice {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Message is an invoice for a [`payment`](https://core.telegram.org/bots/api#payments), information about the invoice. [`More about payments`](https://core.telegram.org/bots/api#payments)
     pub invoice: types::Invoice,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -2255,11 +2265,39 @@ impl Message {
                 Some(ref effect_id) => Some(effect_id),
                 None => None,
             },
+            Message::VideoNote(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
             Message::Voice(message) => match message.effect_id {
                 Some(ref effect_id) => Some(effect_id),
                 None => None,
             },
             Message::Photo(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Sticker(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Location(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Poll(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Game(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Invoice(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Venue(message) => match message.effect_id {
                 Some(ref effect_id) => Some(effect_id),
                 None => None,
             },
