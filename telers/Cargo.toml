@@ -17,8 +17,8 @@ full = ["storages"]
 storages = ["redis-storage", "memory-storage"]
 # For possible use redis FSM storage
 redis-storage = ["redis", "deadpool-redis"]
-# For possible use memory FSM storage
-memory-storage = ["bincode"]
+# For possible use memory FSM storage.
+memory-storage = []
 
 [dependencies]
 telers-macros = { path = "../telers-macros", version = "1.0.0-alpha.2", features = ["default"] } 
@@ -46,7 +46,6 @@ uuid = { version = "1.7", features = ["v4"] }
 
 redis = { version = "0.25", features = ["tokio-comp"], optional = true }
 deadpool-redis = {version = "0.15", optional = true }
-bincode = { version = "1.3", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.4"
