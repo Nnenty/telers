@@ -13,7 +13,7 @@ use tracing::{event, instrument, Level, Span};
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 struct Record {
     states: Vec<Cow<'static, str>>,
-    data: HashMap<Cow<'static, str>, Box<[u8]>>,
+    data: HashMap<Cow<'static, str>, Box<str>>,
 }
 
 /// This is a simple thread-safe in-memory storage implementation used for testing purposes usually
@@ -167,7 +167,7 @@ impl Storage for Memory {
                 for (value_key, value) in data {
                     new_data.insert(
                         value_key.into(),
-                        bincode::serialize(&value)
+                        serde_json::to_string(&value)
                             .map_err(|err| {
                                 event!(Level::ERROR, "Failed to serialize value");
 
@@ -196,7 +196,7 @@ impl Storage for Memory {
                 for (value_key, value) in data {
                     new_data.insert(
                         value_key.into(),
-                        bincode::serialize(&value)
+                        serde_json::to_string(&value)
                             .map_err(|err| {
                                 event!(Level::ERROR, "Failed to serialize value");
 
@@ -242,7 +242,7 @@ impl Storage for Memory {
             Entry::Occupied(mut entry) => {
                 entry.get_mut().data.insert(
                     value_key,
-                    bincode::serialize(&value)
+                    serde_json::to_string(&value)
                         .map_err(|err| {
                             event!(Level::ERROR, "Failed to serialize value");
 
@@ -261,7 +261,7 @@ impl Storage for Memory {
                         let mut new_data = HashMap::with_capacity(1);
                         new_data.insert(
                             value_key,
-                            bincode::serialize(&value)
+                            serde_json::to_string(&value)
                                 .map_err(|err| {
                                     event!(Level::ERROR, "Failed to serialize value");
 
@@ -303,7 +303,7 @@ impl Storage for Memory {
                 for (value_key, value) in entry_data {
                     data.insert(
                         value_key.as_ref().into(),
-                        bincode::deserialize(value).map_err(|err| {
+                        serde_json::from_str(value).map_err(|err| {
                             event!(Level::ERROR, "Failed to deserialize value");
 
                             Error::new(
@@ -342,7 +342,7 @@ impl Storage for Memory {
 
         match self.storage.lock().await.entry(key.clone()) {
             Entry::Occupied(entry) => entry.get().data.get(&value_key).map_or(Ok(None), |value| {
-                Ok(Some(bincode::deserialize(value).map_err(|err| {
+                Ok(Some(serde_json::from_str(value).map_err(|err| {
                     event!(Level::ERROR, "Failed to deserialize value");
 
                     Error::new(
