@@ -2213,6 +2213,7 @@ impl Message {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn entities(&self) -> Option<&[MessageEntity]> {
         match self {
@@ -2267,6 +2268,7 @@ impl Message {
         }
     }
 
+    #[allow(clippy::match_as_ref)]
     #[must_use]
     pub const fn effect_id(&self) -> Option<&str> {
         match self {
