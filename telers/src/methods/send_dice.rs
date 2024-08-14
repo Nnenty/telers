@@ -28,6 +28,8 @@ pub struct SendDice {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Unique identifier of the message effect to be added to the message; for private chats only
+    pub message_effect_id: Option<String>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// Additional interface options. A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots/features#inline-keyboards), [custom reply keyboard](https://core.telegram.org/bots/features#keyboards), instructions to remove reply keyboard or to force a reply from the user.
@@ -44,6 +46,7 @@ impl SendDice {
             emoji: None,
             disable_notification: None,
             protect_content: None,
+            message_effect_id: None,
             reply_parameters: None,
             reply_markup: None,
         }
@@ -93,6 +96,14 @@ impl SendDice {
     pub fn protect_content(self, val: bool) -> Self {
         Self {
             protect_content: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn message_effect_id(self, val: impl Into<String>) -> Self {
+        Self {
+            message_effect_id: Some(val.into()),
             ..self
         }
     }
@@ -151,6 +162,14 @@ impl SendDice {
     pub fn protect_content_option(self, val: Option<bool>) -> Self {
         Self {
             protect_content: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn message_effect_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            message_effect_id: val.map(Into::into),
             ..self
         }
     }

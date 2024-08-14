@@ -26,6 +26,8 @@ pub struct InlineQueryResultVideo {
     pub parse_mode: Option<String>,
     /// List of special entities that appear in the caption, which can be specified instead of *parse_mode*
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Video width
     pub video_width: Option<i64>,
     /// Video height
@@ -58,6 +60,7 @@ impl InlineQueryResultVideo {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             video_width: None,
             video_height: None,
             video_duration: None,
@@ -152,6 +155,14 @@ impl InlineQueryResultVideo {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn video_width(self, val: i64) -> Self {
         Self {
             video_width: Some(val),
@@ -218,17 +229,26 @@ impl InlineQueryResultVideo {
     }
 
     #[must_use]
-    pub fn caption_entity_option(self, val: Option<MessageEntity>) -> Self {
+    pub fn caption_entities_option(
+        self,
+        val: Option<impl IntoIterator<Item = MessageEntity>>,
+    ) -> Self {
         Self {
-            caption_entities: val.map(|v| vec![v]),
+            caption_entities: val.map(|val| {
+                self.caption_entities
+                    .unwrap_or_default()
+                    .into_iter()
+                    .chain(val)
+                    .collect()
+            }),
             ..self
         }
     }
 
     #[must_use]
-    pub fn caption_entities_option(self, val: Option<Vec<MessageEntity>>) -> Self {
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
         Self {
-            caption_entities: val,
+            show_caption_above_media: val,
             ..self
         }
     }

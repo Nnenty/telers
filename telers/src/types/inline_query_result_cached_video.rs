@@ -21,6 +21,8 @@ pub struct InlineQueryResultCachedVideo {
     pub parse_mode: Option<String>,
     /// List of special entities that appear in the caption, which can be specified instead of *parse_mode*
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Short description of the result
     pub description: Option<String>,
     /// [`Inline keyboard`](https://core.telegram.org/bots/features#inline-keyboards) attached to the message
@@ -43,6 +45,7 @@ impl InlineQueryResultCachedVideo {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             description: None,
             reply_markup: None,
             input_message_content: None,
@@ -118,6 +121,14 @@ impl InlineQueryResultCachedVideo {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn description(self, val: impl Into<String>) -> Self {
         Self {
             description: Some(val.into()),
@@ -180,6 +191,14 @@ impl InlineQueryResultCachedVideo {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }

@@ -21,6 +21,8 @@ pub struct InlineQueryResultCachedMpeg4Gif {
     pub parse_mode: Option<String>,
     /// List of special entities that appear in the caption, which can be specified instead of *parse_mode*
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// [`Inline keyboard`](https://core.telegram.org/bots/features#inline-keyboards) attached to the message
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Content of the message to be sent instead of the video animation
@@ -37,6 +39,7 @@ impl InlineQueryResultCachedMpeg4Gif {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             reply_markup: None,
             input_message_content: None,
         }
@@ -111,6 +114,14 @@ impl InlineQueryResultCachedMpeg4Gif {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn reply_markup(self, val: impl Into<InlineKeyboardMarkup>) -> Self {
         Self {
             reply_markup: Some(val.into()),
@@ -165,6 +176,14 @@ impl InlineQueryResultCachedMpeg4Gif {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }

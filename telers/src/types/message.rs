@@ -132,6 +132,10 @@ pub struct Animation {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
     pub has_media_spoiler: Option<bool>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -195,6 +199,8 @@ pub struct Audio {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -243,6 +249,8 @@ pub struct Contact {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the contact
     pub contact: types::Contact,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -291,6 +299,8 @@ pub struct Dice {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Message is a dice with random value
     pub dice: types::Dice,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -354,6 +364,8 @@ pub struct Document {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -402,6 +414,8 @@ pub struct Game {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the game. [`More about games`](https://core.telegram.org/bots/api#games)
     pub game: types::Game,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -452,6 +466,8 @@ pub struct Poll {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the poll
     pub poll: types::Poll,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -504,6 +520,8 @@ pub struct Venue {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the venue
     pub venue: types::Venue,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -556,6 +574,8 @@ pub struct Location {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the location
     pub location: types::Location,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -619,6 +639,10 @@ pub struct Photo {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
     pub has_media_spoiler: Option<bool>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -730,6 +754,8 @@ pub struct Sticker {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the sticker
     pub sticker: types::Sticker,
 }
@@ -788,6 +814,8 @@ pub struct Text {
     pub entities: Option<Box<[MessageEntity]>>,
     /// Options used for link preview generation for the message, if it is a text message an
     pub link_preview_options: Option<LinkPreviewOptions>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -849,6 +877,10 @@ pub struct Video {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
     pub has_media_spoiler: Option<bool>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -897,6 +929,8 @@ pub struct VideoNote {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Information about the video message
     pub video_note: types::VideoNote,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -956,6 +990,8 @@ pub struct Voice {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -1250,6 +1286,8 @@ pub struct Invoice {
     pub is_from_offline: Option<bool>,
     /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
     pub author_signature: Option<Box<str>>,
+    /// Unique identifier of the message effect added to the message
+    pub effect_id: Option<Box<str>>,
     /// Message is an invoice for a [`payment`](https://core.telegram.org/bots/api#payments), information about the invoice. [`More about payments`](https://core.telegram.org/bots/api#payments)
     pub invoice: types::Invoice,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
@@ -2172,6 +2210,125 @@ impl Message {
             Some(text)
         } else {
             self.caption()
+        }
+    }
+
+    #[allow(clippy::match_as_ref)]
+    #[must_use]
+    pub const fn entities(&self) -> Option<&[MessageEntity]> {
+        match self {
+            Message::Text(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Animation(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Audio(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Document(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Video(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Voice(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            Message::Photo(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn show_caption_above_media(&self) -> Option<bool> {
+        match self {
+            Message::Animation(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            Message::Video(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            Message::Photo(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            _ => None,
+        }
+    }
+
+    #[allow(clippy::match_as_ref)]
+    #[must_use]
+    pub const fn effect_id(&self) -> Option<&str> {
+        match self {
+            Message::Text(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Animation(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Audio(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Document(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Video(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::VideoNote(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Voice(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Photo(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Sticker(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Location(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Poll(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Game(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Invoice(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            Message::Venue(message) => match message.effect_id {
+                Some(ref effect_id) => Some(effect_id),
+                None => None,
+            },
+            _ => None,
         }
     }
 

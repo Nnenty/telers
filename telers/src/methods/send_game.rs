@@ -28,6 +28,8 @@ pub struct SendGame {
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Unique identifier of the message effect to be added to the message; for private chats only
+    pub message_effect_id: Option<String>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots/features#inline-keyboards). If empty, one ‘Play game_title’ button will be shown. If not empty, the first button must launch the game.
@@ -44,6 +46,7 @@ impl SendGame {
             game_short_name: game_short_name.into(),
             disable_notification: None,
             protect_content: None,
+            message_effect_id: None,
             reply_parameters: None,
             reply_markup: None,
         }
@@ -98,6 +101,14 @@ impl SendGame {
     }
 
     #[must_use]
+    pub fn message_effect_id(self, val: impl Into<String>) -> Self {
+        Self {
+            message_effect_id: Some(val.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn reply_parameters(self, val: ReplyParameters) -> Self {
         Self {
             reply_parameters: Some(val),
@@ -143,6 +154,14 @@ impl SendGame {
     pub fn protect_content_option(self, val: Option<bool>) -> Self {
         Self {
             protect_content: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn message_effect_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            message_effect_id: val.map(Into::into),
             ..self
         }
     }

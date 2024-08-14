@@ -30,12 +30,16 @@ pub struct SendPhoto<'a> {
     pub parse_mode: Option<String>,
     /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of `parse_mode`
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Pass `true` if the photo needs to be covered with a spoiler animation
     pub has_spoiler: Option<bool>,
     /// Sends the message [silently](https://telegram.org/blog/channels-2-0#silent-messages). Users will receive a notification with no sound
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
     pub protect_content: Option<bool>,
+    /// Unique identifier of the message effect to be added to the message; for private chats only
+    pub message_effect_id: Option<String>,
     /// Description of the message to reply to
     pub reply_parameters: Option<ReplyParameters>,
     /// Additional interface options. A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots/features#inline-keyboards), [custom reply keyboard](https://core.telegram.org/bots/features#keyboards), instructions to remove reply keyboard or to force a reply from the user.
@@ -53,9 +57,11 @@ impl<'a> SendPhoto<'a> {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             has_spoiler: None,
             disable_notification: None,
             protect_content: None,
+            message_effect_id: None,
             reply_parameters: None,
             reply_markup: None,
         }
@@ -138,6 +144,14 @@ impl<'a> SendPhoto<'a> {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn has_spoiler(self, val: bool) -> Self {
         Self {
             has_spoiler: Some(val),
@@ -157,6 +171,14 @@ impl<'a> SendPhoto<'a> {
     pub fn protect_content(self, val: bool) -> Self {
         Self {
             protect_content: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn message_effect_id(self, val: impl Into<String>) -> Self {
+        Self {
+            message_effect_id: Some(val.into()),
             ..self
         }
     }
@@ -229,6 +251,14 @@ impl<'a> SendPhoto<'a> {
     }
 
     #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn has_spoiler_option(self, val: Option<bool>) -> Self {
         Self {
             has_spoiler: val,
@@ -248,6 +278,14 @@ impl<'a> SendPhoto<'a> {
     pub fn protect_content_option(self, val: Option<bool>) -> Self {
         Self {
             protect_content: val,
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn message_effect_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            message_effect_id: val.map(Into::into),
             ..self
         }
     }

@@ -194,7 +194,16 @@ impl From<InlineQueryResultVoice> for InlineQueryResult {
 }
 
 mod raw {
-    use super::*;
+    use super::{
+        Deserialize, InlineQueryResultArticle, InlineQueryResultAudio,
+        InlineQueryResultCachedAudio, InlineQueryResultCachedDocument, InlineQueryResultCachedGif,
+        InlineQueryResultCachedMpeg4Gif, InlineQueryResultCachedPhoto,
+        InlineQueryResultCachedSticker, InlineQueryResultCachedVideo, InlineQueryResultCachedVoice,
+        InlineQueryResultContact, InlineQueryResultDocument, InlineQueryResultGame,
+        InlineQueryResultGif, InlineQueryResultLocation, InlineQueryResultMpeg4Gif,
+        InlineQueryResultPhoto, InlineQueryResultVenue, InlineQueryResultVideo,
+        InlineQueryResultVoice, Serialize,
+    };
 
     #[derive(Serialize, Deserialize)]
     #[serde(untagged)]

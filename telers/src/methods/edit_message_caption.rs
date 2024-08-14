@@ -28,6 +28,8 @@ pub struct EditMessageCaption {
     pub parse_mode: Option<String>,
     /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of `parse_mode`
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// A JSON-serialized object for an [inline keyboard](https://core.telegram.org/bots/features#inline-keyboards).
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -42,6 +44,7 @@ impl EditMessageCaption {
             caption: caption.into(),
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             reply_markup: None,
         }
     }
@@ -115,6 +118,14 @@ impl EditMessageCaption {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn reply_markup(self, val: impl Into<InlineKeyboardMarkup>) -> Self {
         Self {
             reply_markup: Some(val.into()),
@@ -169,6 +180,14 @@ impl EditMessageCaption {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }
