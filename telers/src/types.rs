@@ -1,5 +1,6 @@
 //! This module contains telegram types from the [Telegram Bot API](https://core.telegram.org/bots/api).
-//! Each type has a description and a link to the official documentation.
+//! Each type has a description and a link to the official documentation,
+//! but we recommend to use documentation instead of description (docs copy-paste) because it has actual info
 //!
 //! Telegram types are represented as Rust structs, if a field:
 //! - is optional, it will be wrapped in [`Option`],
