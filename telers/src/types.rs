@@ -155,6 +155,9 @@ pub mod input_media_document;
 pub mod input_media_photo;
 pub mod input_media_video;
 pub mod input_message_content;
+pub mod input_paid_media;
+pub mod input_paid_media_photo;
+pub mod input_paid_media_video;
 pub mod input_poll_option;
 pub mod input_sticker;
 pub mod input_text_message_content;
@@ -187,6 +190,11 @@ pub mod message_origin_user;
 pub mod message_reaction_count_updated;
 pub mod message_reaction_updated;
 pub mod order_info;
+pub mod paid_media;
+pub mod paid_media_info;
+pub mod paid_media_photo;
+pub mod paid_media_preview;
+pub mod paid_media_video;
 pub mod passport_data;
 pub mod passport_element_error;
 pub mod passport_element_error_data_field;
@@ -341,10 +349,11 @@ pub use external_reply_info::{
     Document as ExternalReplyInfoDocument, ExternalReplyInfo, Game as ExternalReplyInfoGame,
     Giveaway as ExternalReplyInfoGiveaway, GiveawayWinners as ExternalReplyInfoGiveawayWinners,
     Invoice as ExternalReplyInfoInvoice, Location as ExternalReplyInfoLocation,
-    Photo as ExternalReplyInfoPhoto, Poll as ExternalReplyInfoPoll,
-    Sticker as ExternalReplyInfoSticker, Story as ExternalReplyInfoStory,
-    Venue as ExternalReplyInfoVenue, Video as ExternalReplyInfoVideo,
-    VideoNote as ExternalReplyInfoVideoNote, Voice as ExternalReplyInfoVoice,
+    PaidMedia as ExternalReplyInfoPaidMedia, Photo as ExternalReplyInfoPhoto,
+    Poll as ExternalReplyInfoPoll, Sticker as ExternalReplyInfoSticker,
+    Story as ExternalReplyInfoStory, Venue as ExternalReplyInfoVenue,
+    Video as ExternalReplyInfoVideo, VideoNote as ExternalReplyInfoVideoNote,
+    Voice as ExternalReplyInfoVoice,
 };
 pub use file::File;
 pub use force_reply::ForceReply;
@@ -401,6 +410,9 @@ pub use input_media_document::InputMediaDocument;
 pub use input_media_photo::InputMediaPhoto;
 pub use input_media_video::InputMediaVideo;
 pub use input_message_content::InputMessageContent;
+pub use input_paid_media::InputPaidMedia;
+pub use input_paid_media_photo::InputPaidMediaPhoto;
+pub use input_paid_media_video::InputPaidMediaVideo;
 pub use input_poll_option::InputPollOption;
 pub use input_sticker::InputSticker;
 pub use input_text_message_content::InputTextMessageContent;
@@ -436,10 +448,11 @@ pub use message::{
     MessageAutoDeleteTimerChanged as MessageMessageAutoDeleteTimerChanged,
     MigrateFromChat as MessageMigrateFromChat, MigrateToChat as MessageMigrateToChat,
     NewChatMembers as MessageNewChatMembers, NewChatPhoto as MessageNewChatPhoto,
-    NewChatTitle as MessageNewChatTitle, PassportData as MessagePassportData,
-    Photo as MessagePhoto, Pinned as MessagePinned, Poll as MessagePoll,
-    ProximityAlertTriggered as MessageProximityAlertTriggered, Sticker as MessageSticker,
-    Story as MessageStory, SuccessfulPayment as MessageSuccessfulPayment,
+    NewChatTitle as MessageNewChatTitle, PaidMedia as MessagePaidMedia,
+    PassportData as MessagePassportData, Photo as MessagePhoto, Pinned as MessagePinned,
+    Poll as MessagePoll, ProximityAlertTriggered as MessageProximityAlertTriggered,
+    Sticker as MessageSticker, Story as MessageStory,
+    SuccessfulPayment as MessageSuccessfulPayment,
     SupergroupChatCreated as MessageSupergroupChatCreated, Text as MessageText,
     UsersShared as MessageUsersShared, Venue as MessageVenue, Video as MessageVideo,
     VideoChatEnded as MessageVideoChatEnded,
@@ -464,6 +477,11 @@ pub use message_origin_user::MessageOriginUser;
 pub use message_reaction_count_updated::MessageReactionCountUpdated;
 pub use message_reaction_updated::MessageReactionUpdated;
 pub use order_info::OrderInfo;
+pub use paid_media::PaidMedia;
+pub use paid_media_info::PaidMediaInfo;
+pub use paid_media_photo::PaidMediaPhoto;
+pub use paid_media_preview::PaidMediaPreview;
+pub use paid_media_video::PaidMediaVideo;
 pub use passport_data::PassportData;
 pub use passport_element_error::PassportElementError;
 pub use passport_element_error_data_field::{

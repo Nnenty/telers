@@ -1,34 +1,34 @@
-use super::base::{Request, TelegramMethod};
+use super::base::{prepare_input_paid_media_group, Request, TelegramMethod};
 
 use crate::{
     client::Bot,
-    types::{ChatIdKind, MessageEntity, MessageId, ReplyMarkup, ReplyParameters},
+    types::{ChatIdKind, InputPaidMedia, Message, MessageEntity, ReplyMarkup, ReplyParameters},
 };
 
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 
-/// Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz [`poll`](crate::types::Poll) can be copied only if the value of the field `correct_option_id` is known to the bot. The method is analogous to the method [`ForwardMessage`](crate::methods::ForwardMessage), but the copied message doesn't have a link to the original message.
+/// Use this method to send paid media.
 /// # Documentation
-/// <https://core.telegram.org/bots/api#copymessage>
+/// <https://core.telegram.org/bots/api#sendpaidmedia>
 /// # Returns
-/// Returns the [`MessageId`] of the sent message on success
+/// On success, the sent [`Message`] is returned
 #[skip_serializing_none]
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
-pub struct CopyMessage {
-    /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
+#[derive(Debug, Clone, Hash, PartialEq, Serialize)]
+pub struct SendPaidMedia<'a> {
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
+    /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
     pub chat_id: ChatIdKind,
-    /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-    pub message_thread_id: Option<i64>,
-    /// Unique identifier for the chat where the original message was sent (or channel username in the format `@channelusername`)
-    pub from_chat_id: ChatIdKind,
-    /// Message identifier in the chat specified in `from_chat_id`
-    pub message_id: i64,
-    /// New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
+    /// The number of Telegram Stars that must be paid to buy access to the media
+    pub star_count: i64,
+    /// A JSON-serialized array describing the media to be sent; up to 10 items
+    pub media: Vec<InputPaidMedia<'a>>,
+    /// Media caption, 0-1024 characters after entities parsing
     pub caption: Option<String>,
-    /// Mode for parsing entities in the new caption. See [formatting options](https://core.telegram.org/bots/api#formatting-options) for more details.
+    /// Mode for parsing entities in the media caption. See [`formatting options`](https://core.telegram.org/bots/api#formatting-options) for more details.
     pub parse_mode: Option<String>,
-    /// A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of `parse_mode`
+    /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of `parse_mode`
     pub caption_entities: Option<Vec<MessageEntity>>,
     /// Pass `true`, if the caption must be shown above the message media
     pub show_caption_above_media: Option<bool>,
@@ -42,18 +42,18 @@ pub struct CopyMessage {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-impl CopyMessage {
+impl<'a> SendPaidMedia<'a> {
     #[must_use]
-    pub fn new(
-        chat_id: impl Into<ChatIdKind>,
-        from_chat_id: impl Into<ChatIdKind>,
-        message_id: i64,
-    ) -> Self {
+    pub fn new<T, I>(chat_id: impl Into<ChatIdKind>, star_count: i64, media: I) -> Self
+    where
+        T: Into<InputPaidMedia<'a>>,
+        I: IntoIterator<Item = T>,
+    {
         Self {
+            business_connection_id: None,
             chat_id: chat_id.into(),
-            message_thread_id: None,
-            from_chat_id: from_chat_id.into(),
-            message_id,
+            star_count,
+            media: media.into_iter().map(Into::into).collect(),
             caption: None,
             parse_mode: None,
             caption_entities: None,
@@ -66,6 +66,14 @@ impl CopyMessage {
     }
 
     #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn chat_id(self, val: impl Into<ChatIdKind>) -> Self {
         Self {
             chat_id: val.into(),
@@ -74,25 +82,33 @@ impl CopyMessage {
     }
 
     #[must_use]
-    pub fn message_thread_id(self, val: i64) -> Self {
+    pub fn star_count(self, val: i64) -> Self {
         Self {
-            message_thread_id: Some(val),
+            star_count: val,
             ..self
         }
     }
 
     #[must_use]
-    pub fn from_chat_id(self, val: impl Into<ChatIdKind>) -> Self {
+    pub fn media_single(self, val: impl Into<InputPaidMedia<'a>>) -> Self {
         Self {
-            from_chat_id: val.into(),
+            media: self.media.into_iter().chain(Some(val.into())).collect(),
             ..self
         }
     }
 
     #[must_use]
-    pub fn message_id(self, val: i64) -> Self {
+    pub fn media<T, I>(self, val: I) -> Self
+    where
+        T: Into<InputPaidMedia<'a>>,
+        I: IntoIterator<Item = T>,
+    {
         Self {
-            message_id: val,
+            media: self
+                .media
+                .into_iter()
+                .chain(val.into_iter().map(Into::into))
+                .collect(),
             ..self
         }
     }
@@ -182,11 +198,11 @@ impl CopyMessage {
     }
 }
 
-impl CopyMessage {
+impl<'a> SendPaidMedia<'a> {
     #[must_use]
-    pub fn message_thread_id_option(self, val: Option<i64>) -> Self {
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
         Self {
-            message_thread_id: val,
+            business_connection_id: val.map(Into::into),
             ..self
         }
     }
@@ -265,16 +281,19 @@ impl CopyMessage {
     }
 }
 
-impl TelegramMethod for CopyMessage {
+impl<'a> TelegramMethod for SendPaidMedia<'a> {
     type Method = Self;
-    type Return = MessageId;
+    type Return = Message;
 
     fn build_request<Client>(&self, _bot: &Bot<Client>) -> Request<Self::Method> {
-        Request::new("copyMessage", self, None)
+        let mut files = vec![];
+        prepare_input_paid_media_group(&mut files, &self.media);
+
+        Request::new("sendPaidMedia", self, Some(files.into()))
     }
 }
 
-impl AsRef<CopyMessage> for CopyMessage {
+impl<'a> AsRef<SendPaidMedia<'a>> for SendPaidMedia<'a> {
     fn as_ref(&self) -> &Self {
         self
     }

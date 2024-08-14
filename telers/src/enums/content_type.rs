@@ -15,6 +15,8 @@ pub enum ContentType {
     Audio,
     #[strum(serialize = "document")]
     Document,
+    #[strum(serialize = "paid_media")]
+    PaidMedia,
     #[strum(serialize = "photo")]
     Photo,
     #[strum(serialize = "sticker")]
@@ -117,12 +119,13 @@ pub enum ContentType {
 
 impl ContentType {
     #[must_use]
-    pub const fn all() -> [ContentType; 53] {
+    pub const fn all() -> [ContentType; 54] {
         [
             ContentType::Text,
             ContentType::Animation,
             ContentType::Audio,
             ContentType::Document,
+            ContentType::PaidMedia,
             ContentType::Photo,
             ContentType::Sticker,
             ContentType::Story,
@@ -201,6 +204,7 @@ impl From<&Message> for ContentType {
             Message::Animation(_) => ContentType::Animation,
             Message::Audio(_) => ContentType::Audio,
             Message::Document(_) => ContentType::Document,
+            Message::PaidMedia(_) => ContentType::PaidMedia,
             Message::Photo(_) => ContentType::Photo,
             Message::Sticker(_) => ContentType::Sticker,
             Message::Story(_) => ContentType::Story,

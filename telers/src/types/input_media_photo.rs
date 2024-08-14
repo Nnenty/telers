@@ -9,7 +9,7 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Serialize)]
 pub struct InputMediaPhoto<'a> {
-    /// File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using `multipart/form-data` under <file_attach_name> name. [`More information on Sending Files`](https://core.telegram.org/bots/api#sending-files).
+    /// File to send. Pass a `file_id` to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass `attach://<file_attach_name>` to upload a new one using `multipart/form-data` under `<file_attach_name>` name. [`More information on Sending Files`](https://core.telegram.org/bots/api#sending-files).
     pub media: InputFile<'a>,
     /// Caption of the photo to be sent, 0-1024 characters after entities parsing
     pub caption: Option<String>,
