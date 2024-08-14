@@ -52,8 +52,8 @@ You may consider checking out [this directory][examples] for more examples.
 
 ## License
 This project is licensed under either of the following licenses, at your option:
- - [Apache License, Version 2.0](LICENSE-APACHE)
- - [MIT License](LICENSE-MIT)
+ - [Apache License, Version 2.0][licence_apache]
+ - [MIT License][licence_mit]
 
 [examples]: https://github.com/Desiders/telers/tree/dev-1.x/examples
 [examples/axum_and_echo_bot]: https://github.com/Desiders/telers/tree/dev-1.x/examples/axum_and_echo_bot
@@ -66,3 +66,5 @@ This project is licensed under either of the following licenses, at your option:
 [examples/text_case_filters]: https://github.com/Desiders/telers/tree/dev-1.x/examples/text_case_filters
 [examples/text_formatting]: https://github.com/Desiders/telers/tree/dev-1.x/examples/text_formatting
 [examples/echo_bot]: https://github.com/Desiders/telers/tree/dev-1.x/examples/echo_bot
+[licence_apache]: https://github.com/Desiders/telers/blob/dev-1.x/telers/LICENSE-APACHE
+[licence_mit]: https://github.com/Desiders/telers/blob/dev-1.x/telers/LICENSE-MIT
