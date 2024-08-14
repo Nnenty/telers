@@ -217,6 +217,7 @@ pub mod reaction_count;
 pub mod reaction_type;
 pub mod reaction_type_custom_emoji;
 pub mod reaction_type_emoji;
+pub mod refunded_payment;
 pub mod reply_keyboard_markup;
 pub mod reply_keyboard_remove;
 pub mod reply_markup;
@@ -451,7 +452,7 @@ pub use message::{
     NewChatTitle as MessageNewChatTitle, PaidMedia as MessagePaidMedia,
     PassportData as MessagePassportData, Photo as MessagePhoto, Pinned as MessagePinned,
     Poll as MessagePoll, ProximityAlertTriggered as MessageProximityAlertTriggered,
-    Sticker as MessageSticker, Story as MessageStory,
+    RefundedPayment as MessageRefundedPayment, Sticker as MessageSticker, Story as MessageStory,
     SuccessfulPayment as MessageSuccessfulPayment,
     SupergroupChatCreated as MessageSupergroupChatCreated, Text as MessageText,
     UsersShared as MessageUsersShared, Venue as MessageVenue, Video as MessageVideo,
@@ -520,6 +521,7 @@ pub use reaction_count::ReactionCount;
 pub use reaction_type::ReactionType;
 pub use reaction_type_custom_emoji::ReactionTypeCustomEmoji;
 pub use reaction_type_emoji::ReactionTypeEmoji;
+pub use refunded_payment::RefundedPayment;
 pub use reply_keyboard_markup::ReplyKeyboardMarkup;
 pub use reply_keyboard_remove::ReplyKeyboardRemove;
 pub use reply_markup::ReplyMarkup;

@@ -53,6 +53,7 @@ pub enum Message {
     Pinned(Box<Pinned>),
     Invoice(Box<Invoice>),
     SuccessfulPayment(Box<SuccessfulPayment>),
+    RefundedPayment(Box<RefundedPayment>),
     UsersShared(Box<UsersShared>),
     ChatShared(Box<ChatShared>),
     ConnectedWebsite(Box<ConnectedWebsite>),
@@ -1378,6 +1379,26 @@ pub struct SuccessfulPayment {
 #[skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
 #[event(try_from = Update)]
+pub struct RefundedPayment {
+    /// Unique message identifier inside this chat
+    #[serde(rename = "message_id")]
+    pub id: i64,
+    /// Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub from: Option<User>,
+    /// Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub sender_chat: Option<Chat>,
+    /// Date the message was sent in Unix time
+    pub date: i64,
+    /// Conversation the message belongs to
+    pub chat: Chat,
+    /// Message is a service message about a successful payment, information about the payment. [`More about payments`](https://core.telegram.org/bots/api#payments)
+    #[serde(rename = "refunded_payment")]
+    pub payment: types::RefundedPayment,
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
+#[event(try_from = Update)]
 pub struct UsersShared {
     /// Unique message identifier inside this chat
     #[serde(rename = "message_id")]
@@ -1923,6 +1944,7 @@ impl Message {
             Message::Pinned(message) => message.id,
             Message::Invoice(message) => message.id,
             Message::SuccessfulPayment(message) => message.id,
+            Message::RefundedPayment(message) => message.id,
             Message::UsersShared(message) => message.id,
             Message::ChatShared(message) => message.id,
             Message::ConnectedWebsite(message) => message.id,
@@ -2019,6 +2041,7 @@ impl Message {
             Message::Pinned(message) => message.date,
             Message::Invoice(message) => message.date,
             Message::SuccessfulPayment(message) => message.date,
+            Message::RefundedPayment(message) => message.date,
             Message::UsersShared(message) => message.date,
             Message::ChatShared(message) => message.date,
             Message::ConnectedWebsite(message) => message.date,
@@ -2187,6 +2210,7 @@ impl Message {
             Message::Pinned(message) => &message.chat,
             Message::Invoice(message) => &message.chat,
             Message::SuccessfulPayment(message) => &message.chat,
+            Message::RefundedPayment(message) => &message.chat,
             Message::UsersShared(message) => &message.chat,
             Message::ChatShared(message) => &message.chat,
             Message::ConnectedWebsite(message) => &message.chat,
@@ -2446,6 +2470,7 @@ impl Message {
             Message::Pinned(message) => message.from.as_ref(),
             Message::Invoice(message) => message.from.as_ref(),
             Message::SuccessfulPayment(message) => message.from.as_ref(),
+            Message::RefundedPayment(message) => message.from.as_ref(),
             Message::UsersShared(message) => message.from.as_ref(),
             Message::ChatShared(message) => message.from.as_ref(),
             Message::PassportData(message) => message.from.as_ref(),
@@ -2535,6 +2560,7 @@ impl Message {
             Message::Pinned(message) => message.sender_chat.as_ref(),
             Message::Invoice(message) => message.sender_chat.as_ref(),
             Message::SuccessfulPayment(message) => message.sender_chat.as_ref(),
+            Message::RefundedPayment(message) => message.sender_chat.as_ref(),
             Message::PassportData(message) => message.sender_chat.as_ref(),
             Message::ChatBackgroundSet(message) => message.sender_chat.as_ref(),
             Message::ForumTopicCreated(message) => message.sender_chat.as_ref(),
@@ -3029,6 +3055,14 @@ impl Message {
     }
 
     #[must_use]
+    pub const fn refunded_payment(&self) -> Option<&types::RefundedPayment> {
+        match self {
+            Message::RefundedPayment(message) => Some(&message.payment),
+            _ => None,
+        }
+    }
+
+    #[must_use]
     pub const fn users_shared(&self) -> Option<&types::UsersShared> {
         match self {
             Message::UsersShared(message) => Some(&message.shared),
@@ -3360,6 +3394,7 @@ impl_try_from_message!(MigrateToChat, MigrateToChat);
 impl_try_from_message!(MigrateFromChat, MigrateFromChat);
 impl_try_from_message!(Pinned, Pinned);
 impl_try_from_message!(SuccessfulPayment, SuccessfulPayment);
+impl_try_from_message!(RefundedPayment, RefundedPayment);
 impl_try_from_message!(ConnectedWebsite, ConnectedWebsite);
 impl_try_from_message!(PassportData, PassportData);
 impl_try_from_message!(ProximityAlertTriggered, ProximityAlertTriggered);
@@ -3443,6 +3478,7 @@ impl_try_from_update!(MigrateToChat);
 impl_try_from_update!(MigrateFromChat);
 impl_try_from_update!(Pinned);
 impl_try_from_update!(SuccessfulPayment);
+impl_try_from_update!(RefundedPayment);
 impl_try_from_update!(ConnectedWebsite);
 impl_try_from_update!(PassportData);
 impl_try_from_update!(ProximityAlertTriggered);
@@ -4522,6 +4558,38 @@ mod tests {
 
             match message {
                 Message::SuccessfulPayment(message) => {
+                    assert_eq!(message, message_kind);
+                }
+                _ => panic!("Unexpected message type: {message:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn deserialize_refunded_payment() {
+        let jsons = [serde_json::json!({
+            "message_id": 1,
+            "date": 0,
+            "chat": {
+                "id": -1,
+                "title": "test",
+                "type": "channel",
+            },
+            "refunded_payment": {
+                "currency": "test",
+                "total_amount": 1,
+                "invoice_payload": "test",
+                "telegram_payment_charge_id": "test",
+                "provider_payment_charge_id": "test",
+            },
+        })];
+
+        for json in jsons {
+            let message_kind = serde_json::from_value(json.clone()).unwrap();
+            let message: Message = serde_json::from_value(json).unwrap();
+
+            match message {
+                Message::RefundedPayment(message) => {
                     assert_eq!(message, message_kind);
                 }
                 _ => panic!("Unexpected message type: {message:?}"),
