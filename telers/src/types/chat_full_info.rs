@@ -200,6 +200,8 @@ pub struct ChannelFullInfo {
     pub invite_link: Option<Box<str>>,
     /// The most recent pinned message (by sending date).
     pub pinned_message: Option<Message>,
+    /// `true`, if paid media messages can be sent or forwarded to the channel chat
+    pub can_send_paid_media: Option<bool>,
     /// The time after which all messages sent to the chat will be automatically deleted; in seconds.
     pub message_auto_delete_time: Option<i64>,
     /// `true`, if messages from the chat can't be forwarded to other chats.
@@ -642,6 +644,14 @@ impl ChatFullInfo {
             Self::Private(_) | Self::Channel(_) => None,
             Self::Group(chat) => chat.permissions.as_ref(),
             Self::Supergroup(chat) => chat.permissions.as_ref(),
+        }
+    }
+
+    #[must_use]
+    pub const fn can_send_paid_media(&self) -> Option<bool> {
+        match self {
+            Self::Private(_) | Self::Group(_) | Self::Supergroup(_) => None,
+            Self::Channel(chat) => chat.can_send_paid_media,
         }
     }
 
