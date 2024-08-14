@@ -21,9 +21,6 @@ impl<'a> InputPaidMediaPhoto<'a> {
 
     #[must_use]
     pub fn media(self, val: impl Into<InputFile<'a>>) -> Self {
-        Self {
-            media: val.into(),
-            ..self
-        }
+        Self { media: val.into() }
     }
 }
