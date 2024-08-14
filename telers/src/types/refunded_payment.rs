@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 /// This object contains basic information about a refunded payment.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#refundedpayment>
+#[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Deserialize, Serialize)]
 pub struct RefundedPayment {
     /// Three-letter ISO 4217 [`currency`](https://core.telegram.org/bots/payments#supported-currencies) code, or `XTR` for payments in [`Telegram Stars`](https://t.me/BotNews/90). Currently, always `XTR`

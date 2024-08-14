@@ -1,10 +1,12 @@
 use super::InputFile;
 
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 
 /// The paid media to send is a video.
 /// # Documentation
 /// <https://core.telegram.org/bots/api#inputpaidmediavideo>
+#[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Serialize)]
 pub struct InputPaidMediaVideo<'a> {
     /// File to send. Pass a `file_id` to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass `attach://<file_attach_name>` to upload a new one using `multipart/form-data` under `<file_attach_name>` name. [`More information on Sending Files`](https://core.telegram.org/bots/api#sending-files).

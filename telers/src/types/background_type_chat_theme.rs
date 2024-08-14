@@ -7,5 +7,5 @@ use serde::{Deserialize, Serialize};
 pub struct BackgroundTypeChatTheme {
     /// Name of the chat theme, which is usually an emoji
     #[serde(rename = "theme_name")]
-    pub name: String,
+    pub name: Box<str>,
 }
