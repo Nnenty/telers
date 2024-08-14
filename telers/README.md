@@ -52,8 +52,8 @@ You may consider checking out [this directory][examples] for more examples.
 
 ## License
 This project is licensed under either of the following licenses, at your option:
- - Apache License, Version 2.0
- - MIT License
+ - [Apache License, Version 2.0](LICENSE-APACHE)
+ - [MIT License](LICENSE-MIT)
 
 [examples]: https://github.com/Desiders/telers/tree/dev-1.x/examples
 [examples/axum_and_echo_bot]: https://github.com/Desiders/telers/tree/dev-1.x/examples/axum_and_echo_bot
