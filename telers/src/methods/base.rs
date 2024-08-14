@@ -1,6 +1,6 @@
 use crate::{
     client::Bot,
-    types::{InputFile, InputMedia, InputSticker, ResponseParameters},
+    types::{InputFile, InputMedia, InputPaidMedia, InputSticker, ResponseParameters},
 };
 
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -129,5 +129,28 @@ pub(super) fn prepare_input_stickers<'a>(
 ) {
     for input_sticker in input_stickers {
         prepare_input_sticker(files, input_sticker);
+    }
+}
+
+pub(super) fn prepare_input_paid_media<'a>(
+    files: &mut Vec<&'a InputFile<'a>>,
+    input_paid_media: &'a InputPaidMedia<'a>,
+) {
+    match input_paid_media {
+        InputPaidMedia::Photo(inner) => {
+            prepare_file(files, &inner.media);
+        }
+        InputPaidMedia::Video(inner) => {
+            prepare_file(files, &inner.media);
+        }
+    }
+}
+
+pub(super) fn prepare_input_paid_media_group<'a>(
+    files: &mut Vec<&'a InputFile<'a>>,
+    input_paid_media_group: &'a [InputPaidMedia<'a>],
+) {
+    for input_paid_media in input_paid_media_group {
+        prepare_input_paid_media(files, input_paid_media);
     }
 }
