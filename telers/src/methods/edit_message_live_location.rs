@@ -17,6 +17,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct EditMessageLiveLocation {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if `inline_message_id` is not specified. Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: Option<ChatIdKind>,
     /// Required if `inline_message_id` is not specified. Identifier of the message to edit
@@ -43,6 +45,7 @@ impl EditMessageLiveLocation {
     #[must_use]
     pub fn new(longitude: f64, latitude: f64) -> Self {
         Self {
+            business_connection_id: None,
             chat_id: None,
             message_id: None,
             inline_message_id: None,
@@ -53,6 +56,14 @@ impl EditMessageLiveLocation {
             heading: None,
             proximity_alert_radius: None,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -138,6 +149,14 @@ impl EditMessageLiveLocation {
 }
 
 impl EditMessageLiveLocation {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn chat_id_option(self, val: Option<impl Into<ChatIdKind>>) -> Self {
         Self {

@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct EditMessageReplyMarkup {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if `inline_message_id` is not specified. Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: Option<ChatIdKind>,
     /// Required if `inline_message_id` is not specified. Identifier of the message to edit
@@ -30,6 +32,14 @@ impl EditMessageReplyMarkup {
     #[must_use]
     pub fn new() -> Self {
         Self::default()
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
+        }
     }
 
     #[must_use]
@@ -66,6 +76,14 @@ impl EditMessageReplyMarkup {
 }
 
 impl EditMessageReplyMarkup {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn chat_id_option(self, val: Option<impl Into<ChatIdKind>>) -> Self {
         Self {
