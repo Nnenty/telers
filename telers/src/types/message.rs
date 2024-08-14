@@ -26,6 +26,7 @@ pub enum Message {
     Animation(Box<Animation>),
     Audio(Box<Audio>),
     Document(Box<Document>),
+    PaidMedia(Box<PaidMedia>),
     Photo(Box<Photo>),
     Sticker(Box<Sticker>),
     Story(Box<Story>),
@@ -366,6 +367,66 @@ pub struct Document {
     pub entities: Option<Box<[MessageEntity]>>,
     /// Unique identifier of the message effect added to the message
     pub effect_id: Option<Box<str>>,
+    /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
+    pub reply_markup: Option<InlineKeyboardMarkup>,
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, FromEvent)]
+#[event(try_from = Update)]
+pub struct PaidMedia {
+    /// Unique message identifier inside this chat
+    #[serde(rename = "message_id")]
+    pub id: i64,
+    /// Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub from: Option<User>,
+    /// Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    pub sender_chat: Option<Chat>,
+    /// If the sender of the message boosted the chat, the number of boosts added by the user
+    pub sender_boost_count: Option<i64>,
+    /// The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+    pub sender_business_bot: Option<User>,
+    /// Date the message was sent in Unix time
+    pub date: i64,
+    /// Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
+    pub business_connection_id: Option<Box<str>>,
+    /// Conversation the message belongs to
+    pub chat: Chat,
+    /// Information about the original message for forwarded messages
+    pub forward_origin: Option<MessageOrigin>,
+    /// `true`, if the message is sent to a forum topic
+    pub is_topic_message: Option<bool>,
+    /// `true`, if the message is a channel post that was automatically forwarded to the connected discussion group
+    pub is_automatic_forward: Option<bool>,
+    /// For replies, the original message. Note that the [Message object](https://core.telegram.org/bots/api#message) in this field will not contain further *reply_to_message* fields even if it itself is a reply.
+    pub reply_to_message: Option<Message>,
+    /// For replies to a story, the original story
+    pub reply_to_story: Option<Story>,
+    /// Information about the message that is being replied to, which may come from another chat or forum topic
+    pub external_reply: Option<ExternalReplyInfo>,
+    /// For replies that quote part of the original message, the quoted part of the message
+    pub quote: Option<TextQuote>,
+    /// Bot through which the message was sent
+    pub via_bot: Option<User>,
+    /// Date the message was last edited in Unix time
+    pub edit_date: Option<i64>,
+    /// `true`, if the message can't be forwarded
+    pub has_protected_content: Option<bool>,
+    /// `true`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
+    pub is_from_offline: Option<bool>,
+    /// The unique identifier of a media message group this message belongs to
+    pub media_group_id: Option<Box<str>>,
+    /// Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
+    pub author_signature: Option<Box<str>>,
+    /// Message contains paid media; information about the paid media
+    pub paid_media: types::PaidMedia,
+    /// Caption
+    pub caption: Option<Box<str>>,
+    /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+    #[serde(rename = "caption_entities")]
+    pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -1835,6 +1896,7 @@ impl Message {
             Message::Animation(message) => message.id,
             Message::Audio(message) => message.id,
             Message::Document(message) => message.id,
+            Message::PaidMedia(message) => message.id,
             Message::Photo(message) => message.id,
             Message::Sticker(message) => message.id,
             Message::Story(message) => message.id,
@@ -1930,6 +1992,7 @@ impl Message {
             Message::Animation(message) => message.date,
             Message::Audio(message) => message.date,
             Message::Document(message) => message.date,
+            Message::PaidMedia(message) => message.date,
             Message::Photo(message) => message.date,
             Message::Sticker(message) => message.date,
             Message::Story(message) => message.date,
@@ -1989,6 +2052,7 @@ impl Message {
             Message::Animation(message) => message.sender_business_bot.as_ref(),
             Message::Audio(message) => message.sender_business_bot.as_ref(),
             Message::Document(message) => message.sender_business_bot.as_ref(),
+            Message::PaidMedia(message) => message.sender_business_bot.as_ref(),
             Message::Photo(message) => message.sender_business_bot.as_ref(),
             Message::Sticker(message) => message.sender_business_bot.as_ref(),
             Message::Video(message) => message.sender_business_bot.as_ref(),
@@ -2022,6 +2086,10 @@ impl Message {
                 None => None,
             },
             Message::Document(message) => match message.business_connection_id {
+                Some(ref connection_id) => Some(connection_id),
+                None => None,
+            },
+            Message::PaidMedia(message) => match message.business_connection_id {
                 Some(ref connection_id) => Some(connection_id),
                 None => None,
             },
@@ -2092,6 +2160,7 @@ impl Message {
             Message::Animation(message) => &message.chat,
             Message::Audio(message) => &message.chat,
             Message::Document(message) => &message.chat,
+            Message::PaidMedia(message) => &message.chat,
             Message::Photo(message) => &message.chat,
             Message::Sticker(message) => &message.chat,
             Message::Story(message) => &message.chat,
@@ -2151,6 +2220,7 @@ impl Message {
             Message::Animation(message) => message.via_bot.as_ref(),
             Message::Audio(message) => message.via_bot.as_ref(),
             Message::Document(message) => message.via_bot.as_ref(),
+            Message::PaidMedia(message) => message.via_bot.as_ref(),
             Message::Photo(message) => message.via_bot.as_ref(),
             Message::Sticker(message) => message.via_bot.as_ref(),
             Message::Video(message) => message.via_bot.as_ref(),
@@ -2185,6 +2255,10 @@ impl Message {
                 None => None,
             },
             Message::Document(message) => match message.caption {
+                Some(ref caption) => Some(caption),
+                None => None,
+            },
+            Message::PaidMedia(message) => match message.caption {
                 Some(ref caption) => Some(caption),
                 None => None,
             },
@@ -2233,6 +2307,10 @@ impl Message {
                 Some(ref entities) => Some(entities),
                 None => None,
             },
+            Message::PaidMedia(message) => match message.entities {
+                Some(ref entities) => Some(entities),
+                None => None,
+            },
             Message::Video(message) => match message.entities {
                 Some(ref entities) => Some(entities),
                 None => None,
@@ -2261,6 +2339,10 @@ impl Message {
                 None => None,
             },
             Message::Photo(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            Message::PaidMedia(message) => match message.show_caption_above_media {
                 Some(show_caption_above_media) => Some(show_caption_above_media),
                 None => None,
             },
@@ -2339,6 +2421,7 @@ impl Message {
             Message::Animation(message) => message.from.as_ref(),
             Message::Audio(message) => message.from.as_ref(),
             Message::Document(message) => message.from.as_ref(),
+            Message::PaidMedia(message) => message.from.as_ref(),
             Message::Photo(message) => message.from.as_ref(),
             Message::Sticker(message) => message.from.as_ref(),
             Message::Story(message) => message.from.as_ref(),
@@ -2400,6 +2483,7 @@ impl Message {
             Message::Animation(message) => message.sender_boost_count,
             Message::Audio(message) => message.sender_boost_count,
             Message::Document(message) => message.sender_boost_count,
+            Message::PaidMedia(message) => message.sender_boost_count,
             Message::Photo(message) => message.sender_boost_count,
             Message::Sticker(message) => message.sender_boost_count,
             Message::Story(message) => message.sender_boost_count,
@@ -2424,6 +2508,7 @@ impl Message {
             Message::Animation(message) => message.sender_chat.as_ref(),
             Message::Audio(message) => message.sender_chat.as_ref(),
             Message::Document(message) => message.sender_chat.as_ref(),
+            Message::PaidMedia(message) => message.sender_chat.as_ref(),
             Message::Photo(message) => message.sender_chat.as_ref(),
             Message::Sticker(message) => message.sender_chat.as_ref(),
             Message::Story(message) => message.sender_chat.as_ref(),
@@ -2498,6 +2583,10 @@ impl Message {
                 Some(ref author_signature) => Some(author_signature),
                 None => None,
             },
+            Message::PaidMedia(message) => match message.author_signature {
+                Some(ref author_signature) => Some(author_signature),
+                None => None,
+            },
             Message::Photo(message) => match message.author_signature {
                 Some(ref author_signature) => Some(author_signature),
                 None => None,
@@ -2565,6 +2654,7 @@ impl Message {
             Message::Animation(message) => message.reply_to_message.as_ref(),
             Message::Audio(message) => message.reply_to_message.as_ref(),
             Message::Document(message) => message.reply_to_message.as_ref(),
+            Message::PaidMedia(message) => message.reply_to_message.as_ref(),
             Message::Photo(message) => message.reply_to_message.as_ref(),
             Message::Sticker(message) => message.reply_to_message.as_ref(),
             Message::Video(message) => message.reply_to_message.as_ref(),
@@ -2598,6 +2688,7 @@ impl Message {
             Message::Animation(message) => message.reply_to_story.as_ref(),
             Message::Audio(message) => message.reply_to_story.as_ref(),
             Message::Document(message) => message.reply_to_story.as_ref(),
+            Message::PaidMedia(message) => message.reply_to_story.as_ref(),
             Message::Photo(message) => message.reply_to_story.as_ref(),
             Message::Sticker(message) => message.reply_to_story.as_ref(),
             Message::Video(message) => message.reply_to_story.as_ref(),
@@ -2628,6 +2719,7 @@ impl Message {
             Message::Animation(message) => message.external_reply.as_ref(),
             Message::Audio(message) => message.external_reply.as_ref(),
             Message::Document(message) => message.external_reply.as_ref(),
+            Message::PaidMedia(message) => message.external_reply.as_ref(),
             Message::Photo(message) => message.external_reply.as_ref(),
             Message::Sticker(message) => message.external_reply.as_ref(),
             Message::Story(message) => message.external_reply.as_ref(),
@@ -2654,6 +2746,7 @@ impl Message {
             Message::Animation(message) => message.quote.as_ref(),
             Message::Audio(message) => message.quote.as_ref(),
             Message::Document(message) => message.quote.as_ref(),
+            Message::PaidMedia(message) => message.quote.as_ref(),
             Message::Video(message) => message.quote.as_ref(),
             Message::Voice(message) => message.quote.as_ref(),
             Message::Photo(message) => message.quote.as_ref(),
@@ -2668,6 +2761,7 @@ impl Message {
             Message::Animation(message) => message.edit_date,
             Message::Audio(message) => message.edit_date,
             Message::Document(message) => message.edit_date,
+            Message::PaidMedia(message) => message.edit_date,
             Message::Photo(message) => message.edit_date,
             Message::Video(message) => message.edit_date,
             Message::Game(message) => message.edit_date,
@@ -2685,6 +2779,7 @@ impl Message {
             Message::Animation(message) => message.reply_markup.as_ref(),
             Message::Audio(message) => message.reply_markup.as_ref(),
             Message::Document(message) => message.reply_markup.as_ref(),
+            Message::PaidMedia(message) => message.reply_markup.as_ref(),
             Message::Photo(message) => message.reply_markup.as_ref(),
             Message::Video(message) => message.reply_markup.as_ref(),
             Message::VideoNote(message) => message.reply_markup.as_ref(),
@@ -2707,6 +2802,7 @@ impl Message {
             Message::Animation(message) => message.is_automatic_forward,
             Message::Audio(message) => message.is_automatic_forward,
             Message::Document(message) => message.is_automatic_forward,
+            Message::PaidMedia(message) => message.is_automatic_forward,
             Message::Video(message) => message.is_automatic_forward,
             Message::Voice(message) => message.is_automatic_forward,
             Message::Photo(message) => message.is_automatic_forward,
@@ -2721,6 +2817,7 @@ impl Message {
             Message::Animation(message) => message.has_protected_content,
             Message::Audio(message) => message.has_protected_content,
             Message::Document(message) => message.has_protected_content,
+            Message::PaidMedia(message) => message.has_protected_content,
             Message::Video(message) => message.has_protected_content,
             Message::Voice(message) => message.has_protected_content,
             Message::Photo(message) => message.has_protected_content,
@@ -2735,6 +2832,7 @@ impl Message {
             Message::Animation(message) => message.forward_origin.as_ref(),
             Message::Audio(message) => message.forward_origin.as_ref(),
             Message::Document(message) => message.forward_origin.as_ref(),
+            Message::PaidMedia(message) => message.forward_origin.as_ref(),
             Message::Photo(message) => message.forward_origin.as_ref(),
             Message::Sticker(message) => message.forward_origin.as_ref(),
             Message::Story(message) => message.forward_origin.as_ref(),
@@ -2788,6 +2886,14 @@ impl Message {
     pub const fn document(&self) -> Option<&types::Document> {
         match self {
             Message::Document(message) => Some(&message.document),
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn paid_media(&self) -> Option<&types::PaidMedia> {
+        match self {
+            Message::PaidMedia(message) => Some(&message.paid_media),
             _ => None,
         }
     }
@@ -3238,6 +3344,7 @@ impl_try_from_message!(Audio, Audio);
 impl_try_from_message!(Contact, Contact);
 impl_try_from_message!(Dice, Dice);
 impl_try_from_message!(Document, Document);
+impl_try_from_message!(PaidMedia, PaidMedia);
 impl_try_from_message!(Game, Game);
 impl_try_from_message!(Invoice, Invoice);
 impl_try_from_message!(Location, Location);
@@ -3320,6 +3427,7 @@ impl_try_from_update!(Audio);
 impl_try_from_update!(Contact);
 impl_try_from_update!(Dice);
 impl_try_from_update!(Document);
+impl_try_from_update!(PaidMedia);
 impl_try_from_update!(Game);
 impl_try_from_update!(Invoice);
 impl_try_from_update!(Location);
@@ -3607,6 +3715,32 @@ mod tests {
 
             match message {
                 Message::Document(message) => assert_eq!(*message, message_kind),
+                _ => panic!("Unexpected message type: {message:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn deserialize_paid_media() {
+        let jsons = [serde_json::json!({
+            "message_id": 1,
+            "date": 0,
+            "chat": {
+                "id": -1,
+                "title": "test",
+                "type": "channel",
+            },
+            "paid_media": {
+                "type": "preview",
+            },
+        })];
+
+        for json in jsons {
+            let message_kind = serde_json::from_value(json.clone()).unwrap();
+            let message: Message = serde_json::from_value(json).unwrap();
+
+            match message {
+                Message::PaidMedia(message) => assert_eq!(*message, message_kind),
                 _ => panic!("Unexpected message type: {message:?}"),
             }
         }
