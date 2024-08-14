@@ -14,6 +14,7 @@ pub enum ExternalReplyInfo {
     Animation(Box<Animation>),
     Audio(Box<Audio>),
     Document(Box<Document>),
+    PaidMedia(Box<PaidMedia>),
     Photo(Box<Photo>),
     Sticker(Box<Sticker>),
     Story(Box<Story>),
@@ -84,6 +85,19 @@ pub struct Document {
     pub message_id: Option<i64>,
     /// Message is a general file, information about the file
     pub document: types::Document,
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+pub struct PaidMedia {
+    /// Origin of the message replied to by the given message
+    pub origin: MessageOrigin,
+    /// Chat the original message belongs to. Available only if the chat is a supergroup or a channel.
+    pub chat: Option<Chat>,
+    /// Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.
+    pub message_id: Option<i64>,
+    /// Message contains paid media; information about the paid media
+    pub paid_media: types::PaidMedia,
 }
 
 #[skip_serializing_none]
@@ -285,6 +299,151 @@ pub struct Venue {
     pub venue: types::Venue,
 }
 
+impl ExternalReplyInfo {
+    #[must_use]
+    pub const fn origin(&self) -> &MessageOrigin {
+        match self {
+            ExternalReplyInfo::Animation(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Audio(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Document(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::PaidMedia(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Photo(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Sticker(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Story(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Video(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::VideoNote(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Voice(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Contact(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Dice(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Game(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Giveaway(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::GiveawayWinners(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Invoice(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Venue(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Location(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Poll(external_reply_info) => &external_reply_info.origin,
+            ExternalReplyInfo::Text(external_reply_info) => &external_reply_info.origin,
+        }
+    }
+
+    #[allow(clippy::match_as_ref)]
+    #[must_use]
+    pub const fn chat(&self) -> Option<&Chat> {
+        match self {
+            ExternalReplyInfo::Animation(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Audio(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Document(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::PaidMedia(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Photo(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Sticker(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Story(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Video(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::VideoNote(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Voice(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Contact(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Dice(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Game(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Giveaway(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::GiveawayWinners(external_reply_info) => {
+                match external_reply_info.chat {
+                    Some(ref chat) => Some(chat),
+                    None => None,
+                }
+            }
+            ExternalReplyInfo::Invoice(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Venue(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Location(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Poll(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+            ExternalReplyInfo::Text(external_reply_info) => match external_reply_info.chat {
+                Some(ref chat) => Some(chat),
+                None => None,
+            },
+        }
+    }
+
+    #[must_use]
+    pub const fn message_id(&self) -> Option<i64> {
+        match self {
+            ExternalReplyInfo::Animation(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Audio(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Document(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::PaidMedia(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Photo(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Sticker(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Story(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Video(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::VideoNote(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Voice(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Contact(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Dice(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Game(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Giveaway(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::GiveawayWinners(external_reply_info) => {
+                external_reply_info.message_id
+            }
+            ExternalReplyInfo::Invoice(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Venue(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Location(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Poll(external_reply_info) => external_reply_info.message_id,
+            ExternalReplyInfo::Text(external_reply_info) => external_reply_info.message_id,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -406,6 +565,36 @@ mod tests {
 
             match external_reply_info {
                 ExternalReplyInfo::Document(external_reply_info) => {
+                    assert_eq!(external_reply_info, external_reply_info_kind)
+                }
+                _ => panic!("Unexpected external reply info type: {external_reply_info:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn deserialize_paid_media() {
+        let jsons = [serde_json::json!({
+            "origin": {
+                "type": "user",
+                "date": 0,
+                "sender_user": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "test",
+                },
+            },
+            "paid_media": {
+                "type": "preview",
+            },
+        })];
+
+        for json in jsons {
+            let external_reply_info_kind = serde_json::from_value(json.clone()).unwrap();
+            let external_reply_info: ExternalReplyInfo = serde_json::from_value(json).unwrap();
+
+            match external_reply_info {
+                ExternalReplyInfo::PaidMedia(external_reply_info) => {
                     assert_eq!(external_reply_info, external_reply_info_kind)
                 }
                 _ => panic!("Unexpected external reply info type: {external_reply_info:?}"),
