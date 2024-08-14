@@ -24,6 +24,8 @@ An asynchronous framework for Telegram Bot API written in Rust
 
 Before you start, make sure that you have a basic understanding of the [Telegram Bot API](https://core.telegram.org/bots/api), because types and methods in the library have the same fields and types as in the documentation.
 
+More information about this crate can be found in the [crate documentation][docs].
+
 ## Highlights
  - **Asynchronous**. Built on top of [Tokio](https://tokio.rs/), a powerful asynchronous runtime.
  - **Easy to use**. Provides a simple and intuitive API for creating bots.
@@ -68,3 +70,4 @@ This project is licensed under either of the following licenses, at your option:
 [examples/echo_bot]: https://github.com/Desiders/telers/tree/dev-1.x/examples/echo_bot
 [licence_apache]: https://github.com/Desiders/telers/blob/dev-1.x/telers/LICENSE-APACHE
 [licence_mit]: https://github.com/Desiders/telers/blob/dev-1.x/telers/LICENSE-MIT
+[docs]: https://docs.rs/telers

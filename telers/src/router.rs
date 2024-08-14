@@ -6,11 +6,11 @@
 //! * Simple observer:
 //! [`Simple observer`] is used to handle simple events like startup and shutdown.
 //! When you register a handler in this observer,
-//! you specify the arguments that pass to the handler when the event is trigger.
-//! Return type of the handler is [`Result<(), HandlerError>`].
+//! you specify the arguments that pass to handler when the event is trigger.
+//! Return type of handler is [`Result<(), HandlerError>`].
 //! When observer is trigger, it calls all handlers in order of registration and stops if one of them returns an error.
 //!
-//! Registration of the handlers looks like this:
+//! Registration of handlers looks like this:
 //! ```ignore
 //! async fn on_startup(message: &str) -> HandlerResult {
 //!     ...
@@ -28,16 +28,16 @@
 //! * Telegram observer:
 //! [`Telegram observer`] is used to handle telegram events like messages, callback queries, polls and all other event types.
 //! You can register a handler with any arguments that implement [`FromEventAndContext`] trait, see [`extractors module`] for more details.
-//! Return type of the handler is [`Result<EventReturn, HandlerError>`],
+//! Return type of handler is [`Result<EventReturn, HandlerError>`],
 //! where [`EventReturn`] is a special enum that can be used to control the propagation of the event,
 //! see [`EventReturn`] for more details.
 //! When observer is trigger, it calls outer middlewares and checks all handlers in order of registration.
-//! It calls all filters for each handler and skips the handler if one of them returns `false`.
-//! If the handler is pass the filters, observer calls inner middlewares and the handler itself (in the middleware).
+//! It calls all filters for each handler and skips handler if one of them returns `false`.
+//! If handler is pass the filters, observer calls inner middlewares and handler itself (in the middleware).
 //! By default, the first handler that pass the filters stop the propagation of the event, so other handlers aren't calls.
 //! (You can change this behaviour by specify another variant of [`EventReturn`]).
 //!
-//! Registration of the handlers looks like this:
+//! Registration of handlers looks like this:
 //! ```ignore
 //! async fn on_message(message: Message) -> HandlerResult {
 //!    ...
@@ -67,51 +67,24 @@
 //! [`PropagateEvent::emit_startup`], [`PropagateEvent::emit_shutdown`] methods in [`Router`],
 //! but it's better to use [`Dispatcher`] that does it for you.
 //!
-//! Order of event propagation when propagate event is called for router:\
-//! 1) Call outer middlewares of update observer in order of registration;\
-//! 1.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 1 step;\
-//! 1.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 1 step;\
-//! 1.3) If middleware returns [`EventReturn::Cancel`], then cancel propagation of outer middlewares of update observer and go to the 2 step;\
-//! 1.4) If all middlewares by step 1.1 are passed or skipped on 1.2 or propagation cancelled by step 1.3, then go to the 2 step;\
-//! 2) Call filters of handlers of update observer in order of registration;\
-//! 2.1) If one of the handler filters returns `false`, then skip the handler and go back to the 2 step;\
-//! 2.2) If any handler filter returns `true`, then go to the 3 step;\
-//! 2.3) If all handlers are skipped on 2.1, then go to the 4 step;\
-//! 3) Call inner middlewares of update observer and the handler itself (handler is called in the middleware);\
-//! 3.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 3 step;\
-//! 3.2) If the handler or middleware returns [`EventReturn::Cancel`], then we should stop propagation of innder middlewares of update observer
-//! and go to the 4 step;\
-//! 3.3) If the handler or middleware returns [`EventReturn::Finish`], then we should stop propagation and return a response and go to the 4 step;\
-//! 3.4) If the handler of middleware returns error, then we should stop propagation and return a response
-//! because the error is the correct result from the point of view of observer and go to the 4 step;\
-//! 3.5) If all handlers or middlewares are skipped on 3.1, then go to the 4 step;\
-//! 4) Stop propagation of update observer;\
-//! 5) Check which observer respond to the current [`UpdateType`];\
-//! 6) Call outer middlewares of the observer in order of registration;\
-//! 6.1) If middleware returns [`EventReturn::Finish`], then update [`Request`] because the middleware could have changed it and go to the 6 step;\
-//! 6.2) If middleware returns [`EventReturn::Skip`], then skip this middleware and go to the 6 step;\
-//! 6.3) If middleware returns [`EventReturn::Cancel`], then cancel event propagation and go to the 10 step;\
-//! 6.4) If all middlewares by step 1.1 are passed or skipped on 1.2, then go to the 7 step;\
-//! 7) Call filters of handlers of the observer in order of registration;\
-//! 7.1) If one of the handler filters returns `false`, then skip the handler and go back to the 7 step;\
-//! 7.2) If any handler filter returns `true`, then go to the 8 step;\
-//! 7.3) If all handlers are skipped on 7.1, then cancel propagation of the observer and go to the 9 step;\
-//! 8) Call inner middlewares of the observer and the handler itself (handler is called in the middleware);\
-//! 8.1) If the handler or middleware returns [`EventReturn::Skip`], then we should skip it and go to the 8 step;\
-//! 8.2) If the handler or middleware returns [`EventReturn::Cancel`], then we should stop propagation of the observer
-//! and go to the 10 step;\
-//! 8.3) If the handler or middleware returns [`EventReturn::Finish`], then we should stop propagation and return a response
-//! and go to the 10 step;\
-//! 8.4) If the handler of middleware returns error, then we should stop propagation and return a response
-//! because the error is the correct result from the point of view of observer and go to the 10 step;\
-//! 8.5) If all handlers or middlewares are skipped on 8.1, then go to the 9 step;\
-//! 9) Check to which router from current router's sub routers propagate event next;\
-//! 9.1) If there is no sub routers, then go to the 10 step;\
-//! 9.2) If there is sub routers, then go to the 1 step for the first sub router;\
-//! 9.2.1) If the propagate event [`PropagateEventResult::Unhandled`] by the sub router's observer, then go to the 9 step;\
-//! 9.2.2) If the propagate event [`PropagateEventResult::Handled`] by the sub router's observer, then go to the 10 step;\
-//! 9.2.3) If the propagate event [`PropagateEventResult::Rejected`], then return an unhandled response and go to the 10 step;\
-//! 10) Finish event propagation.\
+//! How does routing work? At the moment, there is such a sequence of actions:
+//! > We have a sequence of routers that we call in the order they are registered.
+//! For each router, we first call the router's outer middleware,
+//! after which we check the handlers of the current router depending on the type of event (`Message`, `CallbackQuery`, etc.), and its filters.
+//! We call all filters of each handler until all filters of any handler return `true`.
+//! When a handler is selected, we call a sequence of the router's inner middlewares, with the handler at the end of the chain.
+//! At the moment when the handler is completed, we finish processing the event.
+//! If there are no handlers to execute (both due to their absence and due to a filter failure), we repeat the sequence of actions with the next router in the chain.
+//! > In addition, we can influence the processing of events during code execution by [`EventReturn`].
+//! In outer middlewares, we can stop event propagation by returns [`EventReturn::Cancel`],
+//! save current [`Request`] changes made in the middleware by [`EventReturn::Finish`] or skip them by [`EventReturn::Skip`].
+//! In inner middlewares and handlers, we can stop event propagation for the current router and go to next router by returns [`EventReturn::Cancel`],
+//! finish event propagation by [`EventReturn::Finish`] or skip current handler and go to next handler (and its filters) by [`EventReturn::Skip`].
+//! * The above also applies to the special update observer with some differences:
+//! 1. Middlewares and handlers are called before other middlewares and handlers for the current event observer,
+//! so processing units in update observer have priority in processing.
+//! 2. [`EventReturn::Cancel`] for update observer's innter middlrewares and handler don't stop event propagation for the current router,
+//! it doesn't affect the processing of the event in any way.
 //!
 //! [`Simple observer`]: SimpleObserver
 //! [`Telegram observer`]: TelegramObserver
@@ -234,7 +207,7 @@ pub trait PropagateEvent<Client>: Send + Sync {
     /// # Errors
     /// - If any outer middleware returns error
     /// - If any inner middleware returns error
-    /// - If any handler returns error. Probably it's error to extract args to the handler
+    /// - If any handler returns error. Probably it's error to extract args to handler
     async fn propagate_event(
         &self,
         update_type: UpdateType,
@@ -250,7 +223,7 @@ pub trait PropagateEvent<Client>: Send + Sync {
     /// # Errors
     /// - If any outer middleware returns error
     /// - If any inner middleware returns error
-    /// - If any handler returns error. Probably it's error to extract args to the handler
+    /// - If any handler returns error. Probably it's error to extract args to handler
     async fn propagate_update_event(
         &self,
         request: Request<Client>,
@@ -313,11 +286,11 @@ where
 ///
 /// Simple observer is used to handle simple events like startup and shutdown. \
 /// When you register a handler in this observer,
-/// you specify the arguments that pass to the handler when the event is trigger. \
-/// Return type of the handler is `Result<(), HandlerError>`. \
+/// you specify the arguments that pass to handler when the event is trigger. \
+/// Return type of handler is `Result<(), HandlerError>`. \
 /// When observer is trigger, it calls all handlers in order of registration and stops if one of them returns an error.
 ///
-/// Registration of the handlers looks like this:
+/// Registration of handlers looks like this:
 /// ```ignore
 /// async fn on_startup(message: &str) -> HandlerResult {
 ///     ...
@@ -337,16 +310,16 @@ where
 /// Telegram observer is used to handle telegram events like messages, callback queries, polls and all other event types. \
 /// You can register a handler with any arguments that implement [`crate::extractors::FromEventAndContext`] trait,
 /// see [`crate::extractors`] for more details. \
-/// Return type of the handler is `Result<EventReturn, HandlerError>`,
+/// Return type of handler is `Result<EventReturn, HandlerError>`,
 /// where [`EventReturn`] is a special enum that can be used to control the propagation of the event,
 /// see [`EventReturn`] for more details. \
 /// When observer is trigger, it calls outer middlewares and checks all handlers in order of registration.
-/// It calls all filters for each handler and skips the handler if one of them returns `false`.
-/// If the handler is pass the filters, observer calls inner middlewares and the handler itself (in the middleware).
+/// It calls all filters for each handler and skips handler if one of them returns `false`.
+/// If handler is pass the filters, observer calls inner middlewares and handler itself (in the middleware).
 /// By default, the first handler that pass the filters stop the propagation of the event, so other handlers aren't calls.
 /// (You can change this behaviour by specify another variant of [`EventReturn`]).
 ///
-/// Registration of the handlers looks like this:
+/// Registration of handlers looks like this:
 /// ```ignore
 /// async fn on_message(message: Message) -> HandlerResult {
 ///    ...
@@ -976,7 +949,7 @@ impl<Client> PropagateEvent<Client> for Service<Client> {
                     propagate_result: PropagateEventResult::Handled(response),
                 })
             }
-            // If observer returns rejected, then return a response.ё
+            // If observer returns rejected, then return a response.
             // Router don't know about rejected event by observer, so it returns unhandled response.
             PropagateEventResult::Rejected => {
                 event!(Level::TRACE, "Update event rejected by router");
