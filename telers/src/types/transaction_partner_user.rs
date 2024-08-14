@@ -1,4 +1,4 @@
-use super::User;
+use super::{PaidMedia, User};
 
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
@@ -13,4 +13,6 @@ pub struct TransactionPartnerUser {
     pub user: User,
     /// Bot-specified invoice payload
     pub invoice_payload: Option<Box<str>>,
+    /// Information about the paid media bought by the user
+    pub paid_media: Option<Box<[PaidMedia]>>,
 }
