@@ -30,6 +30,8 @@ pub struct SendPhoto<'a> {
     pub parse_mode: Option<String>,
     /// A JSON-serialized list of special entities that appear in the caption, which can be specified instead of `parse_mode`
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Pass `true` if the photo needs to be covered with a spoiler animation
     pub has_spoiler: Option<bool>,
     /// Sends the message [silently](https://telegram.org/blog/channels-2-0#silent-messages). Users will receive a notification with no sound
@@ -55,6 +57,7 @@ impl<'a> SendPhoto<'a> {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             has_spoiler: None,
             disable_notification: None,
             protect_content: None,
@@ -136,6 +139,14 @@ impl<'a> SendPhoto<'a> {
                     .chain(val)
                     .collect(),
             ),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
             ..self
         }
     }
@@ -235,6 +246,14 @@ impl<'a> SendPhoto<'a> {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }

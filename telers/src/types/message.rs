@@ -132,6 +132,8 @@ pub struct Animation {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Unique identifier of the message effect added to the message
     pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
@@ -637,6 +639,8 @@ pub struct Photo {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Unique identifier of the message effect added to the message
     pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
@@ -873,6 +877,8 @@ pub struct Video {
     /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
     #[serde(rename = "caption_entities")]
     pub entities: Option<Box<[MessageEntity]>>,
+    /// `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Unique identifier of the message effect added to the message
     pub effect_id: Option<Box<str>>,
     /// `true`, if the message media is covered by a spoiler animation
@@ -2236,6 +2242,25 @@ impl Message {
             },
             Message::Photo(message) => match message.entities {
                 Some(ref entities) => Some(entities),
+                None => None,
+            },
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn show_caption_above_media(&self) -> Option<bool> {
+        match self {
+            Message::Animation(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            Message::Video(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
+                None => None,
+            },
+            Message::Photo(message) => match message.show_caption_above_media {
+                Some(show_caption_above_media) => Some(show_caption_above_media),
                 None => None,
             },
             _ => None,

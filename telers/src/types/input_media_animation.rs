@@ -19,6 +19,8 @@ pub struct InputMediaAnimation<'a> {
     pub parse_mode: Option<String>,
     /// Mode for parsing entities in the animation caption. See [`formatting options`](https://core.telegram.org/bots/api#formatting-options) for more details.
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Video width
     pub width: Option<i64>,
     /// Animation height
@@ -38,6 +40,7 @@ impl<'a> InputMediaAnimation<'a> {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             width: None,
             height: None,
             duration: None,
@@ -101,6 +104,14 @@ impl<'a> InputMediaAnimation<'a> {
                     .chain(val)
                     .collect(),
             ),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
             ..self
         }
     }
@@ -176,6 +187,14 @@ impl<'a> InputMediaAnimation<'a> {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }

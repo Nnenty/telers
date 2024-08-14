@@ -30,6 +30,8 @@ pub struct CopyMessage {
     pub parse_mode: Option<String>,
     /// A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of `parse_mode`
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass `true`, if the caption must be shown above the message media
+    pub show_caption_above_media: Option<bool>,
     /// Sends the message [silently](https://telegram.org/blog/channels-2-0#silent-messages). Users will receive a notification with no sound
     pub disable_notification: Option<bool>,
     /// Protects the contents of the sent message from forwarding and saving
@@ -55,6 +57,7 @@ impl CopyMessage {
             caption: None,
             parse_mode: None,
             caption_entities: None,
+            show_caption_above_media: None,
             disable_notification: None,
             protect_content: None,
             reply_parameters: None,
@@ -139,6 +142,14 @@ impl CopyMessage {
     }
 
     #[must_use]
+    pub fn show_caption_above_media(self, val: bool) -> Self {
+        Self {
+            show_caption_above_media: Some(val),
+            ..self
+        }
+    }
+
+    #[must_use]
     pub fn disable_notification(self, val: bool) -> Self {
         Self {
             disable_notification: Some(val),
@@ -209,6 +220,14 @@ impl CopyMessage {
                     .chain(val)
                     .collect()
             }),
+            ..self
+        }
+    }
+
+    #[must_use]
+    pub fn show_caption_above_media_option(self, val: Option<bool>) -> Self {
+        Self {
+            show_caption_above_media: val,
             ..self
         }
     }
