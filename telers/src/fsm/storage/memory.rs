@@ -13,7 +13,7 @@ use tracing::{event, instrument, Level, Span};
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 struct Record {
     states: Vec<Cow<'static, str>>,
-    data: HashMap<Cow<'static, str>, Box<[u8]>>,
+    data: HashMap<Cow<'static, str>, Box<str>>,
 }
 
 /// This is a simple thread-safe in-memory storage implementation used for testing purposes usually
@@ -167,7 +167,7 @@ impl Storage for Memory {
                 for (value_key, value) in data {
                     new_data.insert(
                         value_key.into(),
-                        bincode::serialize(&value)
+                        serde_json::to_string(&value)
                             .map_err(|err| {
                                 event!(Level::ERROR, "Failed to serialize value");
 
@@ -196,7 +196,7 @@ impl Storage for Memory {
                 for (value_key, value) in data {
                     new_data.insert(
                         value_key.into(),
-                        bincode::serialize(&value)
+                        serde_json::to_string(&value)
                             .map_err(|err| {
                                 event!(Level::ERROR, "Failed to serialize value");
 
@@ -242,7 +242,7 @@ impl Storage for Memory {
             Entry::Occupied(mut entry) => {
                 entry.get_mut().data.insert(
                     value_key,
-                    bincode::serialize(&value)
+                    serde_json::to_string(&value)
                         .map_err(|err| {
                             event!(Level::ERROR, "Failed to serialize value");
 
@@ -261,7 +261,7 @@ impl Storage for Memory {
                         let mut new_data = HashMap::with_capacity(1);
                         new_data.insert(
                             value_key,
-                            bincode::serialize(&value)
+                            serde_json::to_string(&value)
                                 .map_err(|err| {
                                     event!(Level::ERROR, "Failed to serialize value");
 
@@ -303,7 +303,7 @@ impl Storage for Memory {
                 for (value_key, value) in entry_data {
                     data.insert(
                         value_key.as_ref().into(),
-                        bincode::deserialize(value).map_err(|err| {
+                        serde_json::from_str(value).map_err(|err| {
                             event!(Level::ERROR, "Failed to deserialize value");
 
                             Error::new(
@@ -342,7 +342,7 @@ impl Storage for Memory {
 
         match self.storage.lock().await.entry(key.clone()) {
             Entry::Occupied(entry) => entry.get().data.get(&value_key).map_or(Ok(None), |value| {
-                Ok(Some(bincode::deserialize(value).map_err(|err| {
+                Ok(Some(serde_json::from_str(value).map_err(|err| {
                     event!(Level::ERROR, "Failed to deserialize value");
 
                     Error::new(
@@ -373,6 +373,8 @@ impl Storage for Memory {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde::{Deserialize, Serialize};
+    use serde_with::skip_serializing_none;
 
     #[tokio::test]
     async fn test_state() {
@@ -540,6 +542,84 @@ mod tests {
                 .unwrap()
                 .as_deref(),
             Some("value1")
+        );
+    }
+
+    /// Test for issue #27
+    /// https://github.com/Desiders/telers/issues/27
+    #[tokio::test]
+    async fn test_data_issue_27() {
+        #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+        struct AOption {
+            a: Option<String>,
+        }
+
+        #[skip_serializing_none]
+        #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+        struct AOptionSkip {
+            a: Option<String>,
+        }
+
+        let storage = Memory::default();
+
+        let key1 = StorageKey::new(0, 1, 2, None, None);
+        let key2 = StorageKey::new(2, 1, 0, None, None);
+        let key3 = StorageKey::new(2, 2, 1, None, None);
+        let key4 = StorageKey::new(1, 0, 0, None, None);
+
+        let value1 = AOption {
+            a: Some("a".to_owned()),
+        };
+        let value2 = AOption { a: None };
+        let value3 = AOptionSkip {
+            a: Some("a".to_owned()),
+        };
+        let value4 = AOptionSkip { a: None };
+
+        storage
+            .set_value(&key1, "key1", value1.clone())
+            .await
+            .unwrap();
+        storage
+            .set_value(&key2, "key2", value2.clone())
+            .await
+            .unwrap();
+        storage
+            .set_value(&key3, "key3", value3.clone())
+            .await
+            .unwrap();
+        storage
+            .set_value(&key4, "key4", value4.clone())
+            .await
+            .unwrap();
+
+        assert_eq!(
+            storage
+                .get_value::<_, AOption>(&key1, "key1")
+                .await
+                .unwrap(),
+            Some(value1)
+        );
+        assert_eq!(
+            storage
+                .get_value::<_, AOption>(&key2, "key2")
+                .await
+                .unwrap(),
+            Some(value2)
+        );
+        assert_eq!(
+            storage
+                .get_value::<_, AOptionSkip>(&key3, "key3")
+                .await
+                .unwrap(),
+            Some(value3)
+        );
+        assert_eq!(
+            storage
+                .get_value::<_, AOptionSkip>(&key4, "key4")
+                .await
+                .unwrap(),
+            Some(value4)
         );
     }
 }
