@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct EditMessageCaption {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Required if `inline_message_id` is not specified. Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: Option<ChatIdKind>,
     /// Required if `inline_message_id` is not specified. Identifier of the message to edit
@@ -38,6 +40,7 @@ impl EditMessageCaption {
     #[must_use]
     pub fn new(caption: impl Into<String>) -> Self {
         Self {
+            business_connection_id: None,
             chat_id: None,
             message_id: None,
             inline_message_id: None,
@@ -46,6 +49,14 @@ impl EditMessageCaption {
             caption_entities: None,
             show_caption_above_media: None,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -135,6 +146,14 @@ impl EditMessageCaption {
 }
 
 impl EditMessageCaption {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn chat_id_option(self, val: Option<impl Into<ChatIdKind>>) -> Self {
         Self {

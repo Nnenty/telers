@@ -16,6 +16,8 @@ use serde_with::skip_serializing_none;
 #[skip_serializing_none]
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize)]
 pub struct StopPoll {
+    /// Unique identifier of the business connection on behalf of which the message to be edited was sent
+    pub business_connection_id: Option<String>,
     /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
     pub chat_id: ChatIdKind,
     /// Identifier of the original message with the poll
@@ -28,9 +30,18 @@ impl StopPoll {
     #[must_use]
     pub fn new(chat_id: impl Into<ChatIdKind>, message_id: i64) -> Self {
         Self {
+            business_connection_id: None,
             chat_id: chat_id.into(),
             message_id,
             reply_markup: None,
+        }
+    }
+
+    #[must_use]
+    pub fn business_connection_id(self, val: impl Into<String>) -> Self {
+        Self {
+            business_connection_id: Some(val.into()),
+            ..self
         }
     }
 
@@ -60,6 +71,14 @@ impl StopPoll {
 }
 
 impl StopPoll {
+    #[must_use]
+    pub fn business_connection_id_option(self, val: Option<impl Into<String>>) -> Self {
+        Self {
+            business_connection_id: val.map(Into::into),
+            ..self
+        }
+    }
+
     #[must_use]
     pub fn reply_markup_option(self, val: Option<impl Into<InlineKeyboardMarkup>>) -> Self {
         Self {
