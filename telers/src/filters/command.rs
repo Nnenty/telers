@@ -303,7 +303,7 @@ impl Command<'_> {
         } else if let Some(ref mention) = command.mention {
             bot.send(GetMe {}).await.map(|user| {
                 // `unwrap` is safe here, because bot always has username
-                user.username.unwrap().eq(mention.as_ref())
+                user.username.unwrap().eq(mention)
             })
         } else {
             Ok(true)
