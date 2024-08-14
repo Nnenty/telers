@@ -349,10 +349,11 @@ pub use external_reply_info::{
     Document as ExternalReplyInfoDocument, ExternalReplyInfo, Game as ExternalReplyInfoGame,
     Giveaway as ExternalReplyInfoGiveaway, GiveawayWinners as ExternalReplyInfoGiveawayWinners,
     Invoice as ExternalReplyInfoInvoice, Location as ExternalReplyInfoLocation,
-    Photo as ExternalReplyInfoPhoto, Poll as ExternalReplyInfoPoll,
-    Sticker as ExternalReplyInfoSticker, Story as ExternalReplyInfoStory,
-    Venue as ExternalReplyInfoVenue, Video as ExternalReplyInfoVideo,
-    VideoNote as ExternalReplyInfoVideoNote, Voice as ExternalReplyInfoVoice,
+    PaidMedia as ExternalReplyInfoPaidMedia, Photo as ExternalReplyInfoPhoto,
+    Poll as ExternalReplyInfoPoll, Sticker as ExternalReplyInfoSticker,
+    Story as ExternalReplyInfoStory, Venue as ExternalReplyInfoVenue,
+    Video as ExternalReplyInfoVideo, VideoNote as ExternalReplyInfoVideoNote,
+    Voice as ExternalReplyInfoVoice,
 };
 pub use file::File;
 pub use force_reply::ForceReply;
