@@ -69,6 +69,8 @@ pub enum ContentType {
     Invoice,
     #[strum(serialize = "successful_payment")]
     SuccessfulPayment,
+    #[strum(serialize = "refunded_payment")]
+    RefundedPayment,
     #[strum(serialize = "users_shared")]
     UsersShared,
     #[strum(serialize = "chat_shared")]
@@ -119,7 +121,7 @@ pub enum ContentType {
 
 impl ContentType {
     #[must_use]
-    pub const fn all() -> [ContentType; 54] {
+    pub const fn all() -> [ContentType; 55] {
         [
             ContentType::Text,
             ContentType::Animation,
@@ -152,6 +154,7 @@ impl ContentType {
             ContentType::PinnedMessage,
             ContentType::Invoice,
             ContentType::SuccessfulPayment,
+            ContentType::RefundedPayment,
             ContentType::UsersShared,
             ContentType::ChatShared,
             ContentType::ConnectedWebsite,
@@ -231,6 +234,7 @@ impl From<&Message> for ContentType {
             Message::Pinned(_) => ContentType::PinnedMessage,
             Message::Invoice(_) => ContentType::Invoice,
             Message::SuccessfulPayment(_) => ContentType::SuccessfulPayment,
+            Message::RefundedPayment(_) => ContentType::RefundedPayment,
             Message::UsersShared(_) => ContentType::UsersShared,
             Message::ChatShared(_) => ContentType::ChatShared,
             Message::ConnectedWebsite(_) => ContentType::ConnectedWebsite,
