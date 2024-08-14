@@ -9,4 +9,6 @@ use serde::{Deserialize, Serialize};
 pub struct ChatMemberMember {
     /// Information about the user
     pub user: User,
+    /// Date when the user's subscription will expire; Unix time
+    pub until_date: Option<i64>,
 }
